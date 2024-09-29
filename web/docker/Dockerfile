@@ -7,8 +7,7 @@ RUN \
     apt-get install  -y --no-install-recommends \
         libssl-dev \
         make \
-        perl \
-        sudo
+        perl
 
 RUN \
     rustup component add rustfmt
