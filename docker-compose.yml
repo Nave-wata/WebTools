@@ -8,3 +8,11 @@ services:
     ports:
       - "8080:8080"
     tty: true
+
+  tailwind:
+    image: node:22.9.0
+    working_dir: /var/www/html
+    volumes:
+      - ./web:/var/www/html
+    tty: true
+    command: "npx -y tailwindcss -i ./input.css -o ./assets/tailwind.css --watch"
