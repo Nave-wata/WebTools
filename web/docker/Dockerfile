@@ -7,12 +7,13 @@ RUN \
     apt-get install  -y --no-install-recommends \
         libssl-dev \
         make \
-        perl
+        perl \
+        pkg-config
 
 RUN \
     rustup component add rustfmt
 
 RUN \
-    cargo install dioxus-cli
+    cargo install dioxus-cli --version 0.6.0-alpha.4
 
-CMD ["dx", "serve", "--hot-reload", "--platform", "web"]
+CMD ["dx", "serve", "--addr", "0.0.0.0", "--hot-reload", "true", "--platform", "web"]

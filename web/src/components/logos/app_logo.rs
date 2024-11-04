@@ -21,7 +21,7 @@ pub struct AppLogoProps {
 pub fn AppLogo(props: AppLogoProps) -> Element {
     rsx! {
         img {
-            src: "/images/logos/app_logo.png",
+            src: asset!("/assets/images/logos/app_logo.png"),
             alt: "アプリケーションロゴ",
             height: props.height,
             width: props.width,
