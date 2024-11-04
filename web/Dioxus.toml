@@ -1,7 +1,7 @@
 [application]
 
 # App (Project) Name
-name = "web"
+name = "WebTools"
 
 # Dioxus App Default Platform
 # web, desktop, fullstack
@@ -31,7 +31,7 @@ watch_path = ["src", "assets"]
 
 # CSS style file
 
-style = ["/tailwind.css"]
+style = ["/assets/tailwind.css"]
 
 # Javascript code file
 script = []
