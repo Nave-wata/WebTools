@@ -3,7 +3,6 @@ use crate::components::logos::app_logo::AppLogo;
 use crate::routes::Route;
 
 /// 共通ヘッダー・フッターレイアウト
-#[component]
 pub fn DefaultLayout() -> Element {
     rsx! {
         Header {}
@@ -19,7 +18,6 @@ pub fn DefaultLayout() -> Element {
 }
 
 /// 共通ヘッダー
-#[component]
 fn Header() -> Element {
     rsx! {
         header {
@@ -44,7 +42,6 @@ fn Header() -> Element {
 }
 
 /// 共通フッター
-#[component]
 fn Footer() -> Element {
     rsx! {
         footer {

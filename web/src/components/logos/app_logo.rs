@@ -17,7 +17,6 @@ pub struct AppLogoProps {
 /// # Arguments
 ///
 /// * `props` - `AppLogoProps` アプリケーションロゴコンポーネントのプロパティ
-#[component]
 pub fn AppLogo(props: AppLogoProps) -> Element {
     rsx! {
         img {

@@ -1,7 +1,6 @@
 use dioxus::prelude::*;
 
 /// トップページ
-#[component]
 pub fn TopPage() -> Element {
     let mut count = use_signal(|| 0);
 
