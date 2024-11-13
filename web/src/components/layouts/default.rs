@@ -5,15 +5,20 @@ use crate::routes::Route;
 /// 共通ヘッダー・フッターレイアウト
 pub fn DefaultLayout() -> Element {
     rsx! {
-        Header {}
         div {
-            class: "bg-gray-100",
-            main {
-                class: "max-w-7xl mx-auto py-16 px-4",
-                Outlet::<Route> {}
+            class: "flex flex-col justify-between min-h-dvh bg-gray-100",
+            div {
+                Header {}
+                main {
+                    class: "max-w-7xl max-w-[1300px] mx-auto pt-4 pb-16 px-4",
+                    Outlet::<Route> {}
+                }
+            }
+
+            div {
+                Footer {}
             }
         }
-        Footer {}
     }
 }
 
@@ -23,7 +28,7 @@ fn Header() -> Element {
         header {
             class: "sticky top-0 z-50 border-b bg-white px-2",
             div {
-                class: "flex items-center h-16 max-w-[1340px] mx-auto",
+                class: "flex items-center h-[5.5rem] max-w-[1340px] mx-auto",
                 Link {
                     to: Route::TopPage {},
                     class: "flex items-center",
@@ -45,7 +50,7 @@ fn Header() -> Element {
 fn Footer() -> Element {
     rsx! {
         footer {
-            class: "sticky top-0 z-50 border-b bg-slate-600 py-8",
+            class: "bg-slate-600 py-8",
             div {
                 class: "flex items-center max-w-7xl mx-auto px-4",
                 div {
