@@ -5,7 +5,7 @@ use crate::routes::Route;
 
 /// パンくずリスト props
 ///
-/// # Property
+/// # Fields
 ///
 /// * `items` - `Vec<BreadcrumbItem>` パンくずリストのアイテムベクタ
 #[derive(PartialEq, Clone, Props)]
@@ -16,7 +16,7 @@ pub struct BreadcrumbListProps {
 
 /// パンくずリスト item
 ///
-/// # Property
+/// # Fields
 ///
 /// * `name` - `String` 表示する要素名
 /// * `to` - `Option<Route>` たどってきたページのリンク
@@ -34,7 +34,7 @@ pub struct BreadcrumbItem {
 ///
 /// * `props` - `BreadcrumbListProps` パンくずリストのアイテムベクタ
 ///
-/// # Property
+/// # Fields
 ///
 /// * `items` - `Vec<BreadcrumbItem>` パンくずリストのアイテムベクタ
 pub fn BreadcrumbList(props: BreadcrumbListProps) -> Element {
@@ -71,7 +71,7 @@ pub fn BreadcrumbList(props: BreadcrumbListProps) -> Element {
 ///
 /// * `props` - `BreadcrumbItem` パンくずリストのアイテム構造体
 ///
-/// # Property
+/// # Fields
 ///
 /// * `name` - `String` 表示する要素名
 /// * `to` - `Option<Route>` たどってきたページのリンク

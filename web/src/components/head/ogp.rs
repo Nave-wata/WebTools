@@ -21,7 +21,7 @@ pub struct OgpProps {
 ///
 /// * `props` - `OgpProps` 変更したい OGP の値
 ///
-/// # Property
+/// # Fields
 ///
 /// * `title` - `Option<String>` og:title を指定された値に変更する
 /// * `description` - `Option<String>` og:description を指定された値に変更する
