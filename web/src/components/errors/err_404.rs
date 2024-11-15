@@ -36,18 +36,23 @@ pub fn Err404(segments: Vec<String>) -> Element {
         }
 
         div {
-            class: "pt-32 flex flex-col items-center justify-center",
+            class: "sm:pt-32 pt-20 flex flex-col items-center justify-center",
 
             h1 {
-                class: "text-5xl font-black mb-12",
+                class: "sm:text-5xl text-2xl font-black sm:mb-12 mb-8",
                 "404 NOT FOUND"
             }
             p {
-                class: "text-lg",
-                "お探しのページはすでに削除もしくは移動された可能性があります。"
+                class: "[&_span]:inline-block sm:text-lg text-base text-center",
+                span {
+                    "お探しのページはすでに削除もしくは"
+                }
+                span {
+                    "移動された可能性があります。"
+                }
             }
             p {
-                class: "text-lg",
+                class: "sm:text-lg text-base text-center",
                 "URLにミスがないか再度ご確認ください。",
             }
 
