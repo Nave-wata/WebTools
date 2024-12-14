@@ -14,6 +14,6 @@ RUN \
     rustup component add rustfmt
 
 RUN \
-    cargo install dioxus-cli --version 0.6.0-alpha.4
+    cargo install dioxus-cli --version 0.6.0
 
-CMD ["dx", "serve", "--addr", "0.0.0.0", "--hot-reload", "true", "--platform", "web"]
+CMD ["dx", "serve", "--addr", "0.0.0.0"]
