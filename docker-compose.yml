@@ -16,4 +16,4 @@ services:
       - ./web:/var/www/html
     stdin_open: true
     tty: true
-    command: sh -c "npm install -g tailwindcss@4 @tailwindcss/cli@4 && npx -y tailwindcss -i ./input.css -o ./assets/tailwind.css --watch"
+    command: sh -c "npm install tailwindcss@4 @tailwindcss/cli@4 && npx -y tailwindcss -i ./input.css -o ./assets/tailwind.css --watch"
