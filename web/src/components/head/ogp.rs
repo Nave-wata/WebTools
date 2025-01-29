@@ -32,28 +32,28 @@ pub fn OGP(props: OgpProps) -> Element {
         if let Some(title) = props.title {
             Meta {
                 name: "og:title",
-                content: {title}
+                content: title
             }
         }
 
         if let Some(description) = props.description {
             Meta {
                 name: "og:description",
-                content: {description}
+                content: description
             }
         }
 
         if let Some(url) = props.url {
             Meta {
                 name: "og:url",
-                content: {url}
+                content: url
             }
         }
 
         if let Some(image) = props.image {
             Meta {
                 name: "og:image",
-                content: {image}
+                content: image
             }
         }
     }

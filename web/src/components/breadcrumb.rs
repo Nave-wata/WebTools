@@ -1,5 +1,3 @@
-use dioxus::document::Meta;
-use dioxus::html::a::{content, itemprop};
 use dioxus::prelude::*;
 use crate::routes::Route;
 
