@@ -15,10 +15,13 @@ pub(crate) enum Route {
         #[route("/")]
         TopPage {},
 
-    #[nest("/generator")]
-    #[route("/password")]
-    PasswordGenerator {},
+        #[nest("/generator")]
+            #[route("/password")]
+            PasswordGenerator {},
+        #[end_nest]
+    #[end_layout]
 
-        #[route("/:..segments")]
-        Err404 { segments: Vec<String> },
+    #[layout(DefaultLayout)]
+    #[route("/:..segments")]
+    Err404 { segments: Vec<String> },
 }
