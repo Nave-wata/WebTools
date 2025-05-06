@@ -1,5 +1,5 @@
 use crate::components::breadcrumb::{BreadcrumbItem, BreadcrumbList};
-use crate::components::head::ogp::OGP;
+use crate::components::head::Head;
 use crate::components::inputs::{
     button::Button,
     checkbox::Checkbox,
@@ -256,17 +256,11 @@ pub(crate) fn PasswordGenerator() -> Element {
     let mut is_copied = use_signal(|| false);
 
     rsx! {
-        Title {
-            {page_title}
-        }
-        Meta {
-            name: "description",
-            content: description
-        }
-        OGP {
-            title: page_title,
+        Head {
+            title: title,
             description: description,
-            url: Route::PasswordGenerator {}.to_string(),
+            og_url: Route::PasswordGenerator {}.to_string(),
+            og_image: asset!("/assets/images/ogp/password_generator.jpg"),
         }
 
         BreadcrumbList {
@@ -567,7 +561,7 @@ pub(crate) fn PasswordGenerator() -> Element {
                                     },
 
                                     img {
-                                        src: asset!("assets/material-icons/content_copy/22dp_434343_FILL0_wght400_GRAD0_opsz20.svg"),
+                                        src: asset!("/assets/material-icons/content_copy/22dp_434343_FILL0_wght400_GRAD0_opsz20.svg"),
                                         width: "24",
                                         height: "24",
                                     }

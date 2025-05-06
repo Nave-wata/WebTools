@@ -1,5 +1,5 @@
 use crate::components::breadcrumb::{BreadcrumbItem, BreadcrumbList};
-use crate::components::head::ogp::OGP;
+use crate::components::head::Head;
 use crate::constants::app::{APP_TITLE, APP_URL};
 use crate::routes::Route;
 use dioxus::document::{Meta, Title};
@@ -16,26 +16,13 @@ pub(crate) fn Err404(segments: Vec<String>) -> Element {
     let description: &str = "お探しのページはすでに削除もしくは移動された可能性があります。URLにミスがないか再度ご確認ください。";
 
     rsx! {
-        // head
-        Title {
-            {title}
-        }
-        Meta {
-            name: "description",
-            content: description,
-        }
-        Meta {
-            name: "robots",
-            content: "noindex",
-        }
-        OGP {
+        Head {
             title: title,
             description: description,
-            url: format!("{}/404", APP_URL),
-            image: format!("{}/favicon.ico", APP_URL),
+            robots: "noindex",
+            og_image: asset!("/assets/images/ogp/err_404.png"),
         }
 
-        // body
         BreadcrumbList {
             items: vec![
                 BreadcrumbItem {
