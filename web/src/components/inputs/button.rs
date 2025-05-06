@@ -8,7 +8,7 @@ use dioxus::prelude::*;
 /// * `onclick` - `Option<EventHandler<Event<MouseData>>>` クリックイベント
 /// * `children` - `Option<Element>` 小要素
 #[derive(PartialEq, Clone, Props)]
-pub struct ButtonProps {
+pub(crate) struct ButtonProps {
     class: Option<String>,
     onclick: Option<EventHandler<Event<MouseData>>>,
     children: Option<Element>,
@@ -25,7 +25,7 @@ pub struct ButtonProps {
 /// * `class` - `Option<String>` ボタンクラス
 /// * `onclick` - `Option<EventHandler<Event<MouseData>>>` クリックイベント
 /// * `children` - `Option<Element>` 小要素
-pub fn Button(props: ButtonProps) -> Element {
+pub(crate) fn Button(props: ButtonProps) -> Element {
     rsx! {
         button {
             r#type: "button",

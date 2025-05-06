@@ -1,5 +1,5 @@
-pub mod checkbox;
-pub mod text;
-pub mod radio;
-pub mod number;
-pub mod button;
+pub(crate) mod checkbox;
+pub(crate) mod text;
+pub(crate) mod radio;
+pub(crate) mod number;
+pub(crate) mod button;

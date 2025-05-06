@@ -16,7 +16,7 @@ use dioxus::prelude::*;
 /// * `onchange` - `Option<EventHandler<Event<FormData>>>` 値変更時のイベントハンドラー
 /// * `disabled` - `Option<bool>` 無効状態
 #[derive(PartialEq, Clone, Props)]
-pub struct NumberProps {
+pub(crate) struct NumberProps {
     name: Option<String>,
     label: Option<String>,
     label_class: Option<String>,
@@ -49,7 +49,7 @@ pub struct NumberProps {
 /// * `oninput` - `Option<EventHandler<Event<FormData>>>` 入力時のイベントハンドラー
 /// * `onchange` - `Option<EventHandler<Event<FormData>>>` 値変更時のイベントハンドラー
 /// * `disabled` - `Option<bool>` 無効状態
-pub fn Number(props: NumberProps) -> Element {
+pub(crate) fn Number(props: NumberProps) -> Element {
     rsx! {
         label {
             class: props.label_class,

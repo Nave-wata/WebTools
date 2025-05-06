@@ -4,7 +4,7 @@ use crate::routes::Route;
 use dioxus::prelude::*;
 
 /// パスワード生成ツールカード
-pub fn PasswordGeneratorCard() -> Element {
+pub(crate) fn PasswordGeneratorCard() -> Element {
     let icon: Element = rsx! {
         PasswordGeneratorIcon {
             height: 60,

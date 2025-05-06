@@ -1,1 +1,1 @@
-pub mod password;
+pub(crate) mod password;

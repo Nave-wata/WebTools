@@ -10,7 +10,7 @@ use dioxus::prelude::*;
 /// * `bg_color` - `String` トーストの背景色
 /// * `svg` - `Element` トースト内に表示されるアイコン
 #[derive(PartialEq, Clone, Props)]
-pub struct ToastProps {
+pub(crate) struct ToastProps {
     message: String,
     duration: usize,
     is_show: Signal<bool>,
@@ -31,7 +31,7 @@ pub struct ToastProps {
 /// * `is_show` - `Signal<bool>` トースト表示・非表示の状態
 /// * `bg_color` - `String` トーストの背景色
 /// * `svg` - `Element` トースト内に表示されるアイコン
-pub fn Toast(mut props: ToastProps) -> Element {
+pub(crate) fn Toast(mut props: ToastProps) -> Element {
     let _ = use_resource(move || async move {
         let mut eval = document::eval(r#"
             const duration = await dioxus.recv();

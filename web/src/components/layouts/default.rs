@@ -1,9 +1,9 @@
-use dioxus::prelude::*;
 use crate::components::logos::app_logo::AppLogo;
 use crate::routes::Route;
+use dioxus::prelude::*;
 
 /// 共通ヘッダー・フッターレイアウト
-pub fn DefaultLayout() -> Element {
+pub(crate) fn DefaultLayout() -> Element {
     rsx! {
         div {
             class: "flex flex-col justify-between min-h-dvh bg-gray-100",

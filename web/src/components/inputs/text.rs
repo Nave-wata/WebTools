@@ -12,7 +12,7 @@ use dioxus::prelude::*;
 /// * `oninput` - `Option<EventHandler<Event<FormData>>>` 入力時のイベントハンドラー
 /// * `onchange` - `Option<EventHandler<Event<FormData>>>` 値変更時のイベントハンドラー
 #[derive(PartialEq, Clone, Props)]
-pub struct TextProps {
+pub(crate) struct TextProps {
     name: Option<String>,
     label: Option<String>,
     label_class: Option<String>,
@@ -37,7 +37,7 @@ pub struct TextProps {
 /// * `value` - `Option<String>` 入力フィールドの値
 /// * `oninput` - `Option<EventHandler<Event<FormData>>>` 入力時のイベントハンドラー
 /// * `onchange` - `Option<EventHandler<Event<FormData>>>` 値変更時のイベントハンドラー
-pub fn Text(props: TextProps) -> Element {
+pub(crate) fn Text(props: TextProps) -> Element {
     rsx! {
         label {
             class: props.label_class,

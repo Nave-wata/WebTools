@@ -7,7 +7,7 @@ use dioxus::prelude::*;
 /// * `height` - `i32` ロゴの高さ
 /// * `width`  - `i32` ロゴの幅
 #[derive(PartialEq, Clone, Props)]
-pub struct AppLogoProps {
+pub(crate) struct AppLogoProps {
     height: i32,
     width: i32,
 }
@@ -17,7 +17,7 @@ pub struct AppLogoProps {
 /// # Arguments
 ///
 /// * `props` - `AppLogoProps` アプリケーションロゴコンポーネントのプロパティ
-pub fn AppLogo(props: AppLogoProps) -> Element {
+pub(crate) fn AppLogo(props: AppLogoProps) -> Element {
     rsx! {
         img {
             src: asset!("/assets/images/logos/app_logo.png"),

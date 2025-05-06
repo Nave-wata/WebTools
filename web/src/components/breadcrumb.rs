@@ -1,5 +1,5 @@
-use dioxus::prelude::*;
 use crate::routes::Route;
+use dioxus::prelude::*;
 
 /// パンくずリスト props
 ///
@@ -7,7 +7,7 @@ use crate::routes::Route;
 ///
 /// * `items` - `Vec<BreadcrumbItem>` パンくずリストのアイテムベクタ
 #[derive(PartialEq, Clone, Props)]
-pub struct BreadcrumbListProps {
+pub(crate) struct BreadcrumbListProps {
     /// パンくずリストのアイテムベクタ
     items: Vec<BreadcrumbItem>,
 }
@@ -19,11 +19,11 @@ pub struct BreadcrumbListProps {
 /// * `name` - `String` 表示する要素名
 /// * `to` - `Option<Route>` たどってきたページのリンク
 #[derive(PartialEq, Clone, Props)]
-pub struct BreadcrumbItem {
+pub(crate) struct BreadcrumbItem {
     /// 表示する要素名
-    pub name: String,
+    pub(crate) name: String,
     /// 遷移するページルート
-    pub to: Option<Route>,
+    pub(crate) to: Option<Route>,
 }
 
 /// パンくずリストコンポーネント
@@ -35,7 +35,7 @@ pub struct BreadcrumbItem {
 /// # Fields
 ///
 /// * `items` - `Vec<BreadcrumbItem>` パンくずリストのアイテムベクタ
-pub fn BreadcrumbList(props: BreadcrumbListProps) -> Element {
+pub(crate) fn BreadcrumbList(props: BreadcrumbListProps) -> Element {
     rsx! {
         ol {
             itemtype: "https://schema.org/BreadcrumbList",

@@ -1,1 +1,1 @@
-pub mod password_generator_icon;
+pub(crate) mod password_generator_icon;

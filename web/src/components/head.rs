@@ -1,1 +1,1 @@
-pub mod ogp;
+pub(crate) mod ogp;

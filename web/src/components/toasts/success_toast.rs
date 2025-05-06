@@ -9,7 +9,7 @@ use dioxus::prelude::*;
 /// * `duration` - `usize` トースト表示時間（ミリ秒）
 /// * `is_show` - `Signal<bool>` トーストの表示/非表示状態
 #[derive(PartialEq, Clone, Props)]
-pub struct SuccessToastProps {
+pub(crate) struct SuccessToastProps {
     message: String,
     duration: usize,
     is_show: Signal<bool>,
@@ -26,7 +26,7 @@ pub struct SuccessToastProps {
 /// * `message` - `String` トーストに表示されるメッセージ
 /// * `duration` - `usize` トースト表示時間（ミリ秒）
 /// * `is_show` - `Signal<bool>` トーストの表示/非表示状態
-pub fn SuccessToast(props: SuccessToastProps) -> Element {
+pub(crate) fn SuccessToast(props: SuccessToastProps) -> Element {
     rsx! {
         Toast {
             message: props.message,

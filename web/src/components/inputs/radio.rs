@@ -12,7 +12,7 @@ use dioxus::prelude::*;
 /// * `checked` - `Option<bool>` チェック状態
 /// * `onchange` - `Option<EventHandler<Event<FormData>>>` 値変更時のイベントハンドラー
 #[derive(PartialEq, Clone, Props)]
-pub struct RadioProps {
+pub(crate) struct RadioProps {
     name: Option<String>,
     label: Option<String>,
     label_class: Option<String>,
@@ -37,7 +37,7 @@ pub struct RadioProps {
 /// * `value` - `Option<String>` ラジオボタンの値
 /// * `checked` - `Option<bool>` チェック状態
 /// * `onchange` - `Option<EventHandler<Event<FormData>>>` 値変更時のイベントハンドラー
-pub fn Radio(props: RadioProps) -> Element {
+pub(crate) fn Radio(props: RadioProps) -> Element {
     rsx! {
         label {
             class: props.label_class,

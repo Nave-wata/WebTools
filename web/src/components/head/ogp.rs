@@ -3,15 +3,15 @@ use dioxus::prelude::*;
 
 /// 変更可能な OGP タグのリスト
 #[derive(PartialEq, Clone, Props)]
-pub struct OgpProps {
+pub(crate) struct OgpProps {
     /// `og:title` を指定された値に変更する
-    pub title: Option<String>,
+    pub(crate) title: Option<String>,
     /// `og:description` を指定された値に変更する
-    pub description: Option<String>,
+    pub(crate) description: Option<String>,
     /// `og:url` を指定された値に変更する
-    pub url: Option<String>,
+    pub(crate) url: Option<String>,
     /// `og:image` を指定された値に変更する
-    pub image: Option<String>,
+    pub(crate) image: Option<String>,
 }
 
 /// OGP タグをまとめて定義するコンポーネント
@@ -27,7 +27,7 @@ pub struct OgpProps {
 /// * `description` - `Option<String>` og:description を指定された値に変更する
 /// * `url` - `Option<String>` og:url を指定された値に変更する
 /// * `image` - `Option<String>` og:image を指定された値に変更する
-pub fn OGP(props: OgpProps) -> Element {
+pub(crate) fn OGP(props: OgpProps) -> Element {
     rsx! {
         if let Some(title) = props.title {
             Meta {

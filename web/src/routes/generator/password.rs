@@ -212,7 +212,7 @@ fn FieldRadioBox(props: FieldRadioBoxProps) -> Element {
 /// * 生成するパスワードの数の指定
 /// * パスワードの生成
 /// * 生成されたパスワードのコピー機能
-pub fn PasswordGenerator() -> Element {
+pub(crate) fn PasswordGenerator() -> Element {
     // メタ変数
     let title: &str = "ランダムパスワード生成";
     let page_title: &str = &format!("{} - {}", title, APP_TITLE);

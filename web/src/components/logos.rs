@@ -1,1 +1,1 @@
-pub mod app_logo;
+pub(crate) mod app_logo;

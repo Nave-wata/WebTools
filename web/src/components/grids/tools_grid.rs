@@ -7,7 +7,7 @@ use dioxus::prelude::*;
 /// * `title` - `String` ツールグリッドのタイトル
 /// * `children` - `Element` 関連する各種ツール
 #[derive(PartialEq, Clone, Props)]
-pub struct ToolsGridProps {
+pub(crate) struct ToolsGridProps {
     title: String,
     children: Element,
 }
@@ -22,7 +22,7 @@ pub struct ToolsGridProps {
 ///
 /// * `title` - `String` ツールグリッドのタイトル
 /// * `children` - `Element` 関連する各種ツール
-pub fn ToolsGrid(props: ToolsGridProps) -> Element {
+pub(crate) fn ToolsGrid(props: ToolsGridProps) -> Element {
     rsx! {
         div {
             h2 {

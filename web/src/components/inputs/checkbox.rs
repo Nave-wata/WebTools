@@ -12,7 +12,7 @@ use dioxus::prelude::*;
 /// * `checked` - `Option<bool>` チェックボックスのチェック状態
 /// * `onchange` - `Option<EventHandler<Event<FormData>>>` 値変更時のイベントハンドラー
 #[derive(PartialEq, Clone, Props)]
-pub struct CheckboxProps {
+pub(crate) struct CheckboxProps {
     name: Option<String>,
     label: Option<String>,
     label_class: Option<String>,
@@ -38,7 +38,7 @@ pub struct CheckboxProps {
 /// * `value` - `Option<String>` 入力フィールドの値
 /// * `checked` - `Option<bool>` チェックボックスのチェック状態
 /// * `onchange` - `Option<EventHandler<Event<FormData>>>` 値変更時のイベントハンドラー
-pub fn Checkbox(props: CheckboxProps) -> Element {
+pub(crate) fn Checkbox(props: CheckboxProps) -> Element {
     rsx! {
         label {
             class: props.label_class.unwrap_or("mr-3".to_string()),

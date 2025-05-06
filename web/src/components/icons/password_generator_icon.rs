@@ -7,7 +7,7 @@ use dioxus::prelude::*;
 /// * `height` - `i32` ロゴの高さ
 /// * `width`  - `i32` ロゴの幅
 #[derive(PartialEq, Clone, Props)]
-pub struct PasswordGeneratorIconProps {
+pub(crate) struct PasswordGeneratorIconProps {
     height: i32,
     width: i32,
     class: Option<String>,
@@ -23,7 +23,7 @@ pub struct PasswordGeneratorIconProps {
 ///
 /// * `height` - `i32` ロゴの高さ
 /// * `width`  - `i32` ロゴの幅
-pub fn PasswordGeneratorIcon(props: PasswordGeneratorIconProps) -> Element {
+pub(crate) fn PasswordGeneratorIcon(props: PasswordGeneratorIconProps) -> Element {
     rsx! {
         img {
             src: asset!("/assets/images/icons/password_generator.png"),

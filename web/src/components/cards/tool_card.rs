@@ -10,7 +10,7 @@ use dioxus::prelude::*;
 /// * `title` - `String` ツールのタイトル
 /// * `children` - `Element` ツールの説明など。適切な箇所で改行などを行えるように、子コンポーネントで定義できるよう `Element` 型を受け入れ
 #[derive(PartialEq, Clone, Props)]
-pub struct ToolCardProps {
+pub(crate) struct ToolCardProps {
     to: Route,
     icon: Element,
     title: String,
@@ -29,7 +29,7 @@ pub struct ToolCardProps {
 /// * `icon` - `Element` ツールのアイコン
 /// * `title` - `String` ツールのタイトル
 /// * `children` - `Element` ツールの説明など。適切な箇所で改行などを行えるように、子コンポーネントで定義できるよう `Element` 型を受け入れ
-pub fn ToolCard(props: ToolCardProps) -> Element {
+pub(crate) fn ToolCard(props: ToolCardProps) -> Element {
     let description = props.description.iter().map(|line| {
         rsx! {
             span {

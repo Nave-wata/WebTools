@@ -10,7 +10,7 @@ use crate::components::layouts::default::DefaultLayout;
 
 /// ルーティング定義
 #[derive(Clone, Routable, Debug, PartialEq)]
-pub enum Route {
+pub(crate) enum Route {
     #[layout(DefaultLayout)]
         #[route("/")]
         TopPage {},

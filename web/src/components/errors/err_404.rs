@@ -1,9 +1,9 @@
-use dioxus::document::{Meta, Title};
-use dioxus::prelude::*;
-use crate::components::breadcrumb::{BreadcrumbList, BreadcrumbItem};
+use crate::components::breadcrumb::{BreadcrumbItem, BreadcrumbList};
 use crate::components::head::ogp::OGP;
 use crate::constants::app::{APP_TITLE, APP_URL};
 use crate::routes::Route;
+use dioxus::document::{Meta, Title};
+use dioxus::prelude::*;
 
 /// 404 エラーページ
 ///
@@ -11,7 +11,7 @@ use crate::routes::Route;
 ///
 /// * `segments` - `Vec<String>` / 区切りの uri
 #[component]
-pub fn Err404(segments: Vec<String>) -> Element {
+pub(crate) fn Err404(segments: Vec<String>) -> Element {
     let title: &str = &format!("404 Not Found - {}", APP_TITLE);
     let description: &str = "お探しのページはすでに削除もしくは移動された可能性があります。URLにミスがないか再度ご確認ください。";
 
