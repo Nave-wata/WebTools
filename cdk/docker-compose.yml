@@ -1,0 +1,17 @@
+services:
+  cdk:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+      # Uncomment to use local AWS credentials
+      # - ~/.aws:/root/.aws
+    environment:
+      # Set these values in a .env file or through environment variables
+      - AWS_ACCESS_KEY_ID
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_DEFAULT_REGION
+    working_dir: /app
+    tty: true
+    user: node
