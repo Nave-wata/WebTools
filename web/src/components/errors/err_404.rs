@@ -12,6 +12,11 @@ use dioxus::prelude::*;
 /// * `segments` - `Vec<String>` / 区切りの uri
 #[component]
 pub(crate) fn Err404(segments: Vec<String>) -> Element {
+    err_404_element()
+}
+
+/// 404 エラーページエレメント
+pub(crate) fn err_404_element() -> Element {
     let title: &str = &format!("404 Not Found - {}", APP_TITLE);
     let description: &str = "お探しのページはすでに削除もしくは移動された可能性があります。URLにミスがないか再度ご確認ください。";
 

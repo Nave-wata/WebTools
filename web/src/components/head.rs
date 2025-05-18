@@ -2,7 +2,6 @@ use crate::constants::app::{APP_TITLE, APP_URL};
 use dioxus::document::{Meta, Title};
 use dioxus::prelude::*;
 
-
 /// ヘッドコンポーネントのプロパティ
 ///
 /// # Fields
@@ -54,62 +53,60 @@ pub(crate) fn Head(props: HeadProps) -> Element {
 
     // 既存の meta タグなどを削除
     document::eval(r#"
-        for (const selector of [
-            "meta[name='description']",
-            "meta[name='robots']",
-            "meta[name='og:title']",
-            "meta[name='og:description']",
-            "meta[name='og:url']",
-            "meta[name='og:image']"
-        ]) {
-            document.querySelectorAll(selector).forEach(el => el.remove());
-        }
+        const originalPushState = history.pushState;
+        history.pushState = function (...args) {
+            for (const selector of [
+                "meta[name='description']",
+                "meta[name='robots']",
+                "meta[name='og:title']",
+                "meta[name='og:description']",
+                "meta[name='og:url']",
+                "meta[name='og:image']"
+            ]) {
+                document.querySelectorAll(selector).forEach(el => el.remove());
+            }
+            
+            originalPushState.apply(this, args);
+        };
     "#);
 
     // 各ページ専用の meta 情報などを配置
     rsx! {
         Title {
-            key: "title",
             {page_title.clone()}
         }
 
         Meta { 
-            key: "description",
-            name: "description", 
+            name: "description",
             content: props.description.clone(),
         }
 
         if let Some(robots) = props.robots {
-            Meta { 
-                key: "robots",
+            Meta {
                 name: "robots", 
                 content: robots,
             }
         }
 
         Meta { 
-            key: "og:title",
-            name: "og:title", 
+            name: "og:title",
             content: page_title
         }
         Meta { 
-            key: "og:description",
-            name: "og:description", 
+            name: "og:description",
             content: og_description,
         }
         
         if let Some(url) = props.og_url {
             Meta { 
-                key: "og:url",
-                name: "og:url", 
+                name: "og:url",
                 content: format!("{}{}", APP_URL, url),
             }
         }
         
         if let Some(image) = props.og_image {
             Meta {
-                key: "og:image",
-                name: "og:image", 
+                name: "og:image",
                 content: format!("{}{}", APP_URL, image)
             }
         }
