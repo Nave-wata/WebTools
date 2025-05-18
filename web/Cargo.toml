@@ -8,7 +8,7 @@ edition = "2021"
 
 [dependencies]
 
-dioxus = { version = "0.6.0", features = ["web", "router"] }
+dioxus = { version = "0.6.0", features = ["fullstack", "router"] }
 itertools = "0.14.0"
 rand = { version = "0.7.3", features = ["wasm-bindgen"] }
 

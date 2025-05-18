@@ -228,7 +228,7 @@ pub(crate) fn PasswordGenerator() -> Element {
     let uppercases = use_signal(|| "ABCDEFGHIJKLMNOPQRSTUVWXYZ".to_string());
     let lowercases = use_signal(|| "abcdefghijklmnopqrstuvwxyz".to_string());
     let numbers = use_signal(|| "0123456789".to_string());
-    let symbols = use_signal(|| "!\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~".to_string());
+    let symbols = use_signal(|| "!#$%&'()*+,-./:;<=>?@[\\]^_`{|}~".to_string());
 
     // パスワードに利用可能な文字列の選択状況
     let is_uppercases_checked = use_signal(|| true);
