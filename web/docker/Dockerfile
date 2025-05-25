@@ -1,4 +1,4 @@
-FROM rust:1.81.0-slim-bullseye
+FROM rust:1.87-slim-bookworm
 
 WORKDIR /var/www/html
 
@@ -14,6 +14,6 @@ RUN \
     rustup component add rustfmt
 
 RUN \
-    cargo install dioxus-cli --version 0.6.0
+    cargo install dioxus-cli --version 0.6.3
 
-CMD ["dx", "serve", "--addr", "0.0.0.0"]
+#CMD ["dx", "serve", "--addr", "0.0.0.0"]
