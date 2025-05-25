@@ -18,7 +18,7 @@ export class SecurityHeadersConstruct extends Construct {
       responseHeadersPolicyName: `${props.policyName.replace(/\./g, '-')}_security-headers`,
       securityHeadersBehavior: {
         contentSecurityPolicy: {
-          contentSecurityPolicy: "default-src 'self'; img-src 'self' data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self';",
+          contentSecurityPolicy: "default-src 'self'; img-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; connect-src 'self';",
           override: true,
         },
         strictTransportSecurity: {

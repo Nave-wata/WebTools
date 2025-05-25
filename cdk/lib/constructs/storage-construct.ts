@@ -17,7 +17,7 @@ export class StorageConstruct extends Construct {
 
     // S3バケットの作成
     this.bucket = new s3.Bucket(this, 'WebsiteBucket', {
-      bucketName: this.getBucketName(props.bucketName),
+      bucketName: props.bucketName.replace(/\./g, '-'),
       blockPublicAccess: s3.BlockPublicAccess.BLOCK_ALL,
       versioned: false,
       encryption: s3.BucketEncryption.S3_MANAGED,
@@ -42,22 +42,5 @@ export class StorageConstruct extends Construct {
         },
       })
     );
-  }
-
-  /**
-   * バケット名を取得
-   *
-   * @param baseName
-   * @private
-   */
-  private getBucketName(baseName: string): string {
-    const prefix = baseName.replace(/\./g, '-');
-    const randomId = crypto
-      .randomUUID()
-      .toString()
-      .replace(/-/g, '')
-      .substring(0, 16);
-
-    return `${prefix}-${randomId}`;
   }
 }
