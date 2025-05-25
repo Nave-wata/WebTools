@@ -9,7 +9,7 @@ import * as targets from 'aws-cdk-lib/aws-route53-targets';
 export class DnsRecordConstruct extends Construct {
   constructor(scope: Construct, id: string, props: {
     hostedZone: route53.IHostedZone;
-    distribution: cloudfront.Distribution;
+    distribution: cloudfront.IDistribution;
     recordName: string;
   }) {
     super(scope, id);

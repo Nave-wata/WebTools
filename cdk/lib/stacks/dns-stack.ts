@@ -11,7 +11,7 @@ import { DefaultStackPropsInterface } from "../../bin/app";
  */
 export class DnsStack extends cdk.Stack {
   constructor(scope: Construct, id: string, props: cdk.StackProps & DefaultStackPropsInterface & {
-    distribution: cloudfront.Distribution;
+    distribution: cloudfront.IDistribution;
     recordName: string;
   }) {
     super(scope, id, props);
