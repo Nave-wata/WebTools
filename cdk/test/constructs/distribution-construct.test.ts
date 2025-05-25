@@ -3,7 +3,7 @@ import { Template } from 'aws-cdk-lib/assertions';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
-import { CloudfrontFunction, DistributionConstruct } from '../../lib/constructs';
+import { CloudFrontFunction, DistributionConstruct } from '../../lib/constructs';
 
 describe('DistributionConstruct', () => {
   let stack: cdk.Stack;
@@ -27,7 +27,7 @@ describe('DistributionConstruct', () => {
         },
       },
     });
-    const cloudfrontFunction = new CloudfrontFunction(stack, 'TestFunction', {
+    const cloudfrontFunction = new CloudFrontFunction(stack, 'TestFunction', {
       domainName: 'test.example.com',
     });
 

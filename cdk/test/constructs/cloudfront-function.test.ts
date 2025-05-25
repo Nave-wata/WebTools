@@ -1,6 +1,6 @@
 import * as cdk from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
-import { CloudfrontFunction } from '../../lib/constructs';
+import { CloudFrontFunction } from '../../lib/constructs';
 import * as fs from 'fs';
 import * as path from 'path';
 
@@ -13,7 +13,7 @@ describe('CloudfrontFunction', () => {
     stack = new cdk.Stack();
 
     // Create the construct with test properties
-    new CloudfrontFunction(stack, 'TestFunction', {
+    new CloudFrontFunction(stack, 'TestFunction', {
       domainName: 'test.example.com',
     });
 
