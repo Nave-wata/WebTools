@@ -1,20 +1,53 @@
-#!/usr/bin/env node
 import * as cdk from 'aws-cdk-lib';
-import { AppStack } from '../lib/app-stack';
+import { BaseInfrastructureStack, DnsStack, WebsiteStack } from '../lib/stacks';
+import { requireEnv } from "../utils";
 
 const app = new cdk.App();
-new AppStack(app, 'AppStack', {
-  /* If you don't specify 'env', this stack will be environment-agnostic.
-   * Account/Region-dependent features and context lookups will not work,
-   * but a single synthesized template can be deployed anywhere. */
 
-  /* Uncomment the next line to specialize this stack for the AWS Account
-   * and Region that are implied by the current CLI configuration. */
-  // env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION },
+// ドメイン設定
+const stackPrefix = 'ToolsNaveWataNetStack';
+const domainName = 'tools.nave-wata.net';
+const zoneName = 'nave-wata.net';
+const recordName = 'tools';
 
-  /* Uncomment the next line if you know exactly what Account and Region you
-   * want to deploy the stack to. */
-  // env: { account: '123456789012', region: 'us-east-1' },
+// デフォルト引数のインターフェース
+export interface DefaultStackPropsInterface {
+  zoneName: string;
+  env: {
+    account: string;
+    region: string;
+  }
+}
 
-  /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
+// デフォルト引数
+const defaultStackProps: cdk.StackProps & DefaultStackPropsInterface = {
+  zoneName: zoneName,
+  env: {
+    account: requireEnv("CDK_DEFAULT_ACCOUNT"),
+    region: requireEnv("CDK_DEFAULT_REGION"),
+  },
+};
+
+// 基盤インフラストラクチャスタックのデプロイ
+const baseStack = new BaseInfrastructureStack(app, `${stackPrefix}-BaseInfraStack`, {
+  ...defaultStackProps,
+  domainName: domainName,
 });
+
+// ウェブサイトスタックのデプロイ
+const websiteStack = new WebsiteStack(app, `${stackPrefix}-WebsiteStack`, {
+  ...defaultStackProps,
+  domainName: domainName,
+  certificate: baseStack.certificate,
+});
+
+// DNSスタックのデプロイ
+const dnsStack = new DnsStack(app, `${stackPrefix}-DnsStack`, {
+  ...defaultStackProps,
+  distribution: websiteStack.distribution,
+  recordName: recordName,
+});
+
+// スタック間の依存関係を明示的に設定
+websiteStack.addDependency(baseStack);
+dnsStack.addDependency(websiteStack);
