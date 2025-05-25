@@ -4,7 +4,7 @@ import { Construct } from 'constructs';
 /**
  * CloudFront Function ベースコンストラクタ
  */
-export class CloudfrontFunction extends Construct {
+export class CloudFrontFunction extends Construct {
   public readonly viewerRequest: cloudfront.Function;
 
   constructor(scope: Construct, id: string, props: {

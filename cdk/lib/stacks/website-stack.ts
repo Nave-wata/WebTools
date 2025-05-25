@@ -3,7 +3,7 @@ import { Construct } from 'constructs';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
-import { CloudfrontFunction, DistributionConstruct, SecurityHeadersConstruct, StorageConstruct, } from "../constructs";
+import { CloudFrontFunction, DistributionConstruct, SecurityHeadersConstruct, StorageConstruct, } from "../constructs";
 import { DefaultStackPropsInterface } from "../../bin/app";
 
 /**
@@ -33,7 +33,7 @@ export class WebsiteStack extends cdk.Stack {
     });
 
     // CloudFront Function の作成
-    const cloudFrontFunction = new CloudfrontFunction(this, 'CloudFrontFunction', {
+    const cloudFrontFunction = new CloudFrontFunction(this, 'CloudFrontFunction', {
       domainName: props.domainName,
     });
 

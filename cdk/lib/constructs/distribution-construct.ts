@@ -3,7 +3,7 @@ import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
 import * as origins from 'aws-cdk-lib/aws-cloudfront-origins';
 import * as s3 from 'aws-cdk-lib/aws-s3';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
-import { CloudfrontFunction } from "./cloudfront-function";
+import { CloudFrontFunction } from "./cloudfront-function";
 
 /**
  * CloudFrontディストリビューションを作成するコンストラクト
@@ -16,7 +16,7 @@ export class DistributionConstruct extends Construct {
     certificate: acm.ICertificate;
     bucket: s3.Bucket;
     responseHeadersPolicy: cloudfront.ResponseHeadersPolicy;
-    cloudFrontFunction: CloudfrontFunction,
+    cloudFrontFunction: CloudFrontFunction,
   }) {
     super(scope, id);
 
