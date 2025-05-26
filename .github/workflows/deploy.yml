@@ -70,10 +70,41 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Deploy to S3
+      - name: Deploy to S3 and Track Changed Files
+        id: deploy
         working-directory: ./web
         run: |
-          aws s3 sync ./dist/ s3://${{ secrets.S3_BUCKET_NAME }} --delete
+          echo "Deploying to S3 and tracking changes..."
+          
+          # 変更ファイルを保存するための一時ファイル
+          CHANGE_LOG=$(mktemp)
+          
+          # S3同期を実行し、出力を一時ファイルに保存
+          aws s3 sync ./dist/ s3://${{ secrets.S3_BUCKET_NAME }} --delete 2>&1 | tee $CHANGE_LOG
+          
+          # 変更されたファイルを抽出（アップロード、更新、削除）
+          CHANGED_FILES=$(grep -E 'upload:|copy:|delete:' $CHANGE_LOG | grep -v 'Completed' | sed -E 's/^.*\/(dist\/|s3:\/\/[^\/]+\/)/\//' | sort -u)
+          
+          # 変更されたファイルが10個以下なら個別に無効化、それ以上なら全体を無効化
+          if [ -z "$CHANGED_FILES" ]; then
+            echo "No files changed. No invalidation needed."
+            echo "INVALIDATION_PATHS=NONE" >> $GITHUB_OUTPUT
+          elif [ $(echo "$CHANGED_FILES" | wc -l) -le 10 ]; then
+            # パスをCloudFrontフォーマットに変換
+            PATHS=$(echo "$CHANGED_FILES" | tr '\n' ' ')
+            echo "Changed files (specific invalidation): $PATHS"
+            echo "INVALIDATION_PATHS=$PATHS" >> $GITHUB_OUTPUT
+          else
+            echo "Many files changed. Will invalidate entire distribution."
+            echo "INVALIDATION_PATHS=/*" >> $GITHUB_OUTPUT
+          fi
+          
+          # 一時ファイルを削除
+          rm $CHANGE_LOG
 
       - name: Invalidate CloudFront Cache
-        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+        if: steps.deploy.outputs.INVALIDATION_PATHS != 'NONE'
+        run: |
+          PATHS="${{ steps.deploy.outputs.INVALIDATION_PATHS }}"
+          echo "Invalidating CloudFront cache for paths: $PATHS"
+          aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths $PATHS
