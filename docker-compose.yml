@@ -10,7 +10,7 @@ services:
     tty: true
 
   tailwind:
-    image: node:22.9.0
+    image: node:20
     working_dir: /var/www/html
     volumes:
       - ./web:/var/www/html
