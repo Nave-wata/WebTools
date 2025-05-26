@@ -1,4 +1,4 @@
-name: Deploy Web App to S3
+name: Deploy Web App to S3 and Invalidate Cache
 
 on:
   push:
