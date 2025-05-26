@@ -1,0 +1,62 @@
+name: Deploy Web App to S3
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "web/**"
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: 1.87.0
+          profile: minimal
+          override: true
+          components: rustfmt, clippy
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.x'
+          cache: 'npm'
+          cache-dependency-path: web/package-lock.json
+
+      - name: Install Web Dependencies
+        working-directory: ./web
+        run: npm ci
+
+      - name: Build TailwindCSS
+        working-directory: ./web
+        run: npx tailwindcss -i ./input.css -o ./assets/tailwind.css
+
+      - name: Install Dioxus CLI
+        run: cargo install dioxus-cli --version 0.6.3
+
+      - name: Build Web App
+        working-directory: ./web
+        run: dx bundle --platform web --ssg --release
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy to S3
+        working-directory: ./web
+        run: |
+          aws s3 sync ./dist/ s3://${{ secrets.S3_BUCKET_NAME }} --delete
+
+      - name: Invalidate CloudFront Cache
+        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+
