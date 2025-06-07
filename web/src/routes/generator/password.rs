@@ -488,7 +488,7 @@ pub(crate) fn PasswordGenerator() -> Element {
                             Button {
                                 class: "py-2 w-[48%] hover:bg-gray-200 border border-gray-500 text-gray-700 hover:text-gray-950 rounded-md",
                                 onclick: move |_| {
-                                    if random_passwords().len() <= 0 {
+                                    if random_passwords().is_empty() {
                                         error_message.set("コピーできるパスワードがありません".to_string());
                                         return;
                                     }
