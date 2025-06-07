@@ -16,7 +16,7 @@ use rand::Rng;
 ///
 /// 以下の場合にエラーを返します：
 /// * 文字セットが空の場合
-pub fn random_string_from_chars(chars: &str, length: isize) -> Result<String, String> {
+pub fn random_string_from_chars(chars: &str, length: usize) -> Result<String, String> {
     let mut rng = rand::thread_rng();
     let vec_chars: Vec<char> = chars.chars().collect();
 

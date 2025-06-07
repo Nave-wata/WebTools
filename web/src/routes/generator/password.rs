@@ -466,7 +466,7 @@ pub(crate) fn PasswordGenerator() -> Element {
                                 random_passwords.set(Vec::<String>::new());
 
                                 for _ in 0..password_qty() {
-                                    match random_string_from_chars(&selected_chars, password_length()) {
+                                    match random_string_from_chars(&selected_chars, password_length() as usize) {
                                         Ok(password) => {
                                             let mut new_random_passwords = random_passwords();
                                             new_random_passwords.push(password);
