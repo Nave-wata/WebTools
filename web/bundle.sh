@@ -1,35 +1,45 @@
 #!/bin/bash
 
-CARGO_FILE="Cargo.toml"
-CARGO_PRD_FILE="Cargo-prd.toml"
-CARGO_BACKUP_FILE="Cargo.toml.bak"
+# Strict mode: エラー時即座に終了、未定義変数でエラー、パイプラインでエラー
+set -euo pipefail
 
-if [ ! -f "$CARGO_FILE" ]; then
-    echo "Error: $CARGO_FILE file not found"
-    exit 1
-fi
+# ファイル名の環境変数定義
+CARGO_TOML="Cargo.toml"
+CARGO_TOML_BACKUP="Cargo.toml.backup"
+CARGO_PRD_TOML="Cargo-prd.toml"
 
-if [ ! -f "$CARGO_PRD_FILE" ]; then
-    echo "Error: $CARGO_PRD_FILE file not found"
-    exit 1
-fi
+# クリーンアップ関数
+cleanup() {
+    echo "クリーンアップを実行中..."
+    
+    # バックアップが存在する場合、元のファイルを復元
+    if [[ -f "${CARGO_TOML_BACKUP}" ]]; then
+        echo "元のCargo.tomlを復元中..."
+        mv "${CARGO_TOML_BACKUP}" "${CARGO_TOML}"
+    fi
+    
+    echo "クリーンアップ完了"
+}
 
-if [ -f "$CARGO_BACKUP_FILE" ]; then
-    echo "Error: $CARGO_BACKUP_FILE file already exists"
-    exit 1
-fi
+# スクリプト終了時（正常・異常問わず）にクリーンアップを実行
+trap cleanup EXIT
 
-if [ -d "target/dx/WebTools/release/web" ]; then
-    rm -rf target/dx/WebTools/release/web
-fi
+# メイン処理
+echo "開発環境用設定に切り替え中..."
 
-mv $CARGO_FILE $CARGO_BACKUP_FILE
-cp $CARGO_PRD_FILE $CARGO_FILE
+# 元のCargo.tomlをバックアップ
+cp "${CARGO_TOML}" "${CARGO_TOML_BACKUP}"
 
+# 開発用設定に置き換え
+cp "${CARGO_PRD_TOML}" "${CARGO_TOML}"
+
+echo "アプリケーションを bundle 中"
+
+# アプリケーション bundle（エラーが発生してもcleanupが実行される）
 dx bundle \
   --features production \
   --platform web \
   --ssg \
   --release
 
-mv $CARGO_BACKUP_FILE $CARGO_FILE
+echo "アプリケーション bundle 成功"
