@@ -3,6 +3,7 @@
 mod routes;
 mod components;
 mod constants;
+mod libs;
 
 use dioxus::prelude::*;
 use dioxus_logger::tracing::Level;

@@ -9,6 +9,7 @@ use crate::components::inputs::{
 };
 use crate::components::toasts::success_toast::SuccessToast;
 use crate::constants::app::APP_TITLE;
+use crate::libs::str::random_string_from_chars;
 use crate::routes::Route;
 use dioxus::document::{Meta, Title};
 use dioxus::prelude::*;
@@ -465,7 +466,7 @@ pub(crate) fn PasswordGenerator() -> Element {
                                 random_passwords.set(Vec::<String>::new());
 
                                 for _ in 0..password_qty() {
-                                    match generate_random_password(&selected_chars, password_length()) {
+                                    match random_string_from_chars(&selected_chars, password_length()) {
                                         Ok(password) => {
                                             let mut new_random_passwords = random_passwords();
                                             new_random_passwords.push(password);
@@ -585,38 +586,4 @@ pub(crate) fn PasswordGenerator() -> Element {
             }
        }
     }
-}
-
-/// 指定された文字セットと長さを使用してランダムなパスワードを生成する
-///
-/// # Arguments
-///
-/// * `chars` - パスワードの生成に使用する文字の集合（文字列）
-/// * `length` - 生成するパスワードの長さ
-///
-/// # Returns
-///
-/// * `Ok(String)` - 正常に生成されたパスワード
-/// * `Err(String)` - パスワード生成時のエラーメッセージ
-///
-/// # Err
-///
-/// 以下の場合にエラーを返します：
-/// * 文字セットが空の場合
-fn generate_random_password(chars: &str, length: isize) -> Result<String, String> {
-    let mut rng = rand::thread_rng();
-    let vec_chars: Vec<char> = chars.chars().collect();
-
-    if vec_chars.len() == 0 {
-        return Err("文字列は１文字以上である必要があります".to_string());
-    }
-
-    let random_password = (0..length)
-        .map(|_| {
-            let idx = rng.gen_range(0, vec_chars.len());
-            vec_chars[idx]
-        })
-        .collect();
-
-    Ok(random_password)
 }
