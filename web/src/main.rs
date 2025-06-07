@@ -7,17 +7,25 @@ mod libs;
 
 use dioxus::document::Stylesheet;
 use dioxus::prelude::*;
-use dioxus_logger::tracing::Level;
 
 use routes::Route;
 
+#[cfg(feature = "development")]
+use dioxus_logger::tracing::Level;
+
 /// エントリーポイント
 fn main() {
-    dioxus_logger::init(Level::INFO).expect("failed to init logger");
+    #[cfg(feature = "development")]
+    {
+        dioxus_logger::init(Level::INFO).expect("failed to init logger");
+    }
 
-    LaunchBuilder::new()
+    let mut builder = LaunchBuilder::new();
+
+    #[cfg(feature = "production")]
+    {
         // Set the server config only if we are building the server target
-        .with_cfg(server_only! {
+        builder = builder.with_cfg(server_only! {
             ServeConfig::builder()
                 // Enable incremental rendering
                 .incremental(
@@ -36,7 +44,10 @@ fn main() {
                 )
                 .enable_out_of_order_streaming()
         })
-        .launch(App);
+
+    }
+
+    builder.launch(App);
 }
 
 /// アプリケーションコンポーネント

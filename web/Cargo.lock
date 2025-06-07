@@ -256,6 +256,7 @@ version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "16c89dda102f1ff3bbe54a8d3daa4cf5cae17595f54b6338e2c42593a994303a"
 dependencies = [
+ "dioxus-cli-config",
  "dioxus-config-macro",
  "dioxus-core",
  "dioxus-core-macro",
@@ -270,7 +271,6 @@ dependencies = [
  "dioxus-signals",
  "dioxus-web",
  "manganis",
- "serde",
 ]
 
 [[package]]
@@ -401,6 +401,7 @@ dependencies = [
  "serde",
  "server_fn",
  "tracing",
+ "web-sys",
 ]
 
 [[package]]
