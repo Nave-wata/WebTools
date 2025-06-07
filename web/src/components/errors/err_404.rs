@@ -1,8 +1,7 @@
 use crate::components::breadcrumb::{BreadcrumbItem, BreadcrumbList};
 use crate::components::head::Head;
-use crate::constants::app::{APP_TITLE, APP_URL};
+use crate::constants::app::APP_TITLE;
 use crate::routes::Route;
-use dioxus::document::{Meta, Title};
 use dioxus::prelude::*;
 
 /// 404 エラーページ

@@ -2,7 +2,6 @@ use crate::components::cards::password_generator_card::PasswordGeneratorCard;
 use crate::components::grids::tools_grid::ToolsGrid;
 use crate::components::head::Head;
 use crate::constants::app::{APP_TITLE, APP_URL};
-use dioxus::document::{Meta, Title};
 use dioxus::prelude::*;
 
 /// トップページ

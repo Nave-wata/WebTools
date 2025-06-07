@@ -5,6 +5,7 @@ mod components;
 mod constants;
 mod libs;
 
+use dioxus::document::Stylesheet;
 use dioxus::prelude::*;
 use dioxus_logger::tracing::Level;
 
@@ -41,6 +42,7 @@ fn main() {
 /// アプリケーションコンポーネント
 fn App() -> Element {
     rsx! {
+        Stylesheet { href: asset!("assets/tailwind.css") }
         Router::<Route> {}
     }
 }
