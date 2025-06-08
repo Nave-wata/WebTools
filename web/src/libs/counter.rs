@@ -38,11 +38,7 @@ pub fn count_words(text: &str) -> usize {
 ///
 /// * `usize` - 行数
 pub fn count_lines(text: &str) -> usize {
-    if text.is_empty() {
-        0
-    } else {
-        text.lines().count()
-    }
+    text.lines().count()
 }
 
 /// 文字列のバイト数をカウントする
