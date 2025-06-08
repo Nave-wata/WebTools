@@ -17,3 +17,7 @@ RUN \
 
 RUN \
     cargo install dioxus-cli --version 0.6.3
+
+COPY --from=node:22.16-slim /usr/local /usr/local
+
+RUN npm install -g aws-cdk
