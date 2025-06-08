@@ -12,7 +12,7 @@ jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/nave-wata/webtools/web:main-8e98b77
+      image: ghcr.io/nave-wata/webtools/web:latest
     permissions:
       contents: read
 
