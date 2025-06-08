@@ -1,7 +1,9 @@
 mod top;
 mod generator;
 mod notfound;
+mod counter;
 
+use counter::text_length::TextLengthCounter;
 use dioxus::prelude::*;
 use generator::password::PasswordGenerator;
 use notfound::NotFound;
@@ -20,6 +22,11 @@ pub(crate) enum Route {
         #[nest("/generator")]
             #[route("/password")]
             PasswordGenerator {},
+        #[end_nest]
+
+        #[nest("/counter")]
+            #[route("/text-length")]
+            TextLengthCounter {},
         #[end_nest]
     #[end_layout]
 

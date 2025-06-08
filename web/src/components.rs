@@ -1,6 +1,5 @@
 pub(crate) mod layouts;
 pub(crate) mod errors;
-pub(crate) mod icons;
 pub(crate) mod cards;
 pub(crate) mod grids;
 pub(crate) mod inputs;
