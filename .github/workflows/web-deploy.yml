@@ -44,9 +44,9 @@ jobs:
 
       - name: Deploy to S3
         run: |
-          aws s3 sync ./web/dist s3://${{ secrets.S3_BUCKET_NAME }} --delete --cache-control "public, max-age=31536000"
+          aws s3 sync ./web/dist/public s3://${{ secrets.S3_BUCKET_NAME }} --delete --cache-control "public, max-age=31536000"
           # index.htmlファイルのキャッシュを短くする
-          aws s3 cp ./web/dist/index.html s3://${{ secrets.S3_BUCKET_NAME }}/index.html --cache-control "public, max-age=300"
+          aws s3 cp ./web/dist/public/index.html s3://${{ secrets.S3_BUCKET_NAME }}/index.html --cache-control "public, max-age=300"
 
       - name: Invalidate CloudFront distribution (optional)
         if: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
