@@ -14,6 +14,7 @@ pub(crate) fn TopPage() -> Element {
             title: APP_TITLE,
             description: description,
             og_url: APP_URL,
+            og_image: asset!("/assets/images/ogp/top.webp"),
         }
 
         ToolsGrid {

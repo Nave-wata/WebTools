@@ -6,7 +6,7 @@ use dioxus::prelude::*;
 pub(crate) fn PasswordGeneratorCard() -> Element {
     let icon: Element = rsx! {
         img {
-            src: asset!("/assets/images/icons/password_generator.png"),
+            src: asset!("/assets/images/icons/password_generator.webp"),
             alt: "パスワード生成",
             class: "justify-self-center py-3",
             height: 60,
