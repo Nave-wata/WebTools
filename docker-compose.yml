@@ -1,8 +1,6 @@
 services:
   web:
-    build:
-      context: web/docker
-      dockerfile: Dockerfile
+    image: "ghcr.io/nave-wata/webtools/web:latest"
     volumes:
       - ./web:/var/www/html
     ports:
