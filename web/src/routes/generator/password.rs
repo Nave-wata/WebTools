@@ -9,7 +9,7 @@ use crate::components::inputs::{
 };
 use crate::components::toasts::success_toast::SuccessToast;
 use crate::constants::app::APP_TITLE;
-use crate::libs::str::random_string_from_chars;
+use crate::libs::random::random_string_from_chars;
 use crate::routes::Route;
 use dioxus::prelude::*;
 use itertools::Itertools;
@@ -215,7 +215,6 @@ fn FieldRadioBox(props: FieldRadioBoxProps) -> Element {
 pub(crate) fn PasswordGenerator() -> Element {
     // メタ変数
     let title: &str = "ランダムパスワード生成";
-    let _page_title: &str = &format!("{} - {}", title, APP_TITLE);
     let description: &str = "任意の条件でパスワードを生成可能なツールです。使用する英数字や記号など、様々な条件を選択することができます。また、一部の文字や記号を除くといった細かい調整に対応しております。";
 
     // パスワード関連の設定値（最大・最小の文字数、生成数）

@@ -31,7 +31,7 @@ pub(crate) fn ToolsGrid(props: ToolsGridProps) -> Element {
             }
 
             div {
-                class: "grid gap-4 mt-3 mb-6",
+                class: "grid gap-4 mt-3 mb-15",
                 {props.children}
             }
         }

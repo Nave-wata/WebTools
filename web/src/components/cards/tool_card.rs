@@ -46,7 +46,7 @@ pub(crate) fn ToolCard(props: ToolCardProps) -> Element {
 
     rsx! {
         div {
-            class: "bg-white text-center max-w-[400px] rounded-lg",
+            class: "bg-white text-center min-h-[185px] max-w-[400px] rounded-lg",
 
             Link {
                 to: props.to.clone(),
