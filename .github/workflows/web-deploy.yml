@@ -1,0 +1,54 @@
+name: Build Dioxus and Deploy to S3
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'src/**'
+  workflow_dispatch:
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/nave-wata/webtools/web:main-8e98b77
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install npm dependencies
+        working-directory: ./web
+        run: npm install
+
+      - name: Build Tailwind CSS
+        working-directory: ./web
+        run: npx tailwindcss -i ./input.css -o ./assets/tailwind.css --minify
+
+      - name: Build Dioxus application
+        working-directory: ./web
+        run: chmod +x ./bundle.sh && ./bundle.sh
+
+      - name: Configure AWS credentials
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
+        run: |
+          aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+          aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+          aws configure set default.region $AWS_DEFAULT_REGION
+
+      - name: Deploy to S3
+        run: |
+          aws s3 sync ./web/dist s3://${{ secrets.S3_BUCKET_NAME }} --delete --cache-control "public, max-age=31536000"
+          # index.htmlファイルのキャッシュを短くする
+          aws s3 cp ./web/dist/index.html s3://${{ secrets.S3_BUCKET_NAME }}/index.html --cache-control "public, max-age=300"
+
+      - name: Invalidate CloudFront distribution (optional)
+        if: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
+        run: |
+          aws cloudfront create-invalidation --distribution-id ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
