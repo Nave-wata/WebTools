@@ -48,7 +48,5 @@ jobs:
           # index.htmlファイルのキャッシュを短くする
           aws s3 cp ./web/dist/public/index.html s3://${{ secrets.S3_BUCKET_NAME }}/index.html --cache-control "public, max-age=300"
 
-      - name: Invalidate CloudFront distribution (optional)
-        if: ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }}
-        run: |
-          aws cloudfront create-invalidation --distribution-id ${{ vars.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+      - name: Invalidate CloudFront distribution
+        run: aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
