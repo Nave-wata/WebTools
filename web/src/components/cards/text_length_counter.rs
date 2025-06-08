@@ -6,7 +6,7 @@ use dioxus::prelude::*;
 pub(crate) fn TextLengthCounterCard() -> Element {
     let icon: Element = rsx! {
         img {
-            src: asset!("/assets/images/icons/text_length_counter.png"),
+            src: asset!("/assets/images/icons/text_length_counter.webp"),
             alt: "文字数カウント",
             class: "justify-self-center py-3",
             height: 90,

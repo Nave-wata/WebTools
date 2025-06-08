@@ -24,7 +24,7 @@ pub(crate) fn err_404_element() -> Element {
             title: title,
             description: description,
             robots: "noindex",
-            og_image: asset!("/assets/images/ogp/err_404.png"),
+            og_image: asset!("/assets/images/ogp/err_404.webp"),
         }
 
         BreadcrumbList {

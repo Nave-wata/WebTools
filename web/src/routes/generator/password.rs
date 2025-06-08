@@ -259,7 +259,7 @@ pub(crate) fn PasswordGenerator() -> Element {
             title: title,
             description: description,
             og_url: Route::PasswordGenerator {}.to_string(),
-            og_image: asset!("/assets/images/ogp/password_generator.jpg"),
+            og_image: asset!("/assets/images/ogp/password_generator.webp"),
         }
 
         BreadcrumbList {

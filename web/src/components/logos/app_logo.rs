@@ -20,7 +20,7 @@ pub(crate) struct AppLogoProps {
 pub(crate) fn AppLogo(props: AppLogoProps) -> Element {
     rsx! {
         img {
-            src: asset!("/assets/images/logos/app_logo.png"),
+            src: asset!("/assets/images/logos/app_logo.webp"),
             alt: "アプリケーションロゴ",
             height: props.height,
             width: props.width,
