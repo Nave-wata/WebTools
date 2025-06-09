@@ -3,11 +3,138 @@ use crate::components::head::Head;
 use crate::libs::number;
 use crate::routes::Route;
 use dioxus::prelude::*;
+use std::fmt::Display;
 
 /// 進数変換ツールページコンポーネント
 ///
 /// このコンポーネントは以下の機能を提供します：
 /// * 2進数、10進数、16進数の相互変換
+
+/// 進数変換と共通エラー処理を行うヘルパー関数
+///
+/// # Arguments
+/// * `convert_fn` - 変換関数（base_to_decimalまたはdecimal_to_base）
+/// * `value` - 変換する値
+/// * `base` - 変換元または変換先の基数
+/// * `error_message` - エラーメッセージを格納するSignal
+///
+/// # Returns
+/// * `Ok(String)` - 変換に成功した場合、変換後の値
+/// * `Err(())` - 変換に失敗した場合
+fn convert_and_handle_error<F, T>(
+    convert_fn: F,
+    value: &str,
+    base: u32,
+    error_message: &mut Signal<String>,
+) -> Result<String, ()>
+where
+    F: Fn(&str, u32) -> Result<String, String>,
+    T: Display,
+{
+    match convert_fn(value, base) {
+        Ok(result) => Ok(result),
+        Err(err) => {
+            error_message.set(err);
+            Err(())
+        }
+    }
+}
+
+/// 入力処理を共通化するヘルパー関数
+///
+/// # Arguments
+/// * `input_type` - 入力タイプ ("binary", "decimal", "hex")
+/// * `value` - 入力された値
+/// * `binary_input` - 2進数入力値のSignal
+/// * `decimal_input` - 10進数入力値のSignal
+/// * `hex_input` - 16進数入力値のSignal
+/// * `last_edited` - 最後に編集されたフィールドを追跡するSignal
+/// * `error_message` - エラーメッセージを格納するSignal
+fn handle_input(
+    input_type: &str,
+    value: String,
+    binary_input: &mut Signal<String>,
+    decimal_input: &mut Signal<String>,
+    hex_input: &mut Signal<String>,
+    last_edited: &mut Signal<&str>,
+    error_message: &mut Signal<String>,
+) {
+    // 入力値と最後に編集されたフィールドを更新
+    match input_type {
+        "binary" => binary_input.set(value.clone()),
+        "decimal" => decimal_input.set(value.clone()),
+        "hex" => hex_input.set(value.clone()),
+        _ => panic!("Unknown input type"),
+    }
+
+    // Use static string literals for last_edited
+    match input_type {
+        "binary" => last_edited.set("binary"),
+        "decimal" => last_edited.set("decimal"),
+        "hex" => last_edited.set("hex"),
+        _ => panic!("Unknown input type"),
+    };
+    error_message.set(String::new());
+
+    // 空の入力の場合、他の入力フィールドをクリア
+    if value.is_empty() {
+        match input_type {
+            "binary" => {
+                decimal_input.set(String::new());
+                hex_input.set(String::new());
+            },
+            "decimal" => {
+                binary_input.set(String::new());
+                hex_input.set(String::new());
+            },
+            "hex" => {
+                binary_input.set(String::new());
+                decimal_input.set(String::new());
+            },
+            _ => panic!("Unknown input type"),
+        }
+        return;
+    }
+
+    // 入力タイプに応じた変換処理
+    match input_type {
+        "binary" => {
+            // 2進数から10進数への変換
+            if let Ok(decimal) = convert_and_handle_error::<_, String>(number::base_to_decimal, &value, 2, error_message) {
+                decimal_input.set(decimal.clone());
+
+                // 10進数から16進数への変換
+                if let Ok(hex) = convert_and_handle_error::<_, String>(number::decimal_to_base, &decimal, 16, error_message) {
+                    hex_input.set(hex);
+                }
+            }
+        },
+        "decimal" => {
+            // 10進数から2進数への変換
+            if let Ok(binary) = convert_and_handle_error::<_, String>(number::decimal_to_base, &value, 2, error_message) {
+                binary_input.set(binary);
+            }
+
+            // 10進数から16進数への変換
+            if let Ok(hex) = convert_and_handle_error::<_, String>(number::decimal_to_base, &value, 16, error_message) {
+                hex_input.set(hex);
+            }
+        },
+        "hex" => {
+            // 16進数から10進数への変換
+            if let Ok(decimal) = convert_and_handle_error::<_, String>(number::base_to_decimal, &value, 16, error_message) {
+                decimal_input.set(decimal.clone());
+
+                // 10進数から2進数への変換
+                if let Ok(binary) = convert_and_handle_error::<_, String>(number::decimal_to_base, &decimal, 2, error_message) {
+                    binary_input.set(binary);
+                }
+            }
+        },
+        _ => panic!("Unknown input type"),
+    }
+}
+
 pub(crate) fn NumberBaseConverter() -> Element {
     let title: &str = "進数変換";
     let description: &str = "入力された数値を相互に進数変換するツールです。2進数、10進数、16進数の相互変換に対応しています。これらの変換は入力された数値を元に、リアルタイムで残り2種類の表現に変換することが可能です。";
@@ -26,83 +153,43 @@ pub(crate) fn NumberBaseConverter() -> Element {
     // 2進数入力時の処理
     let on_binary_input = move |e: Event<FormData>| {
         let value = e.value().to_string();
-        binary_input.set(value.clone());
-        last_edited.set("binary");
-        error_message.set(String::new());
-
-        if value.is_empty() {
-            decimal_input.set(String::new());
-            hex_input.set(String::new());
-            return;
-        }
-
-        // 2進数から10進数への変換
-        match number::base_to_decimal(&value, 2) {
-            Ok(decimal) => {
-                decimal_input.set(decimal.clone());
-
-                // 10進数から16進数への変換
-                match number::decimal_to_base(&decimal, 16) {
-                    Ok(hex) => hex_input.set(hex),
-                    Err(err) => error_message.set(err),
-                }
-            },
-            Err(err) => error_message.set(err),
-        }
+        handle_input(
+            "binary",
+            value,
+            &mut binary_input,
+            &mut decimal_input,
+            &mut hex_input,
+            &mut last_edited,
+            &mut error_message,
+        );
     };
 
     // 10進数入力時の処理
     let on_decimal_input = move |e: Event<FormData>| {
         let value = e.value().to_string();
-        decimal_input.set(value.clone());
-        last_edited.set("decimal");
-        error_message.set(String::new());
-
-        if value.is_empty() {
-            binary_input.set(String::new());
-            hex_input.set(String::new());
-            return;
-        }
-
-        // 10進数から2進数への変換
-        match number::decimal_to_base(&value, 2) {
-            Ok(binary) => binary_input.set(binary),
-            Err(err) => error_message.set(err),
-        }
-
-        // 10進数から16進数への変換
-        match number::decimal_to_base(&value, 16) {
-            Ok(hex) => hex_input.set(hex),
-            Err(err) => error_message.set(err),
-        }
+        handle_input(
+            "decimal",
+            value,
+            &mut binary_input,
+            &mut decimal_input,
+            &mut hex_input,
+            &mut last_edited,
+            &mut error_message,
+        );
     };
 
     // 16進数入力時の処理
     let on_hex_input = move |e: Event<FormData>| {
         let value = e.value().to_string();
-        hex_input.set(value.clone());
-        last_edited.set("hex");
-        error_message.set(String::new());
-
-        if value.is_empty() {
-            binary_input.set(String::new());
-            decimal_input.set(String::new());
-            return;
-        }
-
-        // 16進数から10進数への変換
-        match number::base_to_decimal(&value, 16) {
-            Ok(decimal) => {
-                decimal_input.set(decimal.clone());
-
-                // 10進数から2進数への変換
-                match number::decimal_to_base(&decimal, 2) {
-                    Ok(binary) => binary_input.set(binary),
-                    Err(err) => error_message.set(err),
-                }
-            },
-            Err(err) => error_message.set(err),
-        }
+        handle_input(
+            "hex",
+            value,
+            &mut binary_input,
+            &mut decimal_input,
+            &mut hex_input,
+            &mut last_edited,
+            &mut error_message,
+        );
     };
 
     rsx! {
