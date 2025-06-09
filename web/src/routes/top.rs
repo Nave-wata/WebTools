@@ -1,3 +1,4 @@
+use crate::components::cards::number_base_converter_card::NumberBaseConverterCard;
 use crate::components::cards::password_generator_card::PasswordGeneratorCard;
 use crate::components::cards::text_length_counter::TextLengthCounterCard;
 use crate::components::grids::tools_grid::ToolsGrid;
@@ -27,6 +28,12 @@ pub(crate) fn TopPage() -> Element {
             title: "カウンター",
 
             TextLengthCounterCard {},
+        }
+
+        ToolsGrid {
+            title: "コンバーター",
+
+            NumberBaseConverterCard {},
         }
     }
 }

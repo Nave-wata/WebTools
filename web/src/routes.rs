@@ -2,7 +2,9 @@ mod top;
 mod generator;
 mod notfound;
 mod counter;
+mod converter;
 
+use converter::number_base::NumberBaseConverter;
 use counter::text_length::TextLengthCounter;
 use dioxus::prelude::*;
 use generator::password::PasswordGenerator;
@@ -27,6 +29,11 @@ pub(crate) enum Route {
         #[nest("/counter")]
             #[route("/text-length")]
             TextLengthCounter {},
+        #[end_nest]
+
+        #[nest("/converter")]
+            #[route("/number-base")]
+            NumberBaseConverter {},
         #[end_nest]
     #[end_layout]
 

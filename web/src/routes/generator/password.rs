@@ -8,7 +8,6 @@ use crate::components::inputs::{
     text::Text,
 };
 use crate::components::toasts::success_toast::SuccessToast;
-use crate::constants::app::APP_TITLE;
 use crate::libs::random::random_string_from_chars;
 use crate::routes::Route;
 use dioxus::prelude::*;
