@@ -10,7 +10,7 @@ CARGO_PRD_TOML="Cargo-prd.toml"
 
 # クリーンアップ関数
 cleanup() {
-    echo "クリーンアップを実行中..."
+    echo "クリーンアップ（開発環境の復元）を実行中..."
     
     # バックアップが存在する場合、元のファイルを復元
     if [[ -f "${CARGO_TOML_BACKUP}" ]]; then
@@ -18,14 +18,14 @@ cleanup() {
         mv "${CARGO_TOML_BACKUP}" "${CARGO_TOML}"
     fi
     
-    echo "クリーンアップ完了"
+    echo "クリーンアップ完了（開発環境の復元完了）"
 }
 
 # スクリプト終了時（正常・異常問わず）にクリーンアップを実行
 trap cleanup EXIT
 
 # メイン処理
-echo "開発環境用設定に切り替え中..."
+echo "本番（ビルド）環境用設定に切り替え中..."
 
 # 元のCargo.tomlをバックアップ
 cp "${CARGO_TOML}" "${CARGO_TOML_BACKUP}"
