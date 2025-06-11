@@ -3,7 +3,9 @@ mod generator;
 mod notfound;
 mod counter;
 mod converter;
+mod calculator;
 
+use calculator::byte_unit::ByteUnitCalculator;
 use converter::number_base::NumberBaseConverter;
 use counter::text_length::TextLengthCounter;
 use dioxus::prelude::*;
@@ -34,6 +36,11 @@ pub(crate) enum Route {
         #[nest("/converter")]
             #[route("/number-base")]
             NumberBaseConverter {},
+        #[end_nest]
+
+        #[nest("/calculator")]
+            #[route("/byte-unit")]
+            ByteUnitCalculator {},
         #[end_nest]
     #[end_layout]
 
