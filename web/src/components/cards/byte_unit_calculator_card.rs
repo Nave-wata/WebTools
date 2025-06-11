@@ -3,7 +3,7 @@ use crate::routes::Route;
 use dioxus::prelude::*;
 
 /// バイト単位変換ツールカード
-pub(crate) fn ByteCalculatorCard() -> Element {
+pub(crate) fn ByteUnitCalculatorCard() -> Element {
     let icon: Element = rsx! {
         img {
             src: asset!("/assets/images/icons/byte_unit_calculator.webp"), // アイコン画像
