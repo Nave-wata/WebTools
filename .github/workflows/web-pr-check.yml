@@ -32,11 +32,30 @@ jobs:
         working-directory: ./web
         run: |
           chmod +x ./bundle.sh
-          if ./bundle.sh; then
+          # ビルド出力をログファイルに保存
+          ./bundle.sh > build_output.log 2>&1
+          BUILD_RESULT=$?
+
+          # ビルド結果に基づいて出力を設定
+          if [ $BUILD_RESULT -eq 0 ]; then
             echo "build_success=true" >> $GITHUB_OUTPUT
+            echo "✅ ビルドが正常に完了しました"
           else
             echo "build_success=false" >> $GITHUB_OUTPUT
+            echo "❌ ビルドに失敗しました。詳細なログは以下の通りです："
+            cat build_output.log
           fi
+
+          # ログをアーティファクトとして保存するため、失敗しても終了
+          exit $BUILD_RESULT
+
+      - name: Upload build logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-logs
+          path: ./web/build_output.log
+          retention-days: 7
 
       - name: Approve PR
         if: steps.build-dioxus.outputs.build_success == 'true'
@@ -60,10 +79,13 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const prNumber = context.issue.number;
+            const runId = context.runId;
+            const buildLogsUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${runId}`;
+
             await github.rest.pulls.createReview({
               owner: context.repo.owner,
               repo: context.repo.repo,
               pull_number: prNumber,
               event: 'REQUEST_CHANGES',
-              body: '❌ ビルドに失敗しました。エラーを修正してください。'
+              body: `❌ ビルドに失敗しました。エラーを修正してください。詳細なビルドログは[こちら](${buildLogsUrl})で確認できます。`
             });
