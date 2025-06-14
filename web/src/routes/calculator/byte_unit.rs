@@ -184,7 +184,7 @@ fn handle_input(
     match input_unit {
         "B" => {
             // Bから他の単位への変換
-            let target_units = [("KB", &mut kb_input), ("MB", &mut mb_input), ("GB", &mut gb_input), ("TB", &mut tb_input)];
+            let target_units = [("KB", kb_input), ("MB", mb_input), ("GB", gb_input), ("TB", tb_input)];
 
             for (unit, input_signal) in target_units {
                 if let Ok(converted) = convert_and_handle_error::<_, String>(
