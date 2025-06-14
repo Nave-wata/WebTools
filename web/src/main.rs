@@ -56,3 +56,4 @@ fn App() -> Element {
         Router::<Route> {}
     }
 }
+
