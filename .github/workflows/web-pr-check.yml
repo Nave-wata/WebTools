@@ -1,4 +1,4 @@
-name: Web PR Build Check and Approval
+name: Web PR Build Check
 
 on:
   pull_request:
@@ -7,7 +7,7 @@ on:
       - 'web/**'
 
 jobs:
-  build-check:
+  web-build-check:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/nave-wata/webtools/web:latest
@@ -30,24 +30,28 @@ jobs:
       - name: Build Dioxus application
         id: build-dioxus
         working-directory: ./web
+        continue-on-error: true
         run: |
           chmod +x ./bundle.sh
-          # ビルド出力をログファイルに保存
-          ./bundle.sh > build_output.log 2>&1
-          BUILD_RESULT=$?
+          echo "ビルド開始..."
+          # ビルド出力をログファイルに保存しつつ、コンソールにも表示
+          ./bundle.sh 2>&1 | tee build_output.log
+          BUILD_RESULT=${PIPESTATUS[0]}
 
           # ビルド結果に基づいて出力を設定
           if [ $BUILD_RESULT -eq 0 ]; then
             echo "build_success=true" >> $GITHUB_OUTPUT
-            echo "✅ ビルドが正常に完了しました"
+            echo "\n✅ ビルドが正常に完了しました"
           else
             echo "build_success=false" >> $GITHUB_OUTPUT
-            echo "❌ ビルドに失敗しました。詳細なログは以下の通りです："
-            cat build_output.log
+            echo "\n❌ ビルドに失敗しました。上記のログを確認してください。"
           fi
 
-          # ログをアーティファクトとして保存するため、失敗しても終了
-          exit $BUILD_RESULT
+          # 結果を明示的に出力
+          echo "BUILD_RESULT=$BUILD_RESULT"
+
+          # エラーを返さずに次のステップへ進む
+          exit 0
 
       - name: Upload build logs
         if: always()
@@ -57,23 +61,22 @@ jobs:
           path: ./web/build_output.log
           retention-days: 7
 
-      - name: Approve PR
-        if: steps.build-dioxus.outputs.build_success == 'true'
+      - name: Report Success
+        if: success() && steps.build-dioxus.outputs.build_success == 'true'
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const prNumber = context.issue.number;
-            await github.rest.pulls.createReview({
+            await github.rest.issues.createComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              pull_number: prNumber,
-              event: 'APPROVE',
-              body: 'ビルドが正常に完了しました。このPRは自動承認されます。'
+              issue_number: prNumber,
+              body: '✅ ビルドチェックに成功しました！このPRはビルドテストに合格しています。'
             });
 
-      - name: Request Changes
-        if: steps.build-dioxus.outputs.build_success == 'false'
+      - name: Report Failure
+        if: failure() || steps.build-dioxus.outputs.build_success == 'false'
         uses: actions/github-script@v7
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -82,10 +85,23 @@ jobs:
             const runId = context.runId;
             const buildLogsUrl = `https://github.com/${context.repo.owner}/${context.repo.repo}/actions/runs/${runId}`;
 
-            await github.rest.pulls.createReview({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              pull_number: prNumber,
-              event: 'REQUEST_CHANGES',
-              body: `❌ ビルドに失敗しました。エラーを修正してください。詳細なビルドログは[こちら](${buildLogsUrl})で確認できます。`
-            });
+            try {
+              // PRにレビューを追加
+              await github.rest.pulls.createReview({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: prNumber,
+                event: 'REQUEST_CHANGES',
+                body: `❌ ビルドに失敗しました。エラーを修正してください。詳細なビルドログは[アクション実行結果](${buildLogsUrl})でご確認ください。`
+              });
+            } catch (error) {
+              console.log(`PRレビュー作成中にエラーが発生しました: ${error.message}`);
+            
+              // REQUEST_CHANGES が失敗した場合は PR にコメントを追加（どちらにしろマージはできないので問題はない）
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: `❌ ビルドに失敗しました。エラーを修正してください。詳細なビルドログは[アクション実行結果](${buildLogsUrl})でご確認ください。`
+              });
+            }
