@@ -30,7 +30,9 @@ jobs:
       - name: Build Dioxus application
         id: build-dioxus
         working-directory: ./web
-        run: chmod +x ./bundle.sh
+        run: |
+          chmod +x ./bundle.sh
+          ./bundle.sh
 
       - name: Approve PR
         if: steps.build-dioxus.outputs.build_success == 'true'
