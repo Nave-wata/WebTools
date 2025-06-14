@@ -82,15 +82,15 @@ fn handle_input(
             "binary" => {
                 decimal_input.set(String::new());
                 hex_input.set(String::new());
-            }
+            },
             "decimal" => {
                 binary_input.set(String::new());
                 hex_input.set(String::new());
-            }
+            },
             "hex" => {
                 binary_input.set(String::new());
                 decimal_input.set(String::new());
-            }
+            },
             _ => panic!("Unknown input type"),
         }
         return;
@@ -100,67 +100,37 @@ fn handle_input(
     match input_type {
         "binary" => {
             // 2進数から10進数への変換
-            if let Ok(decimal) = convert_and_handle_error::<_, String>(
-                number::base_to_decimal,
-                &value,
-                2,
-                error_message,
-            ) {
+            if let Ok(decimal) = convert_and_handle_error::<_, String>(number::base_to_decimal, &value, 2, error_message) {
                 decimal_input.set(decimal.clone());
 
                 // 10進数から16進数への変換
-                if let Ok(hex) = convert_and_handle_error::<_, String>(
-                    number::decimal_to_base,
-                    &decimal,
-                    16,
-                    error_message,
-                ) {
+                if let Ok(hex) = convert_and_handle_error::<_, String>(number::decimal_to_base, &decimal, 16, error_message) {
                     hex_input.set(hex);
                 }
             }
-        }
+        },
         "decimal" => {
             // 10進数から2進数への変換
-            if let Ok(binary) = convert_and_handle_error::<_, String>(
-                number::decimal_to_base,
-                &value,
-                2,
-                error_message,
-            ) {
+            if let Ok(binary) = convert_and_handle_error::<_, String>(number::decimal_to_base, &value, 2, error_message) {
                 binary_input.set(binary);
             }
 
             // 10進数から16進数への変換
-            if let Ok(hex) = convert_and_handle_error::<_, String>(
-                number::decimal_to_base,
-                &value,
-                16,
-                error_message,
-            ) {
+            if let Ok(hex) = convert_and_handle_error::<_, String>(number::decimal_to_base, &value, 16, error_message) {
                 hex_input.set(hex);
             }
-        }
+        },
         "hex" => {
             // 16進数から10進数への変換
-            if let Ok(decimal) = convert_and_handle_error::<_, String>(
-                number::base_to_decimal,
-                &value,
-                16,
-                error_message,
-            ) {
+            if let Ok(decimal) = convert_and_handle_error::<_, String>(number::base_to_decimal, &value, 16, error_message) {
                 decimal_input.set(decimal.clone());
 
                 // 10進数から2進数への変換
-                if let Ok(binary) = convert_and_handle_error::<_, String>(
-                    number::decimal_to_base,
-                    &decimal,
-                    2,
-                    error_message,
-                ) {
+                if let Ok(binary) = convert_and_handle_error::<_, String>(number::decimal_to_base, &decimal, 2, error_message) {
                     binary_input.set(binary);
                 }
             }
-        }
+        },
         _ => panic!("Unknown input type"),
     }
 }
@@ -170,12 +140,12 @@ pub(crate) fn NumberBaseConverter() -> Element {
     let description: &str = "入力された数値を相互に進数変換するツールです。2進数、10進数、16進数の相互変換に対応しています。これらの変換は入力された数値を元に、リアルタイムで残り2種類の表現に変換することが可能です。";
 
     // 各進数の入力値
-    let mut binary_input = use_signal(String::new);
-    let mut decimal_input = use_signal(String::new);
-    let mut hex_input = use_signal(String::new);
+    let mut binary_input = use_signal(|| String::new());
+    let mut decimal_input = use_signal(|| String::new());
+    let mut hex_input = use_signal(|| String::new());
 
     // エラーメッセージ
-    let mut error_message = use_signal(String::new);
+    let mut error_message = use_signal(|| String::new());
 
     // 入力元の進数を追跡（最後に編集されたフィールド）
     let mut last_edited = use_signal(|| "");

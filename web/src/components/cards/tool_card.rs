@@ -1,14 +1,14 @@
 use crate::routes::Route;
 use dioxus::prelude::*;
 
-/// ツールカードコンポーネント props
+/// ツールカードンポーネント props
 ///
-/// # Fields
+/// ＃ Fields
 ///
 /// * `to` - `Route` 遷移先ルーティング
 /// * `icon` - `Element` ツールのアイコン
 /// * `title` - `String` ツールのタイトル
-/// * `description` - `Vec<Vec<String>>` ツールの説明。行と単語のネストされた配列
+/// * `children` - `Element` ツールの説明など。適切な箇所で改行などを行えるように、子コンポーネントで定義できるよう `Element` 型を受け入れ
 #[derive(PartialEq, Clone, Props)]
 pub(crate) struct ToolCardProps {
     to: Route,
@@ -17,7 +17,7 @@ pub(crate) struct ToolCardProps {
     description: Vec<Vec<String>>,
 }
 
-/// ツールカードコンポーネント
+/// ツールコカードンポーネント
 ///
 /// # Arguments
 ///
@@ -28,7 +28,7 @@ pub(crate) struct ToolCardProps {
 /// * `to` - `Route` 遷移先ルーティング
 /// * `icon` - `Element` ツールのアイコン
 /// * `title` - `String` ツールのタイトル
-/// * `description` - `Vec<Vec<String>>` ツールの説明。行と単語のネストされた配列
+/// * `children` - `Element` ツールの説明など。適切な箇所で改行などを行えるように、子コンポーネントで定義できるよう `Element` 型を受け入れ
 pub(crate) fn ToolCard(props: ToolCardProps) -> Element {
     let description = props.description.iter().map(|line| {
         rsx! {

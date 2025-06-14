@@ -63,10 +63,7 @@ fn bytes_to_unit(bytes_str: &str, unit: &str) -> Result<String, String> {
     };
 
     // 結果を文字列に変換
-    Ok(format!("{:.10}", result)
-        .trim_end_matches('0')
-        .trim_end_matches('.')
-        .to_string())
+    Ok(format!("{:.10}", result).trim_end_matches('0').trim_end_matches('.').to_string())
 }
 
 /// 指定された単位からバイト (B) に変換する
@@ -150,31 +147,31 @@ fn handle_input(
                 mb_input.set(String::new());
                 gb_input.set(String::new());
                 tb_input.set(String::new());
-            }
+            },
             "KB" => {
                 b_input.set(String::new());
                 mb_input.set(String::new());
                 gb_input.set(String::new());
                 tb_input.set(String::new());
-            }
+            },
             "MB" => {
                 b_input.set(String::new());
                 kb_input.set(String::new());
                 gb_input.set(String::new());
                 tb_input.set(String::new());
-            }
+            },
             "GB" => {
                 b_input.set(String::new());
                 kb_input.set(String::new());
                 mb_input.set(String::new());
                 tb_input.set(String::new());
-            }
+            },
             "TB" => {
                 b_input.set(String::new());
                 kb_input.set(String::new());
                 mb_input.set(String::new());
                 gb_input.set(String::new());
-            }
+            },
             _ => panic!("Unknown input unit"),
         }
         return;
@@ -184,150 +181,87 @@ fn handle_input(
     match input_unit {
         "B" => {
             // Bから他の単位への変換
-            let target_units = [("KB", &mut kb_input), ("MB", &mut mb_input), ("GB", &mut gb_input), ("TB", &mut tb_input)];
-
-            for (unit, input_signal) in target_units {
-                if let Ok(converted) = convert_and_handle_error::<_, String>(
-                    |v| bytes_to_unit(v, unit),
-                    &value,
-                    error_message,
-                ) {
-                    input_signal.set(converted);
-                }
+            if let Ok(kb) = convert_and_handle_error::<_, String>(|v| bytes_to_unit(v, "KB"), &value, error_message) {
+                kb_input.set(kb);
             }
-        }
+            if let Ok(mb) = convert_and_handle_error::<_, String>(|v| bytes_to_unit(v, "MB"), &value, error_message) {
+                mb_input.set(mb);
+            }
+            if let Ok(gb) = convert_and_handle_error::<_, String>(|v| bytes_to_unit(v, "GB"), &value, error_message) {
+                gb_input.set(gb);
+            }
+            if let Ok(tb) = convert_and_handle_error::<_, String>(|v| bytes_to_unit(v, "TB"), &value, error_message) {
+                tb_input.set(tb);
+            }
+        },
         "KB" => {
             // KBからBへの変換
-            if let Ok(b) = convert_and_handle_error::<_, String>(
-                |v| unit_to_bytes(v, "KB"),
-                &value,
-                error_message,
-            ) {
+            if let Ok(b) = convert_and_handle_error::<_, String>(|v| unit_to_bytes(v, "KB"), &value, error_message) {
                 b_input.set(b.clone());
-
+                
                 // Bから他の単位への変換
-                if let Ok(mb) = convert_and_handle_error::<_, String>(
-                    |v| bytes_to_unit(v, "MB"),
-                    &b,
-                    error_message,
-                ) {
+                if let Ok(mb) = convert_and_handle_error::<_, String>(|v| bytes_to_unit(v, "MB"), &b, error_message) {
                     mb_input.set(mb);
                 }
-                if let Ok(gb) = convert_and_handle_error::<_, String>(
-                    |v| bytes_to_unit(v, "GB"),
-                    &b,
-                    error_message,
-                ) {
+                if let Ok(gb) = convert_and_handle_error::<_, String>(|v| bytes_to_unit(v, "GB"), &b, error_message) {
                     gb_input.set(gb);
                 }
-                if let Ok(tb) = convert_and_handle_error::<_, String>(
-                    |v| bytes_to_unit(v, "TB"),
-                    &b,
-                    error_message,
-                ) {
+                if let Ok(tb) = convert_and_handle_error::<_, String>(|v| bytes_to_unit(v, "TB"), &b, error_message) {
                     tb_input.set(tb);
                 }
             }
-        }
+        },
         "MB" => {
             // MBからBへの変換
-            if let Ok(b) = convert_and_handle_error::<_, String>(
-                |v| unit_to_bytes(v, "MB"),
-                &value,
-                error_message,
-            ) {
+            if let Ok(b) = convert_and_handle_error::<_, String>(|v| unit_to_bytes(v, "MB"), &value, error_message) {
                 b_input.set(b.clone());
-
+                
                 // Bから他の単位への変換
-                if let Ok(kb) = convert_and_handle_error::<_, String>(
-                    |v| bytes_to_unit(v, "KB"),
-                    &b,
-                    error_message,
-                ) {
+                if let Ok(kb) = convert_and_handle_error::<_, String>(|v| bytes_to_unit(v, "KB"), &b, error_message) {
                     kb_input.set(kb);
                 }
-                if let Ok(gb) = convert_and_handle_error::<_, String>(
-                    |v| bytes_to_unit(v, "GB"),
-                    &b,
-                    error_message,
-                ) {
+                if let Ok(gb) = convert_and_handle_error::<_, String>(|v| bytes_to_unit(v, "GB"), &b, error_message) {
                     gb_input.set(gb);
                 }
-                if let Ok(tb) = convert_and_handle_error::<_, String>(
-                    |v| bytes_to_unit(v, "TB"),
-                    &b,
-                    error_message,
-                ) {
+                if let Ok(tb) = convert_and_handle_error::<_, String>(|v| bytes_to_unit(v, "TB"), &b, error_message) {
                     tb_input.set(tb);
                 }
             }
-        }
+        },
         "GB" => {
             // GBからBへの変換
-            if let Ok(b) = convert_and_handle_error::<_, String>(
-                |v| unit_to_bytes(v, "GB"),
-                &value,
-                error_message,
-            ) {
+            if let Ok(b) = convert_and_handle_error::<_, String>(|v| unit_to_bytes(v, "GB"), &value, error_message) {
                 b_input.set(b.clone());
-
+                
                 // Bから他の単位への変換
-                if let Ok(kb) = convert_and_handle_error::<_, String>(
-                    |v| bytes_to_unit(v, "KB"),
-                    &b,
-                    error_message,
-                ) {
+                if let Ok(kb) = convert_and_handle_error::<_, String>(|v| bytes_to_unit(v, "KB"), &b, error_message) {
                     kb_input.set(kb);
                 }
-                if let Ok(mb) = convert_and_handle_error::<_, String>(
-                    |v| bytes_to_unit(v, "MB"),
-                    &b,
-                    error_message,
-                ) {
+                if let Ok(mb) = convert_and_handle_error::<_, String>(|v| bytes_to_unit(v, "MB"), &b, error_message) {
                     mb_input.set(mb);
                 }
-                if let Ok(tb) = convert_and_handle_error::<_, String>(
-                    |v| bytes_to_unit(v, "TB"),
-                    &b,
-                    error_message,
-                ) {
+                if let Ok(tb) = convert_and_handle_error::<_, String>(|v| bytes_to_unit(v, "TB"), &b, error_message) {
                     tb_input.set(tb);
                 }
             }
-        }
+        },
         "TB" => {
             // TBからBへの変換
-            if let Ok(b) = convert_and_handle_error::<_, String>(
-                |v| unit_to_bytes(v, "TB"),
-                &value,
-                error_message,
-            ) {
+            if let Ok(b) = convert_and_handle_error::<_, String>(|v| unit_to_bytes(v, "TB"), &value, error_message) {
                 b_input.set(b.clone());
-
+                
                 // Bから他の単位への変換
-                if let Ok(kb) = convert_and_handle_error::<_, String>(
-                    |v| bytes_to_unit(v, "KB"),
-                    &b,
-                    error_message,
-                ) {
+                if let Ok(kb) = convert_and_handle_error::<_, String>(|v| bytes_to_unit(v, "KB"), &b, error_message) {
                     kb_input.set(kb);
                 }
-                if let Ok(mb) = convert_and_handle_error::<_, String>(
-                    |v| bytes_to_unit(v, "MB"),
-                    &b,
-                    error_message,
-                ) {
+                if let Ok(mb) = convert_and_handle_error::<_, String>(|v| bytes_to_unit(v, "MB"), &b, error_message) {
                     mb_input.set(mb);
                 }
-                if let Ok(gb) = convert_and_handle_error::<_, String>(
-                    |v| bytes_to_unit(v, "GB"),
-                    &b,
-                    error_message,
-                ) {
+                if let Ok(gb) = convert_and_handle_error::<_, String>(|v| bytes_to_unit(v, "GB"), &b, error_message) {
                     gb_input.set(gb);
                 }
             }
-        }
+        },
         _ => panic!("Unknown input unit"),
     }
 }
@@ -337,14 +271,14 @@ pub(crate) fn ByteUnitCalculator() -> Element {
     let description: &str = "入力された値を異なるバイト単位（B、KB、MB、GB、TB）に相互変換するツールです。これらの変換は入力された値を元に、リアルタイムで他の単位の表現に変換することが可能です。";
 
     // 各単位の入力値
-    let mut b_input = use_signal(String::new);
-    let mut kb_input = use_signal(String::new);
-    let mut mb_input = use_signal(String::new);
-    let mut gb_input = use_signal(String::new);
-    let mut tb_input = use_signal(String::new);
+    let mut b_input = use_signal(|| String::new());
+    let mut kb_input = use_signal(|| String::new());
+    let mut mb_input = use_signal(|| String::new());
+    let mut gb_input = use_signal(|| String::new());
+    let mut tb_input = use_signal(|| String::new());
 
     // エラーメッセージ
-    let mut error_message = use_signal(String::new);
+    let mut error_message = use_signal(|| String::new());
 
     // 入力元の単位を追跡（最後に編集されたフィールド）
     let mut last_edited = use_signal(|| "");
