@@ -1,9 +1,9 @@
 #![allow(non_snake_case)]
 
-mod routes;
 mod components;
 mod constants;
 mod libs;
+mod routes;
 
 use dioxus::document::Stylesheet;
 use dioxus::prelude::*;
@@ -44,7 +44,6 @@ fn main() {
                 )
                 .enable_out_of_order_streaming()
         })
-
     }
 
     builder.launch(App);

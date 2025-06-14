@@ -20,7 +20,7 @@ pub fn random_string_from_chars(chars: &str, length: usize) -> Result<String, St
     let mut rng = rand::thread_rng();
     let vec_chars: Vec<char> = chars.chars().collect();
 
-    if vec_chars.len() == 0 {
+    if vec_chars.is_empty() {
         return Err("文字列は１文字以上である必要があります".to_string());
     }
 
