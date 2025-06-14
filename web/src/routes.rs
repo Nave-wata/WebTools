@@ -5,6 +5,7 @@ mod generator;
 mod notfound;
 mod top;
 
+use calculator::big_numbers::BigNumbersCalculator;
 use calculator::byte_unit::ByteUnitCalculator;
 use calculator::simple::SimpleCalculator;
 use converter::number_base::NumberBaseConverter;
@@ -42,9 +43,12 @@ pub(crate) enum Route {
         #[nest("/calculator")]
             #[route("/byte-unit")]
             ByteUnitCalculator {},
-    
+
             #[route("/simple")]
             SimpleCalculator {},
+
+            #[route("/big-numbers")]
+            BigNumbersCalculator {},
         #[end_nest]
     #[end_layout]
 
