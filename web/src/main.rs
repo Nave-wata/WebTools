@@ -52,7 +52,7 @@ fn main() {
 /// アプリケーションコンポーネント
 fn App() -> Element {
     rsx! {
-        Stylesheet { href: asset!("assets/tailwind.css") }
+        Stylesheet { href: asset!("assets/tailwind") }
         Router::<Route> {}
     }
 }
