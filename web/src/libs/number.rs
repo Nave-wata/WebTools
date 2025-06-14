@@ -1,4 +1,4 @@
-//! 数値の進数変換機能を提供するモジュール
+/// 数値の進数変換機能を提供するモジュール
 
 /// 10進数の文字列を指定された進数に変換する
 ///
@@ -12,11 +12,8 @@
 /// * `Result<String, String>` - 変換結果または変換エラーメッセージ
 pub fn decimal_to_base(decimal_str: &str, base: u32) -> Result<String, String> {
     // 進数の範囲チェック
-    if !(2..=36).contains(&base) {
-        return Err(format!(
-            "進数は2から36の間である必要があります。指定された進数: {}",
-            base
-        ));
+    if base < 2 || base > 36 {
+        return Err(format!("進数は2から36の間である必要があります。指定された進数: {}", base));
     }
 
     // 10進数文字列をパース
@@ -56,11 +53,8 @@ pub fn decimal_to_base(decimal_str: &str, base: u32) -> Result<String, String> {
 /// * `Result<String, String>` - 変換結果または変換エラーメッセージ
 pub fn base_to_decimal(value: &str, base: u32) -> Result<String, String> {
     // 進数の範囲チェック
-    if !(2..=36).contains(&base) {
-        return Err(format!(
-            "進数は2から36の間である必要があります。指定された進数: {}",
-            base
-        ));
+    if base < 2 || base > 36 {
+        return Err(format!("進数は2から36の間である必要があります。指定された進数: {}", base));
     }
 
     // 空文字列チェック

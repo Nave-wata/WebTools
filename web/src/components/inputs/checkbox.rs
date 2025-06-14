@@ -22,6 +22,7 @@ pub(crate) struct CheckboxProps {
     onchange: Option<EventHandler<Event<FormData>>>,
 }
 
+
 /// 汎用チェックボックスコンポーネント
 ///
 /// # Arguments
