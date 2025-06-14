@@ -52,7 +52,8 @@ pub(crate) fn Head(props: HeadProps) -> Element {
     };
 
     // 既存の meta タグなどを削除
-    document::eval(r#"
+    document::eval(
+        r#"
         const originalPushState = history.pushState;
         history.pushState = function (...args) {
             for (const selector of [
@@ -68,7 +69,8 @@ pub(crate) fn Head(props: HeadProps) -> Element {
             
             originalPushState.apply(this, args);
         };
-    "#);
+    "#,
+    );
 
     // 各ページ専用の meta 情報などを配置
     rsx! {
@@ -76,34 +78,34 @@ pub(crate) fn Head(props: HeadProps) -> Element {
             {page_title.clone()}
         }
 
-        Meta { 
+        Meta {
             name: "description",
             content: props.description.clone(),
         }
 
         if let Some(robots) = props.robots {
             Meta {
-                name: "robots", 
+                name: "robots",
                 content: robots,
             }
         }
 
-        Meta { 
+        Meta {
             name: "og:title",
             content: page_title
         }
-        Meta { 
+        Meta {
             name: "og:description",
             content: og_description,
         }
-        
+
         if let Some(url) = props.og_url {
-            Meta { 
+            Meta {
                 name: "og:url",
                 content: format!("{}{}", APP_URL, url),
             }
         }
-        
+
         if let Some(image) = props.og_image {
             Meta {
                 name: "og:image",

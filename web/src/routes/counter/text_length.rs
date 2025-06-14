@@ -14,7 +14,7 @@ pub(crate) fn TextLengthCounter() -> Element {
     let description: &str = "入力された文字の文字数などをカウントするツールです。文字数だけでなく、空文字区切りでの単語数カウントや行数、Byte数のカウントにも対応しています。また、これらのカウントは入力に伴いリアルタイムで行われるため、非常にスムーズなカウントが可能です。";
 
     // 入力テキストとカウント結果
-    let mut input_text = use_signal(|| String::new());
+    let mut input_text = use_signal(String::new);
 
     rsx! {
         Head {

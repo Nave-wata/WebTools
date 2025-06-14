@@ -27,7 +27,7 @@ fn infix_to_postfix(tokens: Vec<String>) -> Result<Vec<String>, String> {
     let mut operator_stack = Vec::new();
 
     for token in tokens.iter() {
-        if let Ok(_) = token.parse::<f64>() {
+        if token.parse::<f64>().is_ok() {
             // 数値の場合は出力に追加
             output.push(token.to_string());
         } else if token == "(" {
@@ -56,8 +56,7 @@ fn infix_to_postfix(tokens: Vec<String>) -> Result<Vec<String>, String> {
                 let top_prec = get_precedence(top);
                 let curr_prec = get_precedence(token);
 
-                if top_prec > curr_prec || 
-                   (top_prec == curr_prec && is_left_associative(token)) {
+                if top_prec > curr_prec || (top_prec == curr_prec && is_left_associative(token)) {
                     output.push(operator_stack.pop().unwrap());
                 } else {
                     break;
@@ -95,15 +94,15 @@ fn evaluate_postfix(tokens: Vec<String>) -> Result<f64, String> {
             let a = stack.pop().unwrap();
 
             let result = match token.as_str() {
-                "+"       => a + b,
-                "-"       => a - b,
+                "+" => a + b,
+                "-" => a - b,
                 "*" | "×" => a * b,
                 "/" | "÷" => {
                     if b == 0.0 {
                         return Err("0で割ることはできません".to_string());
                     }
                     a / b
-                },
+                }
                 _ => return Err(format!("不明な演算子: {}", token)),
             };
 
@@ -143,10 +142,10 @@ fn evaluate_expression(expr: &str) -> Result<f64, String> {
                         num_buffer.clear();
                     }
                 }
-            },
+            }
             'e' | 'E' => {
                 // 指数表記の'e'/'E'は直前に数字がある場合のみ有効
-                if !num_buffer.is_empty() && num_buffer.chars().any(|c| c.is_digit(10)) {
+                if !num_buffer.is_empty() && num_buffer.chars().any(|c| c.is_ascii_digit()) {
                     num_buffer.push(c);
                     // 次の文字をチェック
                     if let Some(&next_c) = chars.peek() {
@@ -164,16 +163,18 @@ fn evaluate_expression(expr: &str) -> Result<f64, String> {
                     // 数字の前に'e'/'E'がある場合はエラー
                     return Err(format!("不正な文字: {}", c));
                 }
-            },
+            }
             '+' | '-' | '*' | '/' | '×' | '÷' | '(' | ')' => {
                 // 指数表記の一部として+/-を処理
-                let is_exponent_sign = !num_buffer.is_empty() && 
-                    (num_buffer.ends_with('e') || num_buffer.ends_with('E'));
+                let is_exponent_sign = !num_buffer.is_empty()
+                    && (num_buffer.ends_with('e') || num_buffer.ends_with('E'));
 
                 if is_exponent_sign && (c == '+' || c == '-') {
                     // 指数表記の一部として+/-を追加
                     num_buffer.push(c);
-                } else if (is_start_of_expression || tokens.last().map_or(false, |t| t == "(")) && c == '-' {
+                } else if (is_start_of_expression || tokens.last().is_some_and(|t| t == "("))
+                    && c == '-'
+                {
                     // 式の先頭または開き括弧の後のマイナス記号は数値の一部として扱う
                     num_buffer.push(c);
                     is_start_of_expression = false;
@@ -186,14 +187,14 @@ fn evaluate_expression(expr: &str) -> Result<f64, String> {
                     tokens.push(c.to_string());
                     is_start_of_expression = false;
                 }
-            },
+            }
             ' ' => {
                 if !num_buffer.is_empty() {
                     tokens.push(num_buffer.clone());
                     num_buffer.clear();
                 }
                 // スペースは式の開始状態に影響しない
-            },
+            }
             _ => return Err(format!("不正な文字: {}", c)),
         }
     }
@@ -215,11 +216,11 @@ pub(crate) fn SimpleCalculator() -> Element {
     let description: &str = "基本的な四則演算と括弧を使った計算ができる電卓です。画面上からのボタンによる計算のみならず、キーボードからの入力にも対応しております。また、非常に大きな値や小さな値での計算には対応していないため、間違った計算結果が出力される場合があります。";
 
     // 計算式と結果
-    let mut expression = use_signal(|| String::new());
+    let mut expression = use_signal(String::new);
     let mut result = use_signal(|| String::from("0"));
-    let mut error = use_signal(|| String::new());
+    let mut error = use_signal(String::new);
     // 現在入力中の数値を追跡する変数
-    let mut current_number = use_signal(|| String::new());
+    let mut current_number = use_signal(String::new);
 
     // 履歴（シンプル化のため一時的に無効化）
     // let mut history = use_signal(|| VecDeque::<(String, String)>::with_capacity(10));
@@ -255,12 +256,19 @@ pub(crate) fn SimpleCalculator() -> Element {
             } else {
                 // 最後の文字を取得
                 if let Some(last_char) = expr.chars().last() {
-                    let last_is_operator = matches!(last_char, '+' | '-' | '*' | '/' | '×' | '÷' | '(');
+                    let last_is_operator =
+                        matches!(last_char, '+' | '-' | '*' | '/' | '×' | '÷' | '(');
 
                     // 最後の文字が演算子で、新しい文字も演算子の場合
                     if last_is_operator && is_operator {
                         // マイナス記号は負の数の入力のために特別扱い
-                        if c == "-" && (last_char == '(' || last_char == '*' || last_char == '/' || last_char == '×' || last_char == '÷') {
+                        if c == "-"
+                            && (last_char == '('
+                                || last_char == '*'
+                                || last_char == '/'
+                                || last_char == '×'
+                                || last_char == '÷')
+                        {
                             expr.push_str(c);
                             current_number.set(c.to_string());
                         } else {
@@ -342,7 +350,8 @@ pub(crate) fn SimpleCalculator() -> Element {
                         // 式の最後から数字または小数点が続く部分を抽出
                         let mut new_current = String::new();
                         for ch in expr.chars().rev() {
-                            if ch.is_digit(10) || ch == '.' || (ch == '-' && new_current.is_empty()) {
+                            if ch.is_ascii_digit() || ch == '.' || (ch == '-' && new_current.is_empty())
+                            {
                                 new_current.insert(0, ch);
                             } else {
                                 break;
@@ -421,37 +430,35 @@ pub(crate) fn SimpleCalculator() -> Element {
     };
 
     // キーボードイベントハンドラ
-    let on_keydown = move |e: Event<KeyboardData>| {
-        match e.key() {
-            Key::Character(c) => match c.as_str() {
-                "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "." => {
-                    append_to_expression(&c);
-                },
-                "+" | "-" => {
-                    append_to_expression(&c);
-                },
-                "*" => {
-                    append_to_expression("×");
-                },
-                "/" => {
-                    append_to_expression("÷");
-                },
-                "(" | ")" => {
-                    append_to_expression(&c);
-                },
-                _ => {}
-            },
-            Key::Enter => {
-                execute_calculation();
-            },
-            Key::Backspace => {
-                delete_last_char();
-            },
-            Key::Escape => {
-                clear_expression();
-            },
+    let on_keydown = move |e: Event<KeyboardData>| match e.key() {
+        Key::Character(c) => match c.as_str() {
+            "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "." => {
+                append_to_expression(&c);
+            }
+            "+" | "-" => {
+                append_to_expression(&c);
+            }
+            "*" => {
+                append_to_expression("×");
+            }
+            "/" => {
+                append_to_expression("÷");
+            }
+            "(" | ")" => {
+                append_to_expression(&c);
+            }
             _ => {}
+        },
+        Key::Enter => {
+            execute_calculation();
         }
+        Key::Backspace => {
+            delete_last_char();
+        }
+        Key::Escape => {
+            clear_expression();
+        }
+        _ => {}
     };
 
     rsx! {
@@ -475,13 +482,13 @@ pub(crate) fn SimpleCalculator() -> Element {
             ]
         }
 
-        div { 
+        div {
             class: "container mx-auto px-4 py-8",
-            h1 { 
+            h1 {
                 class: "text-3xl font-bold mb-6 text-center",
                 "{title}"
             }
-            p { 
+            p {
                 class: "text-gray-600 mb-8 text-center",
                 "{description}"
             }
@@ -655,7 +662,7 @@ fn calculate(expr: &str, result: &mut Signal<String>, error: &mut Signal<String>
 
             result.set(formatted_result);
             error.set(String::new());
-        },
+        }
         Err(err) => {
             error.set(err);
         }
