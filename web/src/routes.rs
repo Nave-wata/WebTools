@@ -6,6 +6,7 @@ mod converter;
 mod calculator;
 
 use calculator::byte_unit::ByteUnitCalculator;
+use calculator::simple::SimpleCalculator;
 use converter::number_base::NumberBaseConverter;
 use counter::text_length::TextLengthCounter;
 use dioxus::prelude::*;
@@ -41,6 +42,9 @@ pub(crate) enum Route {
         #[nest("/calculator")]
             #[route("/byte-unit")]
             ByteUnitCalculator {},
+    
+            #[route("/simple")]
+            SimpleCalculator {},
         #[end_nest]
     #[end_layout]
 
