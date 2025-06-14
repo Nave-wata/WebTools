@@ -1,11 +1,7 @@
 use crate::components::breadcrumb::{BreadcrumbItem, BreadcrumbList};
 use crate::components::head::Head;
 use crate::components::inputs::{
-    button::Button,
-    checkbox::Checkbox,
-    number::Number,
-    radio::Radio,
-    text::Text,
+    button::Button, checkbox::Checkbox, number::Number, radio::Radio, text::Text,
 };
 use crate::components::toasts::success_toast::SuccessToast;
 use crate::libs::random::random_string_from_chars;
@@ -140,7 +136,6 @@ struct NumberFieldProps {
     disabled: bool,
 }
 
-
 /// 数値入力フィールドコンポーネント
 ///
 /// # Arguments
@@ -245,10 +240,10 @@ pub(crate) fn PasswordGenerator() -> Element {
     let mut password_qty = use_signal(|| 25);
 
     // エラーメッセージ
-    let mut error_message = use_signal(|| String::new());
+    let mut error_message = use_signal(String::new);
 
     // 生成されたパスワードリスト
-    let mut random_passwords = use_signal(|| Vec::<String>::new());
+    let mut random_passwords = use_signal(Vec::<String>::new);
 
     // パスワードのコピー状況
     let mut is_copied = use_signal(|| false);
@@ -506,7 +501,7 @@ pub(crate) fn PasswordGenerator() -> Element {
                             Button {
                                 class: "py-2 w-[48%] hover:bg-gray-200 border border-gray-500 text-gray-700 hover:text-gray-950 rounded-md",
                                 onclick: move |_| {
-                                    if random_passwords().len() <= 0 {
+                                    if random_passwords().is_empty() {
                                         error_message.set("コピーできるパスワードがありません".to_string());
                                         return;
                                     }
@@ -526,7 +521,7 @@ pub(crate) fn PasswordGenerator() -> Element {
                             }
                         }
 
-                        if error_message().len() > 0 {
+                        if !error_message().is_empty() {
                             div {
                                 class: "text-red-700 mt-3",
                                 {error_message}
