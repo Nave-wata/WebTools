@@ -1,6 +1,7 @@
 use crate::components::cards::byte_unit_calculator_card::ByteUnitCalculatorCard;
 use crate::components::cards::number_base_converter_card::NumberBaseConverterCard;
 use crate::components::cards::password_generator_card::PasswordGeneratorCard;
+use crate::components::cards::simple_calculator_card::SimpleCalculatorCard;
 use crate::components::cards::text_length_counter::TextLengthCounterCard;
 use crate::components::grids::tools_grid::ToolsGrid;
 use crate::components::head::Head;
@@ -19,28 +20,33 @@ pub(crate) fn TopPage() -> Element {
             og_image: asset!("/assets/images/ogp/top.webp"),
         }
 
-        ToolsGrid {
-            title: "ジェネレータ",
+        div {
+            class: "px-4",
 
-            PasswordGeneratorCard {},
-        }
+            ToolsGrid {
+                title: "ジェネレータ",
 
-        ToolsGrid {
-            title: "カウンター",
+                PasswordGeneratorCard {},
+            }
 
-            TextLengthCounterCard {},
-        }
+            ToolsGrid {
+                title: "カウンター",
 
-        ToolsGrid {
-            title: "コンバーター",
+                TextLengthCounterCard {},
+            }
 
-            NumberBaseConverterCard {},
-        }
+            ToolsGrid {
+                title: "コンバーター",
 
-        ToolsGrid {
-            title: "計算機",
+                NumberBaseConverterCard {},
+            }
 
-            ByteUnitCalculatorCard {},
+            ToolsGrid {
+                title: "計算機",
+
+                ByteUnitCalculatorCard {},
+                SimpleCalculatorCard {},
+            }
         }
     }
 }
