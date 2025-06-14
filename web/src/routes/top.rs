@@ -1,3 +1,4 @@
+use crate::components::cards::big_numbers_calculator_card::BigNumbersCalculatorCard;
 use crate::components::cards::byte_unit_calculator_card::ByteUnitCalculatorCard;
 use crate::components::cards::number_base_converter_card::NumberBaseConverterCard;
 use crate::components::cards::password_generator_card::PasswordGeneratorCard;
@@ -46,6 +47,7 @@ pub(crate) fn TopPage() -> Element {
 
                 ByteUnitCalculatorCard {},
                 SimpleCalculatorCard {},
+                BigNumbersCalculatorCard {},
             }
         }
     }
