@@ -3,7 +3,7 @@ use dioxus::prelude::*;
 
 /// ツールカードコンポーネント props
 ///
-/// ＃ Fields
+/// # Fields
 ///
 /// * `to` - `Route` 遷移先ルーティング
 /// * `icon` - `Element` ツールのアイコン

@@ -184,33 +184,16 @@ fn handle_input(
     match input_unit {
         "B" => {
             // Bから他の単位への変換
-            if let Ok(kb) = convert_and_handle_error::<_, String>(
-                |v| bytes_to_unit(v, "KB"),
-                &value,
-                error_message,
-            ) {
-                kb_input.set(kb);
-            }
-            if let Ok(mb) = convert_and_handle_error::<_, String>(
-                |v| bytes_to_unit(v, "MB"),
-                &value,
-                error_message,
-            ) {
-                mb_input.set(mb);
-            }
-            if let Ok(gb) = convert_and_handle_error::<_, String>(
-                |v| bytes_to_unit(v, "GB"),
-                &value,
-                error_message,
-            ) {
-                gb_input.set(gb);
-            }
-            if let Ok(tb) = convert_and_handle_error::<_, String>(
-                |v| bytes_to_unit(v, "TB"),
-                &value,
-                error_message,
-            ) {
-                tb_input.set(tb);
+            let target_units = [("KB", &mut kb_input), ("MB", &mut mb_input), ("GB", &mut gb_input), ("TB", &mut tb_input)];
+
+            for (unit, input_signal) in target_units {
+                if let Ok(converted) = convert_and_handle_error::<_, String>(
+                    |v| bytes_to_unit(v, unit),
+                    &value,
+                    error_message,
+                ) {
+                    input_signal.set(converted);
+                }
             }
         }
         "KB" => {
