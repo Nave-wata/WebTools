@@ -1,9 +1,9 @@
-mod top;
+mod calculator;
+mod converter;
+mod counter;
 mod generator;
 mod notfound;
-mod counter;
-mod converter;
-mod calculator;
+mod top;
 
 use calculator::byte_unit::ByteUnitCalculator;
 use calculator::simple::SimpleCalculator;
@@ -63,5 +63,8 @@ pub(crate) enum Route {
 #[cfg(feature = "production")]
 async fn static_routes() -> Result<Vec<String>, ServerFnError> {
     // The `Routable` trait has a `static_routes` method that returns all static routes in the enum
-    Ok(Route::static_routes().iter().map(ToString::to_string).collect())
+    Ok(Route::static_routes()
+        .iter()
+        .map(ToString::to_string)
+        .collect())
 }

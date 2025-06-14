@@ -33,10 +33,12 @@ pub(crate) struct ToastProps {
 /// * `svg` - `Element` トースト内に表示されるアイコン
 pub(crate) fn Toast(mut props: ToastProps) -> Element {
     let _ = use_resource(move || async move {
-        let mut eval = document::eval(r#"
+        let mut eval = document::eval(
+            r#"
             const duration = await dioxus.recv();
             setTimeout(() => dioxus.send("hide"), duration);
-        "#);
+        "#,
+        );
 
         eval.send(props.duration).unwrap();
         eval.recv::<String>().await.unwrap();
