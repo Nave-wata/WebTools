@@ -22,36 +22,32 @@ use crate::components::layouts::default::DefaultLayout;
 #[derive(Clone, Routable, Debug, PartialEq)]
 pub(crate) enum Route {
     #[layout(DefaultLayout)]
-        #[route("/")]
-        TopPage {},
+    #[route("/")]
+    TopPage {},
 
-        #[nest("/generator")]
-            #[route("/password")]
-            PasswordGenerator {},
-        #[end_nest]
+    #[nest("/generator")]
+    #[route("/password")]
+    PasswordGenerator {},
+    #[end_nest]
+    #[nest("/counter")]
+    #[route("/text-length")]
+    TextLengthCounter {},
+    #[end_nest]
+    #[nest("/converter")]
+    #[route("/number-base")]
+    NumberBaseConverter {},
+    #[end_nest]
+    #[nest("/calculator")]
+    #[route("/byte-unit")]
+    ByteUnitCalculator {},
 
-        #[nest("/counter")]
-            #[route("/text-length")]
-            TextLengthCounter {},
-        #[end_nest]
+    #[route("/simple")]
+    SimpleCalculator {},
 
-        #[nest("/converter")]
-            #[route("/number-base")]
-            NumberBaseConverter {},
-        #[end_nest]
-
-        #[nest("/calculator")]
-            #[route("/byte-unit")]
-            ByteUnitCalculator {},
-
-            #[route("/simple")]
-            SimpleCalculator {},
-
-            #[route("/big-numbers")]
-            BigNumbersCalculator {},
-        #[end_nest]
+    #[route("/big-numbers")]
+    BigNumbersCalculator {},
+    #[end_nest]
     #[end_layout]
-
     #[layout(DefaultLayout)]
     #[route("/404")]
     NotFound {},

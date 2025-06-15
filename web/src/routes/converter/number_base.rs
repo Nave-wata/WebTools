@@ -1,5 +1,6 @@
 use crate::components::breadcrumb::{BreadcrumbItem, BreadcrumbList};
 use crate::components::head::Head;
+use crate::components::instructions::usage::{Usage, UsageSectionProps};
 use crate::libs::number;
 use crate::routes::Route;
 use dioxus::prelude::*;
@@ -336,33 +337,18 @@ pub(crate) fn NumberBaseConverter() -> Element {
                 }
 
                 // 使い方説明
-                div {
-                    class: "mb-6",
-
-                    h2 {
-                        class: "text-xl font-bold mb-3",
-                        "使い方"
-                    }
-
-                    ul {
-                        class: "list-disc pl-5 space-y-2",
-
-                        li {
-                            "2進数入力欄には「0」と「1」のみ入力できます。"
-                        }
-
-                        li {
-                            "10進数入力欄には「0」から「9」までの数字を入力できます。"
-                        }
-
-                        li {
-                            "16進数入力欄には「0」から「9」までの数字と「A」から「F」までの文字（大文字・小文字どちらも可）を入力できます。"
-                        }
-
-                        li {
-                            "いずれかの入力欄に値を入力すると、自動的に他の進数に変換されます。"
-                        }
-                    }
+                Usage {
+                    sections: vec![
+                        UsageSectionProps {
+                            title: "基本的な使い方".to_string(),
+                            items: vec![
+                                "2進数入力欄には「0」と「1」のみ入力できます。".to_string(),
+                                "10進数入力欄には「0」から「9」までの数字を入力できます。".to_string(),
+                                "16進数入力欄には「0」から「9」までの数字と「A」から「F」までの文字（大文字・小文字どちらも可）を入力できます。".to_string(),
+                                "いずれかの入力欄に値を入力すると、自動的に他の進数に変換されます。".to_string(),
+                            ],
+                        },
+                    ],
                 }
             }
         }

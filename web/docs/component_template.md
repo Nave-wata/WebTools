@@ -45,6 +45,7 @@ pub(crate) fn ComponentName() -> Element {
 use dioxus::prelude::*;
 use crate::components::ui::heading::Heading;
 use crate::components::ui::card::Card;
+use crate::components::instructions::usage::{Usage, UsageSectionProps};
 
 #[derive(Clone, PartialEq)]
 enum CalculatorState {
@@ -163,19 +164,25 @@ pub(crate) fn CalculatorComponent() -> Element {
                     }
                 }
 
-                // 使い方
-                div {
-                    class: "mt-6",
-                    h3 {
-                        class: "text-lg font-medium mb-2",
-                        "使い方"
-                    }
-                    ul {
-                        class: "list-disc pl-5 space-y-1",
-                        li { "使い方の説明1" }
-                        li { "使い方の説明2" }
-                        li { "使い方の説明3" }
-                    }
+                // 使い方コンポーネント
+                // 全てのツールページには使い方説明を追加してください
+                Usage {
+                    sections: vec![
+                        UsageSectionProps {
+                            title: "基本的な使い方".to_string(),
+                            items: vec![
+                                "このツールの基本的な使い方の説明を記述します。".to_string(),
+                                "箇条書きで操作手順を説明します。".to_string(),
+                            ],
+                        },
+                        UsageSectionProps {
+                            title: "高度な機能".to_string(),
+                            items: vec![
+                                "高度な機能や特殊な使い方について説明します。".to_string(),
+                                "ユーザーが知っておくべき注意点などを記述します。".to_string(),
+                            ],
+                        },
+                    ],
                 }
             }
         }

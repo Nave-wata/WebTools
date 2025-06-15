@@ -1,5 +1,6 @@
 use crate::components::breadcrumb::{BreadcrumbItem, BreadcrumbList};
 use crate::components::head::Head;
+use crate::components::instructions::usage::{Usage, UsageSectionProps};
 use crate::routes::Route;
 use dioxus::prelude::*;
 use keyboard_types::Key;
@@ -350,7 +351,9 @@ pub(crate) fn SimpleCalculator() -> Element {
                         // 式の最後から数字または小数点が続く部分を抽出
                         let mut new_current = String::new();
                         for ch in expr.chars().rev() {
-                            if ch.is_ascii_digit() || ch == '.' || (ch == '-' && new_current.is_empty())
+                            if ch.is_ascii_digit()
+                                || ch == '.'
+                                || (ch == '-' && new_current.is_empty())
                             {
                                 new_current.insert(0, ch);
                             } else {
@@ -488,153 +491,193 @@ pub(crate) fn SimpleCalculator() -> Element {
                 class: "text-3xl font-bold mb-6 text-center",
                 "{title}"
             }
-            p {
-                class: "text-gray-600 mb-8 text-center",
-                "{description}"
-            }
 
-            // 電卓本体
+            // コンテンツ
             div {
-                class: "max-w-md mx-auto bg-white rounded-lg shadow-lg p-6",
+                class: "max-w-5xl mx-auto bg-white rounded-lg shadow-lg p-2 border border-gray-200 bg-gray-50",
                 tabindex: 0,
                 onkeydown: on_keydown,
 
-                // 式と結果の表示
+                // 電卓本体
                 div {
-                    class: "mb-4 bg-gray-100 p-4 rounded-lg",
+                    class: "max-w-md mx-auto p-6 max-sm:p-4 sm:shadow-lg",
+                    tabindex: 0,
+                    onkeydown: on_keydown,
+
+                    // 式と結果の表示
                     div {
-                        class: "text-right text-lg font-mono min-h-8 break-all",
-                        "{expression}"
-                    }
-                    div {
-                        class: "text-right text-2xl font-bold font-mono mt-2 break-all",
-                        if !error().is_empty() {
-                            span {
-                                class: "text-red-500",
-                                "{error}"
+                        class: "mb-4 bg-gray-100 p-4 rounded-lg",
+                        div {
+                            class: "text-right text-lg font-mono min-h-8 break-all",
+                            "{expression}"
+                        }
+                        div {
+                            class: "text-right text-2xl font-bold font-mono mt-2 break-all",
+                            if !error().is_empty() {
+                                span {
+                                    class: "text-red-500",
+                                    "{error}"
+                                }
+                            } else {
+                                "{result}"
                             }
-                        } else {
-                            "{result}"
+                        }
+                    }
+
+                    // ボタングリッド
+                    div {
+                        class: "grid grid-cols-4 gap-2",
+
+                        // 1行目: クリア、括弧、割り算
+                        button {
+                            class: "bg-red-500 text-white p-3 rounded-lg text-xl font-bold",
+                            onclick: move |_| clear_expression(),
+                            "C"
+                        }
+                        button {
+                            class: "bg-gray-300 p-3 rounded-lg text-xl font-bold",
+                            onclick: move |_| append_to_expression("("),
+                            "("
+                        }
+                        button {
+                            class: "bg-gray-300 p-3 rounded-lg text-xl font-bold",
+                            onclick: move |_| append_to_expression(")"),
+                            ")"
+                        }
+                        button {
+                            class: "bg-blue-500 text-white p-3 rounded-lg text-xl font-bold",
+                            onclick: move |_| append_to_expression("÷"),
+                            "÷"
+                        }
+
+                        // 2行目: 7,8,9,×
+                        button {
+                            class: "bg-gray-200 p-3 rounded-lg text-xl font-bold",
+                            onclick: move |_| append_to_expression("7"),
+                            "7"
+                        }
+                        button {
+                            class: "bg-gray-200 p-3 rounded-lg text-xl font-bold",
+                            onclick: move |_| append_to_expression("8"),
+                            "8"
+                        }
+                        button {
+                            class: "bg-gray-200 p-3 rounded-lg text-xl font-bold",
+                            onclick: move |_| append_to_expression("9"),
+                            "9"
+                        }
+                        button {
+                            class: "bg-blue-500 text-white p-3 rounded-lg text-xl font-bold",
+                            onclick: move |_| append_to_expression("×"),
+                            "×"
+                        }
+
+                        // 3行目: 4,5,6,-
+                        button {
+                            class: "bg-gray-200 p-3 rounded-lg text-xl font-bold",
+                            onclick: move |_| append_to_expression("4"),
+                            "4"
+                        }
+                        button {
+                            class: "bg-gray-200 p-3 rounded-lg text-xl font-bold",
+                            onclick: move |_| append_to_expression("5"),
+                            "5"
+                        }
+                        button {
+                            class: "bg-gray-200 p-3 rounded-lg text-xl font-bold",
+                            onclick: move |_| append_to_expression("6"),
+                            "6"
+                        }
+                        button {
+                            class: "bg-blue-500 text-white p-3 rounded-lg text-xl font-bold",
+                            onclick: move |_| append_to_expression("-"),
+                            "-"
+                        }
+
+                        // 4行目: 1,2,3,+
+                        button {
+                            class: "bg-gray-200 p-3 rounded-lg text-xl font-bold",
+                            onclick: move |_| append_to_expression("1"),
+                            "1"
+                        }
+                        button {
+                            class: "bg-gray-200 p-3 rounded-lg text-xl font-bold",
+                            onclick: move |_| append_to_expression("2"),
+                            "2"
+                        }
+                        button {
+                            class: "bg-gray-200 p-3 rounded-lg text-xl font-bold",
+                            onclick: move |_| append_to_expression("3"),
+                            "3"
+                        }
+                        button {
+                            class: "bg-blue-500 text-white p-3 rounded-lg text-xl font-bold",
+                            onclick: move |_| append_to_expression("+"),
+                            "+"
+                        }
+
+                        // 5行目: 0, ., ←, =
+                        button {
+                            class: "bg-gray-200 p-3 rounded-lg text-xl font-bold",
+                            onclick: move |_| append_to_expression("0"),
+                            "0"
+                        }
+                        button {
+                            class: "bg-gray-200 p-3 rounded-lg text-xl font-bold",
+                            onclick: move |_| append_to_expression("."),
+                            "."
+                        }
+                        button {
+                            class: "bg-gray-300 p-3 rounded-lg text-xl font-bold",
+                            onclick: move |_| delete_last_char(),
+                            "←"
+                        }
+                        button {
+                            class: "bg-green-500 text-white p-3 rounded-lg text-xl font-bold",
+                            onclick: move |_| execute_calculation(),
+                            "="
                         }
                     }
                 }
 
-                // ボタングリッド
-                div {
-                    class: "grid grid-cols-4 gap-2",
-
-                    // 1行目: クリア、括弧、割り算
-                    button {
-                        class: "bg-red-500 text-white p-3 rounded-lg text-xl font-bold",
-                        onclick: move |_| clear_expression(),
-                        "C"
-                    }
-                    button {
-                        class: "bg-gray-300 p-3 rounded-lg text-xl font-bold",
-                        onclick: move |_| append_to_expression("("),
-                        "("
-                    }
-                    button {
-                        class: "bg-gray-300 p-3 rounded-lg text-xl font-bold",
-                        onclick: move |_| append_to_expression(")"),
-                        ")"
-                    }
-                    button {
-                        class: "bg-blue-500 text-white p-3 rounded-lg text-xl font-bold",
-                        onclick: move |_| append_to_expression("÷"),
-                        "÷"
-                    }
-
-                    // 2行目: 7,8,9,×
-                    button {
-                        class: "bg-gray-200 p-3 rounded-lg text-xl font-bold",
-                        onclick: move |_| append_to_expression("7"),
-                        "7"
-                    }
-                    button {
-                        class: "bg-gray-200 p-3 rounded-lg text-xl font-bold",
-                        onclick: move |_| append_to_expression("8"),
-                        "8"
-                    }
-                    button {
-                        class: "bg-gray-200 p-3 rounded-lg text-xl font-bold",
-                        onclick: move |_| append_to_expression("9"),
-                        "9"
-                    }
-                    button {
-                        class: "bg-blue-500 text-white p-3 rounded-lg text-xl font-bold",
-                        onclick: move |_| append_to_expression("×"),
-                        "×"
-                    }
-
-                    // 3行目: 4,5,6,-
-                    button {
-                        class: "bg-gray-200 p-3 rounded-lg text-xl font-bold",
-                        onclick: move |_| append_to_expression("4"),
-                        "4"
-                    }
-                    button {
-                        class: "bg-gray-200 p-3 rounded-lg text-xl font-bold",
-                        onclick: move |_| append_to_expression("5"),
-                        "5"
-                    }
-                    button {
-                        class: "bg-gray-200 p-3 rounded-lg text-xl font-bold",
-                        onclick: move |_| append_to_expression("6"),
-                        "6"
-                    }
-                    button {
-                        class: "bg-blue-500 text-white p-3 rounded-lg text-xl font-bold",
-                        onclick: move |_| append_to_expression("-"),
-                        "-"
-                    }
-
-                    // 4行目: 1,2,3,+
-                    button {
-                        class: "bg-gray-200 p-3 rounded-lg text-xl font-bold",
-                        onclick: move |_| append_to_expression("1"),
-                        "1"
-                    }
-                    button {
-                        class: "bg-gray-200 p-3 rounded-lg text-xl font-bold",
-                        onclick: move |_| append_to_expression("2"),
-                        "2"
-                    }
-                    button {
-                        class: "bg-gray-200 p-3 rounded-lg text-xl font-bold",
-                        onclick: move |_| append_to_expression("3"),
-                        "3"
-                    }
-                    button {
-                        class: "bg-blue-500 text-white p-3 rounded-lg text-xl font-bold",
-                        onclick: move |_| append_to_expression("+"),
-                        "+"
-                    }
-
-                    // 5行目: 0, ., ←, =
-                    button {
-                        class: "bg-gray-200 p-3 rounded-lg text-xl font-bold",
-                        onclick: move |_| append_to_expression("0"),
-                        "0"
-                    }
-                    button {
-                        class: "bg-gray-200 p-3 rounded-lg text-xl font-bold",
-                        onclick: move |_| append_to_expression("."),
-                        "."
-                    }
-                    button {
-                        class: "bg-gray-300 p-3 rounded-lg text-xl font-bold",
-                        onclick: move |_| delete_last_char(),
-                        "←"
-                    }
-                    button {
-                        class: "bg-green-500 text-white p-3 rounded-lg text-xl font-bold",
-                        onclick: move |_| execute_calculation(),
-                        "="
-                    }
+                // 使い方説明
+                Usage {
+                    sections: vec![
+                        UsageSectionProps {
+                            title: "基本的な操作方法".to_string(),
+                            items: vec![
+                                "数字ボタン（0-9）をクリックして数値を入力します。".to_string(),
+                                "演算子ボタン（+, -, ×, ÷）をクリックして演算子を入力します。".to_string(),
+                                "小数点ボタン（.）をクリックして小数点を入力します。".to_string(),
+                                "括弧ボタン（(, )）をクリックして括弧を入力します。".to_string(),
+                                "「=」ボタンをクリックすると計算結果が表示されます。".to_string(),
+                                "「C」ボタンをクリックすると入力がクリアされます。".to_string(),
+                                "「←」ボタンをクリックすると最後に入力した文字が削除されます。".to_string(),
+                            ],
+                        },
+                        UsageSectionProps {
+                            title: "キーボード操作".to_string(),
+                            items: vec![
+                                "数字キー（0-9）で数値を入力できます。".to_string(),
+                                "演算子キー（+, -, *, /）で演算子を入力できます。".to_string(),
+                                "小数点キー（.）で小数点を入力できます。".to_string(),
+                                "括弧キー（(, )）で括弧を入力できます。".to_string(),
+                                "Enterキーで計算を実行します。".to_string(),
+                                "Escキーで入力をクリアします。".to_string(),
+                                "Backspaceキーで最後に入力した文字を削除します。".to_string(),
+                            ],
+                        },
+                        UsageSectionProps {
+                            title: "注意事項".to_string(),
+                            items: vec![
+                                "非常に大きな値や小さな値での計算には対応していないため、間違った計算結果が出力される場合があります。".to_string(),
+                                "大きな数値の計算が必要な場合は、「大きな数値の電卓」ツールをご利用ください。".to_string(),
+                                "計算式の途中で演算子を変更したい場合は、新しい演算子をクリックすると置き換えられます。".to_string(),
+                                "0で割り算を行うと「0で除算できません」というエラーが表示されます。".to_string(),
+                            ],
+                        },
+                    ],
                 }
-
-                // 履歴機能は一時的に無効化
             }
         }
     }

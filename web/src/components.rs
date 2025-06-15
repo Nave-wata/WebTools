@@ -4,6 +4,7 @@ pub(crate) mod errors;
 pub(crate) mod grids;
 pub(crate) mod head;
 pub(crate) mod inputs;
+pub(crate) mod instructions;
 pub(crate) mod layouts;
 mod logos;
 pub(crate) mod toasts;

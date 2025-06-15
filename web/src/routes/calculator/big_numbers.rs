@@ -1,5 +1,6 @@
 use crate::components::breadcrumb::{BreadcrumbItem, BreadcrumbList};
 use crate::components::head::Head;
+use crate::components::instructions::usage::{Usage, UsageSectionProps};
 use crate::routes::Route;
 use dioxus::prelude::*;
 use keyboard_types::Key;
@@ -84,13 +85,13 @@ fn add_big_numbers(a: &str, b: &str) -> String {
 
     // 小数点がある場合の処理
     let (a_int, a_frac) = if let Some(pos) = a.find('.') {
-        (&a[0..pos], &a[pos+1..])
+        (&a[0..pos], &a[pos + 1..])
     } else {
         (a, "")
     };
 
     let (b_int, b_frac) = if let Some(pos) = b.find('.') {
-        (&b[0..pos], &b[pos+1..])
+        (&b[0..pos], &b[pos + 1..])
     } else {
         (b, "")
     };
@@ -103,8 +104,18 @@ fn add_big_numbers(a: &str, b: &str) -> String {
 
         let mut frac_carry = 0;
         for i in (0..20).rev() {
-            let a_digit = a_frac_padded.chars().nth(i).unwrap_or('0').to_digit(10).unwrap_or(0);
-            let b_digit = b_frac_padded.chars().nth(i).unwrap_or('0').to_digit(10).unwrap_or(0);
+            let a_digit = a_frac_padded
+                .chars()
+                .nth(i)
+                .unwrap_or('0')
+                .to_digit(10)
+                .unwrap_or(0);
+            let b_digit = b_frac_padded
+                .chars()
+                .nth(i)
+                .unwrap_or('0')
+                .to_digit(10)
+                .unwrap_or(0);
 
             let sum = a_digit + b_digit + frac_carry;
             frac_result.insert(0, char::from_digit(sum % 10, 10).unwrap());
@@ -169,13 +180,13 @@ fn subtract_big_numbers(a: &str, b: &str) -> String {
 
     // 小数点がある場合の処理
     let (a_int, a_frac) = if let Some(pos) = a.find('.') {
-        (&a[0..pos], &a[pos+1..])
+        (&a[0..pos], &a[pos + 1..])
     } else {
         (a, "")
     };
 
     let (b_int, b_frac) = if let Some(pos) = b.find('.') {
-        (&b[0..pos], &b[pos+1..])
+        (&b[0..pos], &b[pos + 1..])
     } else {
         (b, "")
     };
@@ -190,8 +201,18 @@ fn subtract_big_numbers(a: &str, b: &str) -> String {
 
         let mut borrow = 0;
         for i in (0..20).rev() {
-            let mut a_digit = a_frac_padded.chars().nth(i).unwrap_or('0').to_digit(10).unwrap_or(0);
-            let b_digit = b_frac_padded.chars().nth(i).unwrap_or('0').to_digit(10).unwrap_or(0);
+            let mut a_digit = a_frac_padded
+                .chars()
+                .nth(i)
+                .unwrap_or('0')
+                .to_digit(10)
+                .unwrap_or(0);
+            let b_digit = b_frac_padded
+                .chars()
+                .nth(i)
+                .unwrap_or('0')
+                .to_digit(10)
+                .unwrap_or(0);
 
             if a_digit < b_digit + borrow {
                 a_digit += 10;
@@ -250,7 +271,8 @@ fn subtract_big_numbers(a: &str, b: &str) -> String {
 /// 大きな数値の乗算
 fn multiply_big_numbers(a: &str, b: &str) -> String {
     // 負の数の処理
-    let is_negative = (a.starts_with('-') && !b.starts_with('-')) || (!a.starts_with('-') && b.starts_with('-'));
+    let is_negative =
+        (a.starts_with('-') && !b.starts_with('-')) || (!a.starts_with('-') && b.starts_with('-'));
 
     let a_clean = if a.starts_with('-') { &a[1..] } else { a };
     let b_clean = if b.starts_with('-') { &b[1..] } else { b };
@@ -264,8 +286,9 @@ fn multiply_big_numbers(a: &str, b: &str) -> String {
     let b_no_decimal: String = b_clean.chars().filter(|&c| c != '.').collect();
 
     // 小数点以下の桁数を計算
-    let decimal_places = (a_clean.len() - a_decimal_pos - if a_clean.contains('.') { 1 } else { 0 }) +
-                         (b_clean.len() - b_decimal_pos - if b_clean.contains('.') { 1 } else { 0 });
+    let decimal_places =
+        (a_clean.len() - a_decimal_pos - if a_clean.contains('.') { 1 } else { 0 })
+            + (b_clean.len() - b_decimal_pos - if b_clean.contains('.') { 1 } else { 0 });
 
     // 乗算の実装
     let mut result = vec![0; a_no_decimal.len() + b_no_decimal.len()];
@@ -338,7 +361,8 @@ fn divide_big_numbers(a: &str, b: &str) -> Result<String, String> {
     }
 
     // 負の数の処理
-    let is_negative = (a.starts_with('-') && !b.starts_with('-')) || (!a.starts_with('-') && b.starts_with('-'));
+    let is_negative =
+        (a.starts_with('-') && !b.starts_with('-')) || (!a.starts_with('-') && b.starts_with('-'));
 
     let a_clean = if a.starts_with('-') { &a[1..] } else { a };
     let b_clean = if b.starts_with('-') { &b[1..] } else { b };
@@ -361,8 +385,15 @@ fn divide_big_numbers(a: &str, b: &str) -> Result<String, String> {
     }
 
     // 桁数を揃える
-    let decimal_shift = if b_parts.len() > 1 { b_parts[1].len() } else { 0 } -
-                        if a_parts.len() > 1 { a_parts[1].len() } else { 0 };
+    let decimal_shift = if b_parts.len() > 1 {
+        b_parts[1].len()
+    } else {
+        0
+    } - if a_parts.len() > 1 {
+        a_parts[1].len()
+    } else {
+        0
+    };
 
     if decimal_shift > 0 {
         for _ in 0..decimal_shift {
@@ -454,13 +485,13 @@ fn compare_big_numbers(a: &str, b: &str) -> i32 {
 
     // 小数点がある場合の処理
     let (a_int, a_frac) = if let Some(pos) = a.find('.') {
-        (&a[0..pos], &a[pos+1..])
+        (&a[0..pos], &a[pos + 1..])
     } else {
         (a, "")
     };
 
     let (b_int, b_frac) = if let Some(pos) = b.find('.') {
-        (&b[0..pos], &b[pos+1..])
+        (&b[0..pos], &b[pos + 1..])
     } else {
         (b, "")
     };
@@ -497,7 +528,10 @@ fn evaluate_postfix(tokens: Vec<String>) -> Result<String, String> {
     let mut stack = Vec::new();
 
     for token in tokens {
-        if token.chars().all(|c| c.is_ascii_digit() || c == '.' || (c == '-' && token.len() > 1)) {
+        if token
+            .chars()
+            .all(|c| c.is_ascii_digit() || c == '.' || (c == '-' && token.len() > 1))
+        {
             stack.push(token);
         } else {
             // 演算子の場合、スタックから2つの値を取り出して計算
@@ -554,9 +588,7 @@ fn evaluate_expression(expr: &str) -> Result<String, String> {
                 }
             }
             '+' | '-' | '*' | '/' | '×' | '÷' | '(' | ')' => {
-                if (is_start_of_expression || tokens.last().is_some_and(|t| t == "("))
-                    && c == '-'
-                {
+                if (is_start_of_expression || tokens.last().is_some_and(|t| t == "(")) && c == '-' {
                     // 式の先頭または開き括弧の後のマイナス記号は数値の一部として扱う
                     num_buffer.push(c);
                     is_start_of_expression = false;
@@ -687,10 +719,6 @@ pub(crate) fn BigNumbersCalculator() -> Element {
                 class: "text-3xl font-bold mb-6 text-center",
                 "{title}"
             }
-            p {
-                class: "text-gray-600 mb-8 text-center",
-                "{description}"
-            }
 
             // 電卓本体（フォーム形式）
             div {
@@ -800,11 +828,53 @@ pub(crate) fn BigNumbersCalculator() -> Element {
                         }
                     }
                 }
+
+                // 使い方説明
+                Usage {
+                    sections: vec![
+                        UsageSectionProps {
+                            title: "基本的な使い方".to_string(),
+                            items: vec![
+                                "「最初の数値」欄に計算したい最初の数値を入力します。".to_string(),
+                                "「演算子」ドロップダウンから計算に使用する演算子（+, -, ×, ÷）を選択します。".to_string(),
+                                "「2つ目の数値」欄に計算したい2つ目の数値を入力します。".to_string(),
+                                "「計算する」ボタンをクリックすると計算結果が表示されます。".to_string(),
+                                "計算結果は「計算結果」欄に表示されます。計算式と結果の両方が表示されます。".to_string(),
+                            ],
+                        },
+                        UsageSectionProps {
+                            title: "大きな数値の入力".to_string(),
+                            items: vec![
+                                "このツールは非常に大きな数値（通常の電卓では扱えないような桁数）を扱うことができます。".to_string(),
+                                "数値は文字列として処理されるため、桁数の制限はほぼありません。".to_string(),
+                                "小数点を含む数値も入力可能です。例: 「123456789.987654321」".to_string(),
+                                "負の数を入力する場合は、数値の前に「-」を付けてください。例: 「-9876543210」".to_string(),
+                            ],
+                        },
+                        UsageSectionProps {
+                            title: "対応している演算".to_string(),
+                            items: vec![
+                                "加算（+）: 2つの数値を足し合わせます。".to_string(),
+                                "減算（-）: 最初の数値から2つ目の数値を引きます。".to_string(),
+                                "乗算（×）: 2つの数値を掛け合わせます。".to_string(),
+                                "除算（÷）: 最初の数値を2つ目の数値で割ります。".to_string(),
+                            ],
+                        },
+                        UsageSectionProps {
+                            title: "注意事項".to_string(),
+                            items: vec![
+                                "0で割り算を行うと「0で除算できません」というエラーが表示されます。".to_string(),
+                                "入力値が空の場合は、「最初の数値を入力してください」または「2つ目の数値を入力してください」というエラーが表示されます。".to_string(),
+                                "Enterキーを押すことでも計算を実行できます。".to_string(),
+                                "非常に大きな計算結果は、スクロールして全体を確認できます。".to_string(),
+                            ],
+                        },
+                    ],
+                }
             }
         }
     }
 }
-
 
 /// 式を計算して結果を更新
 fn calculate(expr: &str, result: &mut Signal<String>, error: &mut Signal<String>) {

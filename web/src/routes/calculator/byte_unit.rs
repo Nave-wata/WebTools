@@ -1,5 +1,6 @@
 use crate::components::breadcrumb::{BreadcrumbItem, BreadcrumbList};
 use crate::components::head::Head;
+use crate::components::instructions::usage::{Usage, UsageSectionProps};
 use crate::routes::Route;
 use dioxus::prelude::*;
 use std::fmt::Display;
@@ -184,7 +185,12 @@ fn handle_input(
     match input_unit {
         "B" => {
             // Bから他の単位への変換
-            let target_units = [("KB", kb_input), ("MB", mb_input), ("GB", gb_input), ("TB", tb_input)];
+            let target_units = [
+                ("KB", kb_input),
+                ("MB", mb_input),
+                ("GB", gb_input),
+                ("TB", tb_input),
+            ];
 
             for (unit, input_signal) in target_units {
                 if let Ok(converted) = convert_and_handle_error::<_, String>(
@@ -577,29 +583,17 @@ pub(crate) fn ByteUnitCalculator() -> Element {
                 }
 
                 // 使い方説明
-                div {
-                    class: "mb-6",
-
-                    h2 {
-                        class: "text-xl font-bold mb-3",
-                        "使い方"
-                    }
-
-                    ul {
-                        class: "list-disc pl-5 space-y-2",
-
-                        li {
-                            "各入力欄には数値を入力できます。"
-                        }
-
-                        li {
-                            "いずれかの入力欄に値を入力すると、自動的に他の単位に変換されます。"
-                        }
-
-                        li {
-                            "変換は1KB = 1024B、1MB = 1024KB、1GB = 1024MB、1TB = 1024GBとして計算されます。"
-                        }
-                    }
+                Usage {
+                    sections: vec![
+                        UsageSectionProps {
+                            title: "基本的な使い方".to_string(),
+                            items: vec![
+                                "各入力欄には数値を入力できます。".to_string(),
+                                "いずれかの入力欄に値を入力すると、自動的に他の単位に変換されます。".to_string(),
+                                "変換は1KB = 1024B、1MB = 1024KB、1GB = 1024MB、1TB = 1024GBとして計算されます。".to_string(),
+                            ],
+                        },
+                    ],
                 }
             }
         }

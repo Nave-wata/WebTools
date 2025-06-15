@@ -11,7 +11,8 @@
 5. [ステップ4: トップページへのカード追加](#ステップ4-トップページへのカード追加)
 6. [ステップ5: アイコンとOGP画像の追加](#ステップ5-アイコンとogp画像の追加)
 7. [ステップ6: 必要に応じたグリッドの追加](#ステップ6-必要に応じたグリッドの追加)
-8. [完全な例](#完全な例)
+8. [ステップ7: 使い方コンポーネントの追加](#ステップ7-使い方コンポーネントの追加)
+9. [完全な例](#完全な例)
 
 ## 概要
 
@@ -23,6 +24,7 @@
 4. トップページへのカード追加
 5. アイコンとOGP画像の追加
 6. 必要に応じたグリッドの追加
+7. 使い方コンポーネントの追加
 
 以下、各ステップを詳細に説明します。
 
@@ -41,6 +43,7 @@
 ```rust
 use crate::components::breadcrumb::{BreadcrumbItem, BreadcrumbList};
 use crate::components::head::Head;
+use crate::components::instructions::usage::{Usage, UsageSectionProps};
 use crate::routes::Route;
 use dioxus::prelude::*;
 
@@ -95,6 +98,28 @@ pub(crate) fn TextTransformer() -> Element {
 
             // ツールの実装
             // ...
+
+            // 使い方説明コンポーネント
+            // 全てのツールページには使い方説明を追加してください
+            // Usage コンポーネントを使用することで、一貫したスタイルと構造で使い方を表示できます
+            Usage {
+                sections: vec![
+                    UsageSectionProps {
+                        title: "基本的な使い方".to_string(),
+                        items: vec![
+                            "このツールの基本的な使い方の説明を記述します。".to_string(),
+                            "箇条書きで操作手順を説明します。".to_string(),
+                        ],
+                    },
+                    UsageSectionProps {
+                        title: "高度な機能".to_string(),
+                        items: vec![
+                            "高度な機能や特殊な使い方について説明します。".to_string(),
+                            "ユーザーが知っておくべき注意点などを記述します。".to_string(),
+                        ],
+                    },
+                ],
+            }
         }
     }
 }
@@ -272,6 +297,49 @@ pub(crate) fn TextTransformGrid(props: TextTransformGridProps) -> Element {
 ```rust
 pub(crate) mod text_transform_grid;
 ```
+
+## ステップ7: 使い方コンポーネントの追加
+
+すべてのツールページには、ユーザーが機能を理解し効果的に使用できるように使い方説明を追加する必要があります。WebToolsプロジェクトでは、一貫したスタイルと構造で使い方を表示するために`Usage`コンポーネントを使用します。
+
+1. インポート文に`Usage`コンポーネントを追加：
+
+```rust
+use crate::components::instructions::usage::{Usage, UsageSectionProps};
+```
+
+2. ツールの実装部分の後に`Usage`コンポーネントを追加：
+
+```rust
+// 使い方説明
+Usage {
+    sections: vec![
+        UsageSectionProps {
+            title: "基本的な使い方".to_string(),
+            items: vec![
+                "このツールの基本的な使い方の説明を記述します。".to_string(),
+                "箇条書きで操作手順を説明します。".to_string(),
+            ],
+        },
+        UsageSectionProps {
+            title: "高度な機能".to_string(),
+            items: vec![
+                "高度な機能や特殊な使い方について説明します。".to_string(),
+                "ユーザーが知っておくべき注意点などを記述します。".to_string(),
+            ],
+        },
+    ],
+}
+```
+
+`Usage`コンポーネントは以下の特徴を持っています：
+
+- 一貫したスタイルと構造で使い方を表示
+- セクションごとに分けて説明を整理
+- 箇条書きで操作手順を明確に表示
+- レスポンシブデザインに対応
+
+参考として、パスワード生成ツールや文字数カウントツールの実装を確認してください。
 
 ## 完全な例
 

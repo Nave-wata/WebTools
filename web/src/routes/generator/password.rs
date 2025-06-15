@@ -3,6 +3,7 @@ use crate::components::head::Head;
 use crate::components::inputs::{
     button::Button, checkbox::Checkbox, number::Number, radio::Radio, text::Text,
 };
+use crate::components::instructions::usage::{Usage, UsageSectionProps};
 use crate::components::toasts::success_toast::SuccessToast;
 use crate::libs::random::random_string_from_chars;
 use crate::routes::Route;
@@ -575,6 +576,38 @@ pub(crate) fn PasswordGenerator() -> Element {
                     duration: 3000,
                     is_show: is_copied,
                 }
+            }
+
+            // 使い方説明
+            Usage {
+                sections: vec![
+                    UsageSectionProps {
+                        title: "基本的な使い方".to_string(),
+                        items: vec![
+                            "「使用する文字」セクションで、パスワードに含める文字種（大文字、小文字、数字、記号）を選択します。".to_string(),
+                            "各文字種のテキストボックスを編集することで、使用する文字を細かくカスタマイズできます。".to_string(),
+                            "「パスワードの長さ」セクションで、生成するパスワードの文字数を選択します。".to_string(),
+                            "「生成する個数」セクションで、一度に生成するパスワードの数を選択します。".to_string(),
+                            "「生成」ボタンをクリックすると、設定した条件でパスワードが生成されます。".to_string(),
+                        ],
+                    },
+                    UsageSectionProps {
+                        title: "パスワードのコピー".to_string(),
+                        items: vec![
+                            "各パスワードの左側のコピーアイコンをクリックすると、そのパスワードがクリップボードにコピーされます。".to_string(),
+                            "「すべてコピー」ボタンをクリックすると、生成されたすべてのパスワードが改行区切りでクリップボードにコピーされます。".to_string(),
+                            "「ランダムにコピー」ボタンをクリックすると、生成されたパスワードの中からランダムに1つが選ばれてクリップボードにコピーされます。".to_string(),
+                        ],
+                    },
+                    UsageSectionProps {
+                        title: "カスタマイズのヒント".to_string(),
+                        items: vec![
+                            "より安全なパスワードを作成するには、すべての文字種（大文字、小文字、数字、記号）を含め、長さを12文字以上に設定することをおすすめします。".to_string(),
+                            "特定のサービスでパスワードに使用できない文字がある場合は、該当する文字種のテキストボックスからその文字を削除してください。".to_string(),
+                            "覚えやすいパスワードが必要な場合は、記号を除外するか、使用する記号を減らすことを検討してください。".to_string(),
+                        ],
+                    },
+                ],
             }
        }
     }

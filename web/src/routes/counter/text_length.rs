@@ -1,5 +1,6 @@
 use crate::components::breadcrumb::{BreadcrumbItem, BreadcrumbList};
 use crate::components::head::Head;
+use crate::components::instructions::usage::{Usage, UsageSectionProps};
 use crate::libs::counter;
 use crate::routes::Route;
 use dioxus::prelude::*;
@@ -138,6 +139,38 @@ pub(crate) fn TextLengthCounter() -> Element {
                             }
                         }
                     }
+                }
+
+                // 使い方説明
+                Usage {
+                    sections: vec![
+                        UsageSectionProps {
+                            title: "基本的な使い方".to_string(),
+                            items: vec![
+                                "「テキストを入力」エリアに文字列を入力または貼り付けます。".to_string(),
+                                "入力と同時に、下の「カウント結果」エリアに各種カウント結果がリアルタイムで表示されます。".to_string(),
+                                "テキストを編集すると、カウント結果も自動的に更新されます。".to_string(),
+                            ],
+                        },
+                        UsageSectionProps {
+                            title: "カウント項目の説明".to_string(),
+                            items: vec![
+                                "文字数：入力されたテキストの文字数を表示します。スペースや改行も1文字としてカウントされます。".to_string(),
+                                "単語数：スペースや改行で区切られた単語の数をカウントします。連続したスペースは1つの区切りとして扱われます。".to_string(),
+                                "行数：改行（\\n）で区切られた行の数をカウントします。最後の行に改行がなくても1行としてカウントされます。".to_string(),
+                                "バイト数：入力されたテキストのバイト数を表示します。UTF-8エンコーディングでのバイト数となります。".to_string(),
+                            ],
+                        },
+                        UsageSectionProps {
+                            title: "活用例".to_string(),
+                            items: vec![
+                                "SNSの投稿文字数制限を確認する際に利用できます。".to_string(),
+                                "レポートや論文の文字数・単語数をカウントする際に便利です。".to_string(),
+                                "プログラムのソースコードの行数を確認する際に使用できます。".to_string(),
+                                "データ転送量を見積もる際に、バイト数のカウントが役立ちます。".to_string(),
+                            ],
+                        },
+                    ],
                 }
             }
         }
