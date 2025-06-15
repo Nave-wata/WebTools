@@ -55,6 +55,8 @@
 
 - `layouts`: レイアウトコンポーネント（例: `DefaultLayout`）
 - `errors`: エラー関連のコンポーネント（例: `Err404`）
+- `instructions`: 使い方説明関連のコンポーネント
+  - `usage`: 使い方コンポーネント（`Usage`、`UsageSection`）
 
 ## ルーティング
 
