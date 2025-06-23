@@ -4,6 +4,7 @@ use crate::components::cards::number_base_converter_card::NumberBaseConverterCar
 use crate::components::cards::password_generator_card::PasswordGeneratorCard;
 use crate::components::cards::simple_calculator_card::SimpleCalculatorCard;
 use crate::components::cards::text_length_counter::TextLengthCounterCard;
+use crate::components::cards::url_endecode_converter_card::UrlEnDecodeConverterCard;
 use crate::components::grids::tools_grid::ToolsGrid;
 use crate::components::head::Head;
 use crate::constants::app::{APP_TITLE, APP_URL};
@@ -40,6 +41,7 @@ pub(crate) fn TopPage() -> Element {
                 title: "コンバーター",
 
                 NumberBaseConverterCard {},
+                UrlEnDecodeConverterCard {},
             }
 
             ToolsGrid {

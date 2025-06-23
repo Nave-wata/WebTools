@@ -9,6 +9,7 @@ use calculator::big_numbers::BigNumbersCalculator;
 use calculator::byte_unit::ByteUnitCalculator;
 use calculator::simple::SimpleCalculator;
 use converter::number_base::NumberBaseConverter;
+use converter::url_endecode::UrlEnDecoder;
 use counter::text_length::TextLengthCounter;
 use dioxus::prelude::*;
 use generator::password::PasswordGenerator;
@@ -36,6 +37,9 @@ pub(crate) enum Route {
     #[nest("/converter")]
     #[route("/number-base")]
     NumberBaseConverter {},
+
+    #[route("/url-endecode")]
+    UrlEnDecoder {},
     #[end_nest]
     #[nest("/calculator")]
     #[route("/byte-unit")]
