@@ -9,10 +9,7 @@ pub fn get_precedence(op: &str) -> i32 {
 
 /// 左結合性かどうかを判定
 pub fn is_left_associative(op: &str) -> bool {
-    match op {
-        "+" | "-" | "*" | "/" | "×" | "÷" => true,
-        _ => false,
-    }
+    matches!(op, "+" | "-" | "*" | "/" | "×" | "÷")
 }
 
 /// 中置記法を後置記法に変換（Shunting Yard Algorithm）
@@ -38,7 +35,7 @@ pub fn infix_to_postfix(tokens: Vec<String>) -> Result<Vec<String>, String> {
                 output.push(op);
             }
             if !found_left_paren {
-                return Err("括弧の対応が取れていません".to_string());
+                return Err("Mismatched parentheses".to_string());
             }
         } else {
             // 演算子の場合
@@ -63,7 +60,7 @@ pub fn infix_to_postfix(tokens: Vec<String>) -> Result<Vec<String>, String> {
     // 残りの演算子をすべて出力に追加
     while let Some(op) = operator_stack.pop() {
         if op == "(" {
-            return Err("括弧の対応が取れていません".to_string());
+            return Err("Mismatched parentheses".to_string());
         }
         output.push(op);
     }
@@ -81,7 +78,7 @@ pub fn evaluate_postfix(tokens: Vec<String>) -> Result<f64, String> {
         } else {
             // 演算子の場合、スタックから2つの値を取り出して計算
             if stack.len() < 2 {
-                return Err("式が不正です".to_string());
+                return Err("Invalid expression".to_string());
             }
 
             let b = stack.pop().unwrap();
@@ -93,11 +90,11 @@ pub fn evaluate_postfix(tokens: Vec<String>) -> Result<f64, String> {
                 "*" | "×" => a * b,
                 "/" | "÷" => {
                     if b == 0.0 {
-                        return Err("0で割ることはできません".to_string());
+                        return Err("Cannot divide by zero".to_string());
                     }
                     a / b
                 }
-                _ => return Err(format!("不明な演算子: {}", token)),
+                _ => return Err(format!("Unknown operator: {}", token)),
             };
 
             stack.push(result);
@@ -105,7 +102,7 @@ pub fn evaluate_postfix(tokens: Vec<String>) -> Result<f64, String> {
     }
 
     if stack.len() != 1 {
-        return Err("式が不正です".to_string());
+        return Err("Invalid expression".to_string());
     }
 
     Ok(stack[0])
@@ -136,6 +133,7 @@ pub fn evaluate_expression(expr: &str) -> Result<f64, String> {
                         num_buffer.clear();
                     }
                 }
+                is_start_of_expression = false;
             }
             'e' | 'E' => {
                 // 指数表記の'e'/'E'は直前に数字がある場合のみ有効
@@ -147,15 +145,15 @@ pub fn evaluate_expression(expr: &str) -> Result<f64, String> {
                             // 次の文字が数字または+/-の場合は続行
                         } else {
                             // 不正な指数表記
-                            return Err("不正な指数表記です".to_string());
+                            return Err("Invalid exponent notation".to_string());
                         }
                     } else {
                         // 式の終わりに'e'/'E'がある場合は不正
-                        return Err("不正な指数表記です".to_string());
+                        return Err("Invalid exponent notation".to_string());
                     }
                 } else {
                     // 数字の前に'e'/'E'がある場合はエラー
-                    return Err(format!("不正な文字: {}", c));
+                    return Err(format!("Invalid character: {}", c));
                 }
             }
             '+' | '-' | '*' | '/' | '×' | '÷' | '(' | ')' => {
@@ -166,12 +164,20 @@ pub fn evaluate_expression(expr: &str) -> Result<f64, String> {
                 if is_exponent_sign && (c == '+' || c == '-') {
                     // 指数表記の一部として+/-を追加
                     num_buffer.push(c);
-                } else if (is_start_of_expression || tokens.last().is_some_and(|t| t == "("))
-                    && c == '-'
+                } else if c == '-'
+                    && (is_start_of_expression
+                        || tokens.last().is_some_and(|t| {
+                            t == "("
+                                || t == "+"
+                                || t == "-"
+                                || t == "*"
+                                || t == "/"
+                                || t == "×"
+                                || t == "÷"
+                        }))
                 {
-                    // 式の先頭または開き括弧の後のマイナス記号は数値の一部として扱う
+                    // 式の先頭、開き括弧の後、または他の演算子の後のマイナス記号は数値の一部として扱う
                     num_buffer.push(c);
-                    is_start_of_expression = false;
                 } else {
                     // 通常の演算子として処理
                     if !num_buffer.is_empty() {
@@ -179,8 +185,8 @@ pub fn evaluate_expression(expr: &str) -> Result<f64, String> {
                         num_buffer.clear();
                     }
                     tokens.push(c.to_string());
-                    is_start_of_expression = false;
                 }
+                is_start_of_expression = false;
             }
             ' ' => {
                 if !num_buffer.is_empty() {
@@ -189,7 +195,7 @@ pub fn evaluate_expression(expr: &str) -> Result<f64, String> {
                 }
                 // スペースは式の開始状態に影響しない
             }
-            _ => return Err(format!("不正な文字: {}", c)),
+            _ => return Err(format!("Invalid character: {}", c)),
         }
     }
 
@@ -225,5 +231,284 @@ pub fn calculate_expression(expr: &str) -> Result<String, String> {
             Ok(formatted_result)
         }
         Err(err) => Err(err),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_get_precedence_addition_returns_1() {
+        assert_eq!(get_precedence("+"), 1);
+    }
+
+    #[test]
+    fn test_get_precedence_subtraction_returns_1() {
+        assert_eq!(get_precedence("-"), 1);
+    }
+
+    #[test]
+    fn test_get_precedence_multiplication_returns_2() {
+        assert_eq!(get_precedence("*"), 2);
+        assert_eq!(get_precedence("×"), 2);
+    }
+
+    #[test]
+    fn test_get_precedence_division_returns_2() {
+        assert_eq!(get_precedence("/"), 2);
+        assert_eq!(get_precedence("÷"), 2);
+    }
+
+    #[test]
+    fn test_get_precedence_parentheses_returns_0() {
+        assert_eq!(get_precedence("("), 0);
+        assert_eq!(get_precedence(")"), 0);
+    }
+
+    #[test]
+    fn test_is_left_associative_basic_operators_returns_true() {
+        assert!(is_left_associative("+"));
+        assert!(is_left_associative("-"));
+        assert!(is_left_associative("*"));
+        assert!(is_left_associative("/"));
+        assert!(is_left_associative("×"));
+        assert!(is_left_associative("÷"));
+    }
+
+    #[test]
+    fn test_is_left_associative_parentheses_returns_false() {
+        assert!(!is_left_associative("("));
+        assert!(!is_left_associative(")"));
+    }
+
+    #[test]
+    fn test_infix_to_postfix_basic_expression_returns_correct_postfix() {
+        let tokens = vec!["1".to_string(), "+".to_string(), "2".to_string()];
+        let result = infix_to_postfix(tokens).unwrap();
+        assert_eq!(result, vec!["1", "2", "+"]);
+    }
+
+    #[test]
+    fn test_infix_to_postfix_with_precedence_returns_correct_postfix() {
+        let tokens = vec![
+            "1".to_string(),
+            "+".to_string(),
+            "2".to_string(),
+            "*".to_string(),
+            "3".to_string(),
+        ];
+        let result = infix_to_postfix(tokens).unwrap();
+        assert_eq!(result, vec!["1", "2", "3", "*", "+"]);
+    }
+
+    #[test]
+    fn test_infix_to_postfix_with_parentheses_returns_correct_postfix() {
+        let tokens = vec![
+            "(".to_string(),
+            "1".to_string(),
+            "+".to_string(),
+            "2".to_string(),
+            ")".to_string(),
+            "*".to_string(),
+            "3".to_string(),
+        ];
+        let result = infix_to_postfix(tokens).unwrap();
+        assert_eq!(result, vec!["1", "2", "+", "3", "*"]);
+    }
+
+    #[test]
+    fn test_infix_to_postfix_mismatched_parentheses_returns_error() {
+        let tokens = vec![
+            "(".to_string(),
+            "1".to_string(),
+            "+".to_string(),
+            "2".to_string(),
+        ];
+        let result = infix_to_postfix(tokens);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_evaluate_postfix_addition_returns_correct_result() {
+        let tokens = vec!["1".to_string(), "2".to_string(), "+".to_string()];
+        let result = evaluate_postfix(tokens).unwrap();
+        assert_eq!(result, 3.0);
+    }
+
+    #[test]
+    fn test_evaluate_postfix_complex_expression_returns_correct_result() {
+        let tokens = vec![
+            "1".to_string(),
+            "2".to_string(),
+            "3".to_string(),
+            "*".to_string(),
+            "+".to_string(),
+        ];
+        let result = evaluate_postfix(tokens).unwrap();
+        assert_eq!(result, 7.0);
+    }
+
+    #[test]
+    fn test_evaluate_postfix_division_by_zero_returns_error() {
+        let tokens = vec!["1".to_string(), "0".to_string(), "÷".to_string()];
+        let result = evaluate_postfix(tokens);
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn test_evaluate_expression_addition_returns_correct_result() {
+        assert!(evaluate_expression("1+2").is_ok());
+        let result = evaluate_expression("1+2").unwrap();
+        assert_eq!(result, 3.0);
+    }
+
+    #[test]
+    fn test_evaluate_expression_subtraction_returns_correct_result() {
+        assert!(evaluate_expression("1-2").is_ok());
+        let result = evaluate_expression("1-2").unwrap();
+        assert_eq!(result, -1.0);
+    }
+
+    #[test]
+    fn test_evaluate_expression_multiplication_returns_correct_result() {
+        assert!(evaluate_expression("2*3").is_ok());
+        let result = evaluate_expression("2*3").unwrap();
+        assert_eq!(result, 6.0);
+    }
+
+    #[test]
+    fn test_evaluate_expression_division_returns_correct_result() {
+        assert!(evaluate_expression("6/3").is_ok());
+        let result = evaluate_expression("6/3").unwrap();
+        assert_eq!(result, 2.0);
+    }
+
+    #[test]
+    fn test_evaluate_expression_unicode_operators_returns_correct_result() {
+        assert!(evaluate_expression("2×3").is_ok());
+        let result = evaluate_expression("2×3").unwrap();
+        assert_eq!(result, 6.0);
+
+        assert!(evaluate_expression("6÷3").is_ok());
+        let result = evaluate_expression("6÷3").unwrap();
+        assert_eq!(result, 2.0);
+    }
+
+    #[test]
+    fn test_evaluate_expression_operator_precedence_returns_correct_result() {
+        assert!(evaluate_expression("1+2*3").is_ok());
+        let result = evaluate_expression("1+2*3").unwrap();
+        assert_eq!(result, 7.0);
+    }
+
+    #[test]
+    fn test_evaluate_expression_with_parentheses_returns_correct_result() {
+        assert!(evaluate_expression("(1+2)*3").is_ok());
+        let result = evaluate_expression("(1+2)*3").unwrap();
+        assert_eq!(result, 9.0);
+
+        assert!(evaluate_expression("1+(2*3)").is_ok());
+        let result = evaluate_expression("1+(2*3)").unwrap();
+        assert_eq!(result, 7.0);
+
+        assert!(evaluate_expression("(1+2)*(3+4)").is_ok());
+        let result = evaluate_expression("(1+2)*(3+4)").unwrap();
+        assert_eq!(result, 21.0);
+    }
+
+    #[test]
+    fn test_evaluate_expression_with_negative_numbers_returns_correct_result() {
+        assert!(evaluate_expression("-1+2").is_ok());
+        let result = evaluate_expression("-1+2").unwrap();
+        assert_eq!(result, 1.0);
+
+        assert!(evaluate_expression("1+(-2)").is_ok());
+        let result = evaluate_expression("1+(-2)").unwrap();
+        assert_eq!(result, -1.0);
+
+        assert!(evaluate_expression("(-1)*(-2)").is_ok());
+        let result = evaluate_expression("(-1)*(-2)").unwrap();
+        assert_eq!(result, 2.0);
+    }
+
+    #[test]
+    fn test_evaluate_expression_with_decimals_returns_correct_result() {
+        assert!(evaluate_expression("1.5+2.5").is_ok());
+        let result = evaluate_expression("1.5+2.5").unwrap();
+        assert_eq!(result, 4.0);
+
+        assert!(evaluate_expression("1.5*2").is_ok());
+        let result = evaluate_expression("1.5*2").unwrap();
+        assert_eq!(result, 3.0);
+    }
+
+    #[test]
+    fn test_evaluate_expression_division_by_zero_returns_error() {
+        assert!(evaluate_expression("1/0").is_err());
+        assert!(evaluate_expression("1÷0").is_err());
+    }
+
+    #[test]
+    fn test_evaluate_expression_invalid_syntax_returns_error() {
+        assert!(evaluate_expression("1+").is_err());
+        assert!(evaluate_expression("1++2").is_err());
+        assert!(evaluate_expression("(1+2").is_err());
+        assert!(evaluate_expression("1+2)").is_err());
+        assert!(evaluate_expression("1+a").is_err());
+    }
+
+    #[test]
+    fn test_calculate_expression_addition_returns_correct_result() {
+        assert!(calculate_expression("1+2").is_ok());
+        let result = calculate_expression("1+2").unwrap();
+        assert_eq!(result, "3");
+    }
+
+    #[test]
+    fn test_calculate_expression_subtraction_returns_correct_result() {
+        assert!(calculate_expression("1-2").is_ok());
+        let result = calculate_expression("1-2").unwrap();
+        assert_eq!(result, "-1");
+    }
+
+    #[test]
+    fn test_calculate_expression_multiplication_returns_correct_result() {
+        assert!(calculate_expression("2*3").is_ok());
+        let result = calculate_expression("2*3").unwrap();
+        assert_eq!(result, "6");
+    }
+
+    #[test]
+    fn test_calculate_expression_division_returns_correct_result() {
+        assert!(calculate_expression("6/3").is_ok());
+        let result = calculate_expression("6/3").unwrap();
+        assert_eq!(result, "2");
+    }
+
+    #[test]
+    fn test_calculate_expression_empty_string_returns_zero() {
+        assert!(calculate_expression("").is_ok());
+        let result = calculate_expression("").unwrap();
+        assert_eq!(result, "0");
+    }
+
+    #[test]
+    fn test_calculate_expression_large_numbers_returns_scientific_notation() {
+        assert!(calculate_expression("1e20").is_ok());
+        let result = calculate_expression("1e20").unwrap();
+        assert!(result.contains("e"));
+    }
+
+    #[test]
+    fn test_calculate_expression_small_numbers_returns_scientific_notation() {
+        assert!(calculate_expression("1e-10").is_ok());
+        let result = calculate_expression("1e-10").unwrap();
+        assert!(result.contains("e"));
+    }
+
+    #[test]
+    fn test_calculate_expression_division_by_zero_returns_error() {
+        assert!(calculate_expression("1/0").is_err());
     }
 }

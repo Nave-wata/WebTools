@@ -1,7 +1,6 @@
 use crate::components::breadcrumb::{BreadcrumbItem, BreadcrumbList};
 use crate::components::head::Head;
 use crate::components::instructions::usage::{Usage, UsageSectionProps};
-use crate::libs::calculator::simple;
 use crate::routes::Route;
 use dioxus::prelude::*;
 use keyboard_types::Key;

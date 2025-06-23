@@ -1,14 +1,18 @@
 use crate::components::breadcrumb::{BreadcrumbItem, BreadcrumbList};
 use crate::components::head::Head;
 use crate::components::instructions::usage::{Usage, UsageSectionProps};
+use crate::libs::calculator::byte_unit::{bytes_to_unit, unit_to_bytes};
 use crate::routes::Route;
 use dioxus::prelude::*;
-use std::fmt::Display;
 
-/// バイト単位変換ツールページコンポーネント
-///
-/// このコンポーネントは以下の機能を提供します：
-/// * B、KB、MB、GB、TBの相互変換
+/// 単位変換用の入力Signal群
+struct UnitInputs<'a> {
+    b_input: &'a mut Signal<String>,
+    kb_input: &'a mut Signal<String>,
+    mb_input: &'a mut Signal<String>,
+    gb_input: &'a mut Signal<String>,
+    tb_input: &'a mut Signal<String>,
+}
 
 /// バイト単位変換と共通エラー処理を行うヘルパー関数
 ///
@@ -20,14 +24,13 @@ use std::fmt::Display;
 /// # Returns
 /// * `Ok(String)` - 変換に成功した場合、変換後の値
 /// * `Err(())` - 変換に失敗した場合
-fn convert_and_handle_error<F, T>(
+fn convert_and_handle_error<F>(
     convert_fn: F,
     value: &str,
     error_message: &mut Signal<String>,
 ) -> Result<String, ()>
 where
     F: Fn(&str) -> Result<String, String>,
-    T: Display,
 {
     match convert_fn(value) {
         Ok(result) => Ok(result),
@@ -38,101 +41,30 @@ where
     }
 }
 
-/// バイト (B) から他の単位に変換する
-///
-/// # Arguments
-/// * `bytes_str` - バイト数の文字列
-/// * `unit` - 変換先の単位 ("B", "KB", "MB", "GB", "TB")
-///
-/// # Returns
-/// * `Result<String, String>` - 変換結果または変換エラーメッセージ
-fn bytes_to_unit(bytes_str: &str, unit: &str) -> Result<String, String> {
-    // バイト数をパース
-    let bytes = match bytes_str.trim().parse::<f64>() {
-        Ok(num) => num,
-        Err(_) => return Err("有効な数値を入力してください。".to_string()),
-    };
-
-    // 単位に応じて変換
-    let result = match unit {
-        "B" => bytes,
-        "KB" => bytes / 1024.0,
-        "MB" => bytes / (1024.0 * 1024.0),
-        "GB" => bytes / (1024.0 * 1024.0 * 1024.0),
-        "TB" => bytes / (1024.0 * 1024.0 * 1024.0 * 1024.0),
-        _ => return Err(format!("不明な単位: {}", unit)),
-    };
-
-    // 結果を文字列に変換
-    Ok(format!("{:.10}", result)
-        .trim_end_matches('0')
-        .trim_end_matches('.')
-        .to_string())
-}
-
-/// 指定された単位からバイト (B) に変換する
-///
-/// # Arguments
-/// * `value` - 変換元の値の文字列
-/// * `unit` - 変換元の単位 ("B", "KB", "MB", "GB", "TB")
-///
-/// # Returns
-/// * `Result<String, String>` - 変換結果または変換エラーメッセージ
-fn unit_to_bytes(value: &str, unit: &str) -> Result<String, String> {
-    // 値をパース
-    let num = match value.trim().parse::<f64>() {
-        Ok(num) => num,
-        Err(_) => return Err("有効な数値を入力してください。".to_string()),
-    };
-
-    // 単位に応じて変換
-    let bytes = match unit {
-        "B" => num,
-        "KB" => num * 1024.0,
-        "MB" => num * 1024.0 * 1024.0,
-        "GB" => num * 1024.0 * 1024.0 * 1024.0,
-        "TB" => num * 1024.0 * 1024.0 * 1024.0 * 1024.0,
-        _ => return Err(format!("不明な単位: {}", unit)),
-    };
-
-    // 結果を文字列に変換
-    Ok(format!("{:.0}", bytes))
-}
-
-/// 入力処理を共通化するヘルパー関数
+/// 入力値を更新し、最後に編集されたフィールドを設定する
 ///
 /// # Arguments
 /// * `input_unit` - 入力単位 ("B", "KB", "MB", "GB", "TB")
 /// * `value` - 入力された値
-/// * `b_input` - B入力値のSignal
-/// * `kb_input` - KB入力値のSignal
-/// * `mb_input` - MB入力値のSignal
-/// * `gb_input` - GB入力値のSignal
-/// * `tb_input` - TB入力値のSignal
+/// * `inputs` - 各単位の入力値のSignal
 /// * `last_edited` - 最後に編集されたフィールドを追跡するSignal
-/// * `error_message` - エラーメッセージを格納するSignal
-fn handle_input(
+fn update_input_value(
     input_unit: &str,
-    value: String,
-    b_input: &mut Signal<String>,
-    kb_input: &mut Signal<String>,
-    mb_input: &mut Signal<String>,
-    gb_input: &mut Signal<String>,
-    tb_input: &mut Signal<String>,
+    value: &str,
+    inputs: UnitInputs,
     last_edited: &mut Signal<&str>,
-    error_message: &mut Signal<String>,
 ) {
-    // 入力値と最後に編集されたフィールドを更新
+    // 入力値を更新
     match input_unit {
-        "B" => b_input.set(value.clone()),
-        "KB" => kb_input.set(value.clone()),
-        "MB" => mb_input.set(value.clone()),
-        "GB" => gb_input.set(value.clone()),
-        "TB" => tb_input.set(value.clone()),
+        "B" => inputs.b_input.set(value.to_string()),
+        "KB" => inputs.kb_input.set(value.to_string()),
+        "MB" => inputs.mb_input.set(value.to_string()),
+        "GB" => inputs.gb_input.set(value.to_string()),
+        "TB" => inputs.tb_input.set(value.to_string()),
         _ => panic!("Unknown input unit"),
     }
 
-    // Use static string literals for last_edited
+    // 最後に編集されたフィールドを更新
     match input_unit {
         "B" => last_edited.set("B"),
         "KB" => last_edited.set("KB"),
@@ -140,197 +72,178 @@ fn handle_input(
         "GB" => last_edited.set("GB"),
         "TB" => last_edited.set("TB"),
         _ => panic!("Unknown input unit"),
-    };
-    error_message.set(String::new());
-
-    // 空の入力の場合、他の入力フィールドをクリア
-    if value.is_empty() {
-        match input_unit {
-            "B" => {
-                kb_input.set(String::new());
-                mb_input.set(String::new());
-                gb_input.set(String::new());
-                tb_input.set(String::new());
-            }
-            "KB" => {
-                b_input.set(String::new());
-                mb_input.set(String::new());
-                gb_input.set(String::new());
-                tb_input.set(String::new());
-            }
-            "MB" => {
-                b_input.set(String::new());
-                kb_input.set(String::new());
-                gb_input.set(String::new());
-                tb_input.set(String::new());
-            }
-            "GB" => {
-                b_input.set(String::new());
-                kb_input.set(String::new());
-                mb_input.set(String::new());
-                tb_input.set(String::new());
-            }
-            "TB" => {
-                b_input.set(String::new());
-                kb_input.set(String::new());
-                mb_input.set(String::new());
-                gb_input.set(String::new());
-            }
-            _ => panic!("Unknown input unit"),
-        }
-        return;
     }
+}
 
-    // 入力単位に応じた変換処理
+/// 空の入力の場合、他の入力フィールドをクリアする
+///
+/// # Arguments
+/// * `input_unit` - 入力単位 ("B", "KB", "MB", "GB", "TB")
+/// * `inputs` - 各単位の入力値のSignal
+fn clear_other_inputs(input_unit: &str, inputs: UnitInputs) {
+    match input_unit {
+        "B" => {
+            inputs.kb_input.set(String::new());
+            inputs.mb_input.set(String::new());
+            inputs.gb_input.set(String::new());
+            inputs.tb_input.set(String::new());
+        }
+        "KB" => {
+            inputs.b_input.set(String::new());
+            inputs.mb_input.set(String::new());
+            inputs.gb_input.set(String::new());
+            inputs.tb_input.set(String::new());
+        }
+        "MB" => {
+            inputs.b_input.set(String::new());
+            inputs.kb_input.set(String::new());
+            inputs.gb_input.set(String::new());
+            inputs.tb_input.set(String::new());
+        }
+        "GB" => {
+            inputs.b_input.set(String::new());
+            inputs.kb_input.set(String::new());
+            inputs.mb_input.set(String::new());
+            inputs.tb_input.set(String::new());
+        }
+        "TB" => {
+            inputs.b_input.set(String::new());
+            inputs.kb_input.set(String::new());
+            inputs.mb_input.set(String::new());
+            inputs.gb_input.set(String::new());
+        }
+        _ => panic!("Unknown input unit"),
+    }
+}
+
+/// 入力単位に応じた変換処理を行う
+///
+/// # Arguments
+/// * `input_unit` - 入力単位 ("B", "KB", "MB", "GB", "TB")
+/// * `value` - 入力された値
+/// * `inputs` - 各単位の入力値のSignal
+/// * `error_message` - エラーメッセージを格納するSignal
+fn convert_units(
+    input_unit: &str,
+    value: &str,
+    inputs: UnitInputs,
+    error_message: &mut Signal<String>,
+) {
     match input_unit {
         "B" => {
             // Bから他の単位への変換
             let target_units = [
-                ("KB", kb_input),
-                ("MB", mb_input),
-                ("GB", gb_input),
-                ("TB", tb_input),
+                ("KB", inputs.kb_input),
+                ("MB", inputs.mb_input),
+                ("GB", inputs.gb_input),
+                ("TB", inputs.tb_input),
             ];
 
             for (unit, input_signal) in target_units {
-                if let Ok(converted) = convert_and_handle_error::<_, String>(
-                    |v| bytes_to_unit(v, unit),
-                    &value,
-                    error_message,
-                ) {
+                if let Ok(converted) =
+                    convert_and_handle_error::<_>(|v| bytes_to_unit(v, unit), value, error_message)
+                {
                     input_signal.set(converted);
                 }
             }
         }
         "KB" => {
             // KBからBへの変換
-            if let Ok(b) = convert_and_handle_error::<_, String>(
-                |v| unit_to_bytes(v, "KB"),
-                &value,
-                error_message,
-            ) {
-                b_input.set(b.clone());
+            if let Ok(b) =
+                convert_and_handle_error::<_>(|v| unit_to_bytes(v, "KB"), value, error_message)
+            {
+                inputs.b_input.set(b.clone());
 
                 // Bから他の単位への変換
-                if let Ok(mb) = convert_and_handle_error::<_, String>(
-                    |v| bytes_to_unit(v, "MB"),
-                    &b,
-                    error_message,
-                ) {
-                    mb_input.set(mb);
+                if let Ok(mb) =
+                    convert_and_handle_error::<_>(|v| bytes_to_unit(v, "MB"), &b, error_message)
+                {
+                    inputs.mb_input.set(mb);
                 }
-                if let Ok(gb) = convert_and_handle_error::<_, String>(
-                    |v| bytes_to_unit(v, "GB"),
-                    &b,
-                    error_message,
-                ) {
-                    gb_input.set(gb);
+                if let Ok(gb) =
+                    convert_and_handle_error::<_>(|v| bytes_to_unit(v, "GB"), &b, error_message)
+                {
+                    inputs.gb_input.set(gb);
                 }
-                if let Ok(tb) = convert_and_handle_error::<_, String>(
-                    |v| bytes_to_unit(v, "TB"),
-                    &b,
-                    error_message,
-                ) {
-                    tb_input.set(tb);
+                if let Ok(tb) =
+                    convert_and_handle_error::<_>(|v| bytes_to_unit(v, "TB"), &b, error_message)
+                {
+                    inputs.tb_input.set(tb);
                 }
             }
         }
         "MB" => {
             // MBからBへの変換
-            if let Ok(b) = convert_and_handle_error::<_, String>(
-                |v| unit_to_bytes(v, "MB"),
-                &value,
-                error_message,
-            ) {
-                b_input.set(b.clone());
+            if let Ok(b) =
+                convert_and_handle_error::<_>(|v| unit_to_bytes(v, "MB"), value, error_message)
+            {
+                inputs.b_input.set(b.clone());
 
                 // Bから他の単位への変換
-                if let Ok(kb) = convert_and_handle_error::<_, String>(
-                    |v| bytes_to_unit(v, "KB"),
-                    &b,
-                    error_message,
-                ) {
-                    kb_input.set(kb);
+                if let Ok(kb) =
+                    convert_and_handle_error::<_>(|v| bytes_to_unit(v, "KB"), &b, error_message)
+                {
+                    inputs.kb_input.set(kb);
                 }
-                if let Ok(gb) = convert_and_handle_error::<_, String>(
-                    |v| bytes_to_unit(v, "GB"),
-                    &b,
-                    error_message,
-                ) {
-                    gb_input.set(gb);
+                if let Ok(gb) =
+                    convert_and_handle_error::<_>(|v| bytes_to_unit(v, "GB"), &b, error_message)
+                {
+                    inputs.gb_input.set(gb);
                 }
-                if let Ok(tb) = convert_and_handle_error::<_, String>(
-                    |v| bytes_to_unit(v, "TB"),
-                    &b,
-                    error_message,
-                ) {
-                    tb_input.set(tb);
+                if let Ok(tb) =
+                    convert_and_handle_error::<_>(|v| bytes_to_unit(v, "TB"), &b, error_message)
+                {
+                    inputs.tb_input.set(tb);
                 }
             }
         }
         "GB" => {
             // GBからBへの変換
-            if let Ok(b) = convert_and_handle_error::<_, String>(
-                |v| unit_to_bytes(v, "GB"),
-                &value,
-                error_message,
-            ) {
-                b_input.set(b.clone());
+            if let Ok(b) =
+                convert_and_handle_error::<_>(|v| unit_to_bytes(v, "GB"), value, error_message)
+            {
+                inputs.b_input.set(b.clone());
 
                 // Bから他の単位への変換
-                if let Ok(kb) = convert_and_handle_error::<_, String>(
-                    |v| bytes_to_unit(v, "KB"),
-                    &b,
-                    error_message,
-                ) {
-                    kb_input.set(kb);
+                if let Ok(kb) =
+                    convert_and_handle_error::<_>(|v| bytes_to_unit(v, "KB"), &b, error_message)
+                {
+                    inputs.kb_input.set(kb);
                 }
-                if let Ok(mb) = convert_and_handle_error::<_, String>(
-                    |v| bytes_to_unit(v, "MB"),
-                    &b,
-                    error_message,
-                ) {
-                    mb_input.set(mb);
+                if let Ok(mb) =
+                    convert_and_handle_error::<_>(|v| bytes_to_unit(v, "MB"), &b, error_message)
+                {
+                    inputs.mb_input.set(mb);
                 }
-                if let Ok(tb) = convert_and_handle_error::<_, String>(
-                    |v| bytes_to_unit(v, "TB"),
-                    &b,
-                    error_message,
-                ) {
-                    tb_input.set(tb);
+                if let Ok(tb) =
+                    convert_and_handle_error::<_>(|v| bytes_to_unit(v, "TB"), &b, error_message)
+                {
+                    inputs.tb_input.set(tb);
                 }
             }
         }
         "TB" => {
             // TBからBへの変換
-            if let Ok(b) = convert_and_handle_error::<_, String>(
-                |v| unit_to_bytes(v, "TB"),
-                &value,
-                error_message,
-            ) {
-                b_input.set(b.clone());
+            if let Ok(b) =
+                convert_and_handle_error::<_>(|v| unit_to_bytes(v, "TB"), value, error_message)
+            {
+                inputs.b_input.set(b.clone());
 
                 // Bから他の単位への変換
-                if let Ok(kb) = convert_and_handle_error::<_, String>(
-                    |v| bytes_to_unit(v, "KB"),
-                    &b,
-                    error_message,
-                ) {
-                    kb_input.set(kb);
+                if let Ok(kb) =
+                    convert_and_handle_error::<_>(|v| bytes_to_unit(v, "KB"), &b, error_message)
+                {
+                    inputs.kb_input.set(kb);
                 }
-                if let Ok(mb) = convert_and_handle_error::<_, String>(
-                    |v| bytes_to_unit(v, "MB"),
-                    &b,
-                    error_message,
-                ) {
-                    mb_input.set(mb);
+                if let Ok(mb) =
+                    convert_and_handle_error::<_>(|v| bytes_to_unit(v, "MB"), &b, error_message)
+                {
+                    inputs.mb_input.set(mb);
                 }
-                if let Ok(gb) = convert_and_handle_error::<_, String>(
-                    |v| bytes_to_unit(v, "GB"),
-                    &b,
-                    error_message,
-                ) {
-                    gb_input.set(gb);
+                if let Ok(gb) =
+                    convert_and_handle_error::<_>(|v| bytes_to_unit(v, "GB"), &b, error_message)
+                {
+                    inputs.gb_input.set(gb);
                 }
             }
         }
@@ -338,6 +251,60 @@ fn handle_input(
     }
 }
 
+/// 入力処理を共通化するヘルパー関数
+///
+/// # Arguments
+/// * `input_unit` - 入力単位 ("B", "KB", "MB", "GB", "TB")
+/// * `value` - 入力された値
+/// * `inputs` - 各単位の入力値のSignal
+/// * `last_edited` - 最後に編集されたフィールドを追跡するSignal
+/// * `error_message` - エラーメッセージを格納するSignal
+fn handle_input(
+    input_unit: &str,
+    value: String,
+    inputs: UnitInputs,
+    last_edited: &mut Signal<&str>,
+    error_message: &mut Signal<String>,
+) {
+    // 入力値と最後に編集されたフィールドを更新
+    update_input_value(
+        input_unit,
+        &value,
+        UnitInputs {
+            b_input: inputs.b_input,
+            kb_input: inputs.kb_input,
+            mb_input: inputs.mb_input,
+            gb_input: inputs.gb_input,
+            tb_input: inputs.tb_input,
+        },
+        last_edited,
+    );
+
+    error_message.set(String::new());
+
+    // 空の入力の場合、他の入力フィールドをクリア
+    if value.is_empty() {
+        clear_other_inputs(
+            input_unit,
+            UnitInputs {
+                b_input: inputs.b_input,
+                kb_input: inputs.kb_input,
+                mb_input: inputs.mb_input,
+                gb_input: inputs.gb_input,
+                tb_input: inputs.tb_input,
+            },
+        );
+        return;
+    }
+
+    // 入力単位に応じた変換処理
+    convert_units(input_unit, &value, inputs, error_message);
+}
+
+/// バイト単位変換ツールページコンポーネント
+///
+/// このコンポーネントは以下の機能を提供します：
+/// * B、KB、MB、GB、TBの相互変換
 pub(crate) fn ByteUnitCalculator() -> Element {
     let title: &str = "バイト単位変換";
     let description: &str = "入力された値を異なるバイト単位（B、KB、MB、GB、TB）に相互変換するツールです。これらの変換は入力された値を元に、リアルタイムで他の単位の表現に変換することが可能です。";
@@ -361,11 +328,13 @@ pub(crate) fn ByteUnitCalculator() -> Element {
         handle_input(
             "B",
             value,
-            &mut b_input,
-            &mut kb_input,
-            &mut mb_input,
-            &mut gb_input,
-            &mut tb_input,
+            UnitInputs {
+                b_input: &mut b_input,
+                kb_input: &mut kb_input,
+                mb_input: &mut mb_input,
+                gb_input: &mut gb_input,
+                tb_input: &mut tb_input,
+            },
             &mut last_edited,
             &mut error_message,
         );
@@ -377,11 +346,13 @@ pub(crate) fn ByteUnitCalculator() -> Element {
         handle_input(
             "KB",
             value,
-            &mut b_input,
-            &mut kb_input,
-            &mut mb_input,
-            &mut gb_input,
-            &mut tb_input,
+            UnitInputs {
+                b_input: &mut b_input,
+                kb_input: &mut kb_input,
+                mb_input: &mut mb_input,
+                gb_input: &mut gb_input,
+                tb_input: &mut tb_input,
+            },
             &mut last_edited,
             &mut error_message,
         );
@@ -393,11 +364,13 @@ pub(crate) fn ByteUnitCalculator() -> Element {
         handle_input(
             "MB",
             value,
-            &mut b_input,
-            &mut kb_input,
-            &mut mb_input,
-            &mut gb_input,
-            &mut tb_input,
+            UnitInputs {
+                b_input: &mut b_input,
+                kb_input: &mut kb_input,
+                mb_input: &mut mb_input,
+                gb_input: &mut gb_input,
+                tb_input: &mut tb_input,
+            },
             &mut last_edited,
             &mut error_message,
         );
@@ -409,11 +382,13 @@ pub(crate) fn ByteUnitCalculator() -> Element {
         handle_input(
             "GB",
             value,
-            &mut b_input,
-            &mut kb_input,
-            &mut mb_input,
-            &mut gb_input,
-            &mut tb_input,
+            UnitInputs {
+                b_input: &mut b_input,
+                kb_input: &mut kb_input,
+                mb_input: &mut mb_input,
+                gb_input: &mut gb_input,
+                tb_input: &mut tb_input,
+            },
             &mut last_edited,
             &mut error_message,
         );
@@ -425,11 +400,13 @@ pub(crate) fn ByteUnitCalculator() -> Element {
         handle_input(
             "TB",
             value,
-            &mut b_input,
-            &mut kb_input,
-            &mut mb_input,
-            &mut gb_input,
-            &mut tb_input,
+            UnitInputs {
+                b_input: &mut b_input,
+                kb_input: &mut kb_input,
+                mb_input: &mut mb_input,
+                gb_input: &mut gb_input,
+                tb_input: &mut tb_input,
+            },
             &mut last_edited,
             &mut error_message,
         );

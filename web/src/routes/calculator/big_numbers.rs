@@ -259,6 +259,7 @@ pub(crate) fn BigNumbersCalculator() -> Element {
 }
 
 /// 式を計算して結果を更新
+#[allow(dead_code)]
 fn calculate(expr: &str, result: &mut Signal<String>, error: &mut Signal<String>) {
     if expr.is_empty() {
         result.set(String::from("0"));

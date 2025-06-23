@@ -187,7 +187,6 @@ struct FieldRadioBoxProps {
 /// # Fields
 ///
 /// * `children` - ラジオボタングループ内に表示する子要素（ラジオボタン群）
-
 fn FieldRadioBox(props: FieldRadioBoxProps) -> Element {
     rsx! {
         div {
