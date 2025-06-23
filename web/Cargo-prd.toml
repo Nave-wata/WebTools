@@ -13,6 +13,7 @@ development = []
 dioxus = { version = "0.6.0", features = ["router", "fullstack"] }
 itertools = "0.14.0"
 rand = { version = "0.7.3", features = ["wasm-bindgen"] }
+url = "2.5.4"
 
 [profile.wasm-dev]
 inherits = "dev"
