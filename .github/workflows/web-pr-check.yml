@@ -3,8 +3,6 @@ name: Web PR Build Check and Approval
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    paths:
-      - 'web/**'
 
 jobs:
   build-check:
@@ -21,11 +19,15 @@ jobs:
 
       - name: Install npm dependencies
         working-directory: ./web
-        run: npm install
+        run: npm ci
 
       - name: Build Tailwind CSS
         working-directory: ./web
         run: npx tailwindcss -i ./input.css -o ./assets/tailwind.css --minify
+
+      - name: Test Dioxus application
+        working-directory: ./web
+        run: cargo test
 
       - name: Build Dioxus application
         id: build-dioxus
