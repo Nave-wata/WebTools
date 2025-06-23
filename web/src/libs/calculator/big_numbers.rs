@@ -739,7 +739,6 @@ pub fn evaluate_expression(expr: &str) -> Result<String, String> {
 }
 
 /// 式を計算して結果を更新
-#[allow(dead_code)]
 pub fn calculate_expression(expr: &str) -> Result<String, String> {
     if expr.is_empty() {
         return Ok(String::from("0"));
