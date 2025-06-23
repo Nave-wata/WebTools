@@ -23,6 +23,10 @@ jobs:
         working-directory: ./web
         run: npm install
 
+      - name: Test Dioxus application
+        working-directory: ./web
+        run: cargo test
+
       - name: Build Tailwind CSS
         working-directory: ./web
         run: npx tailwindcss -i ./input.css -o ./assets/tailwind.css --minify
