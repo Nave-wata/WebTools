@@ -3,6 +3,8 @@ name: Web PR Build Check and Approval
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+    paths:
+      - 'web/**'
 
 jobs:
   build-check:
@@ -17,17 +19,28 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Cache Cargo registry and build artifacts
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            web/target
+          key: ${{ runner.os }}-cargo-${{ hashFiles('web/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
       - name: Install npm dependencies
         working-directory: ./web
         run: npm install
 
-      - name: Test Dioxus application
-        working-directory: ./web
-        run: cargo test
-
       - name: Build Tailwind CSS
         working-directory: ./web
         run: npx tailwindcss -i ./input.css -o ./assets/tailwind.css --minify
+
+      - name: Test Dioxus application
+        working-directory: ./web
+        run: cargo test
 
       - name: Build Dioxus application
         id: build-dioxus
