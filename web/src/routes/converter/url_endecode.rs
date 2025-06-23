@@ -9,7 +9,7 @@ use dioxus::prelude::*;
 ///
 /// このコンポーネントは以下の機能を提供します：
 /// * URL のエンコードとデコード
-pub(crate) fn UrlEndecoder() -> Element {
+pub(crate) fn UrlEnDecoder() -> Element {
     let title: &str = "URL エンコード/デコード";
     let description: &str = "URL のエンコードとデコードを行うツールです。URL で使用できない文字をエンコードしたり、エンコードされた URL をデコードしたりすることができます。";
 
@@ -64,7 +64,7 @@ pub(crate) fn UrlEndecoder() -> Element {
         Head {
             title: title,
             description: description,
-            og_url: Route::UrlEndecoder {}.to_string(),
+            og_url: Route::UrlEnDecoder {}.to_string(),
             og_image: asset!("/assets/images/ogp/url_endecode_converter.webp"),
         }
 

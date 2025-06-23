@@ -2,13 +2,14 @@
 ///
 /// http:// や https:// などのスキーマ部分を検出します。
 pub fn detect_url_schema(input: &str) -> Option<(String, String)> {
-    if input.starts_with("http://") || input.to_lowercase().starts_with("http://") {
+    let lower_input = input.to_lowercase();
+    if input.starts_with("http://") || lower_input.starts_with("http://") {
         let schema_len = "http://".len();
         Some((
             input[..schema_len].to_string(),
             input[schema_len..].to_string(),
         ))
-    } else if input.starts_with("https://") || input.to_lowercase().starts_with("https://") {
+    } else if input.starts_with("https://") || lower_input.starts_with("https://") {
         let schema_len = "https://".len();
         Some((
             input[..schema_len].to_string(),

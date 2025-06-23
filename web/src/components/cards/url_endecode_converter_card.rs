@@ -16,7 +16,7 @@ pub(crate) fn UrlEnDecodeConverterCard() -> Element {
 
     rsx! {
         ToolCard {
-            to: Route::UrlEndecoder {},
+            to: Route::UrlEnDecoder {},
             icon: icon,
             title: "URL エンコード/デコード",
             description: vec![
