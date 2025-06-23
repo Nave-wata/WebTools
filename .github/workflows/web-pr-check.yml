@@ -17,20 +17,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Cache Cargo registry and build artifacts
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.cargo/registry
-            ~/.cargo/git
-            web/target
-          key: ${{ runner.os }}-cargo-${{ hashFiles('web/Cargo.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cargo-
-
       - name: Install npm dependencies
         working-directory: ./web
-        run: npm install
+        run: npm ci
 
       - name: Build Tailwind CSS
         working-directory: ./web
