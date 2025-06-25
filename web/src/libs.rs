@@ -1,3 +1,4 @@
+pub mod base;
 pub mod calculator;
 pub mod counter;
 pub mod number;
