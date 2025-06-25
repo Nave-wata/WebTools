@@ -74,7 +74,7 @@ pub(crate) fn BaseEnDecoder() -> Element {
                 base32_text.set(base32_encode(&result));
                 base64_text.set(base64_encode(&result));
             }
-            Err(err) => error_message.set(format!("Base16デコードエラー: {}", err)),
+            Err(err) => error_message.set(err),
         }
     };
 
@@ -100,7 +100,7 @@ pub(crate) fn BaseEnDecoder() -> Element {
                 base16_text.set(base16_encode(&result));
                 base64_text.set(base64_encode(&result));
             }
-            Err(err) => error_message.set(format!("Base32デコードエラー: {}", err)),
+            Err(err) => error_message.set(err),
         }
     };
 
@@ -126,7 +126,7 @@ pub(crate) fn BaseEnDecoder() -> Element {
                 base16_text.set(base16_encode(&result));
                 base32_text.set(base32_encode(&result));
             }
-            Err(err) => error_message.set(format!("Base64デコードエラー: {}", err)),
+            Err(err) => error_message.set(err),
         }
     };
 
