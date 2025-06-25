@@ -8,6 +8,7 @@ mod top;
 use calculator::big_numbers::BigNumbersCalculator;
 use calculator::byte_unit::ByteUnitCalculator;
 use calculator::simple::SimpleCalculator;
+use converter::base_endecode::BaseEnDecoder;
 use converter::number_base::NumberBaseConverter;
 use converter::url_endecode::UrlEnDecoder;
 use counter::text_length::TextLengthCounter;
@@ -35,6 +36,9 @@ pub(crate) enum Route {
     TextLengthCounter {},
     #[end_nest]
     #[nest("/converter")]
+    #[route("/base-endecode")]
+    BaseEnDecoder {},
+
     #[route("/number-base")]
     NumberBaseConverter {},
 

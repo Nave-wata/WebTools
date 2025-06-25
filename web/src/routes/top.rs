@@ -1,3 +1,4 @@
+use crate::components::cards::base_endecode_converter_card::BaseEnDecodeConverterCard;
 use crate::components::cards::big_numbers_calculator_card::BigNumbersCalculatorCard;
 use crate::components::cards::byte_unit_calculator_card::ByteUnitCalculatorCard;
 use crate::components::cards::number_base_converter_card::NumberBaseConverterCard;
@@ -40,6 +41,7 @@ pub(crate) fn TopPage() -> Element {
             ToolsGrid {
                 title: "コンバーター",
 
+                BaseEnDecodeConverterCard {},
                 NumberBaseConverterCard {},
                 UrlEnDecodeConverterCard {},
             }
