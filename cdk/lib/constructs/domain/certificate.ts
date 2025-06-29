@@ -1,17 +1,23 @@
 import { Construct } from 'constructs';
-import * as route53 from 'aws-cdk-lib/aws-route53';
 import * as acm from 'aws-cdk-lib/aws-certificatemanager';
+import { CertificateConstructProps } from '../../interfaces/domain';
 
 /**
  * ACM証明書を作成するコンストラクト
+ * AWS Certificate Manager（ACM）を使用してSSL/TLS証明書を作成し、
+ * Route53でのDNS検証を自動化する
  */
 export class CertificateConstruct extends Construct {
+  /** 作成されたACM証明書 */
   public readonly certificate: acm.ICertificate;
 
-  constructor(scope: Construct, id: string, props: {
-    domainName: string;
-    hostedZone: route53.IHostedZone;
-  }) {
+  /**
+   * CertificateConstructのコンストラクタ
+   * @param scope - 親となるConstruct
+   * @param id - このコンストラクトの一意識別子
+   * @param props - SSL証明書の設定プロパティ
+   */
+  constructor(scope: Construct, id: string, props: CertificateConstructProps) {
     super(scope, id);
 
     // ACM証明書の作成

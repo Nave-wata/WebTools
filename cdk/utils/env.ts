@@ -1,3 +1,7 @@
+import * as dotenv from 'dotenv';
+
+dotenv.config();
+
 /**
  * 指定された環境変数を取得する
  *
