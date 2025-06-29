@@ -1,16 +1,24 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as cloudfront from 'aws-cdk-lib/aws-cloudfront';
+import { SecurityHeadersConstructProps } from "../../interfaces/cdn";
 
 /**
  * セキュリティヘッダーポリシーを作成するコンストラクト
+ * CloudFrontのレスポンスヘッダーポリシーを設定し、
+ * CSP、HSTS、XSS保護、フレーム保護などのセキュリティヘッダーを自動付与する
  */
 export class SecurityHeadersConstruct extends Construct {
+  /** 作成されたレスポンスヘッダーポリシー */
   public readonly responseHeadersPolicy: cloudfront.ResponseHeadersPolicy;
 
-  constructor(scope: Construct, id: string, props: {
-    policyName: string;
-  }) {
+  /**
+   * SecurityHeadersConstructのコンストラクタ
+   * @param scope - 親となるConstruct
+   * @param id - このコンストラクトの一意識別子
+   * @param props - セキュリティヘッダーポリシーの設定プロパティ
+   */
+  constructor(scope: Construct, id: string, props: SecurityHeadersConstructProps) {
     super(scope, id);
 
     // セキュリティヘッダーポリシーの作成

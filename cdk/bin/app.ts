@@ -1,53 +1,68 @@
-import * as cdk from 'aws-cdk-lib';
-import { BaseInfrastructureStack, DnsStack, WebsiteStack } from '../lib/stacks';
-import { requireEnv } from "../utils";
+/**
+ * WebTools CDKアプリケーションのエントリーポイント
+ * 
+ * このファイルは静的サイトホスティングのためのAWSインフラストラクチャを定義し、
+ * 以下のスタックを順次デプロイします：
+ * 1. DomainStack - Route53ホストゾーンとSSL証明書の管理
+ * 2. StorageStack - S3バケットによる静的サイトストレージ
+ * 3. CdnStack - CloudFrontディストリビューションとDNSレコード
+ */
 
+import * as cdk from 'aws-cdk-lib';
+import { requireEnv } from "../utils";
+import { DomainStack } from "../lib/stacks/domain";
+import { StorageStack } from '../lib/stacks/storage';
+import { CdnStack } from "../lib/stacks/cdn";
+
+/** CDKアプリケーションのインスタンス */
 const app = new cdk.App();
 
 // ドメイン設定
-const stackPrefix = 'ToolsNaveWataNetStack';
+/** スタック名のプレフィックス */
+const stackPrefix = 'ToolsNaveWataNet';
+/** 静的サイトのドメイン名 */
 const domainName = 'tools.nave-wata.net';
+/** Route53ホストゾーンの名前 */
 const zoneName = 'nave-wata.net';
+/** DNSレコード名（サブドメイン部分） */
 const recordName = 'tools';
 
-// デフォルト引数のインターフェース
-export interface DefaultStackPropsInterface {
-  zoneName: string;
+// ドメインスタックのデプロイ
+const domainStack = new DomainStack(app, `${stackPrefix}-DomainStack`, {
   env: {
-    account: string;
-    region: string;
-  }
-}
-
-// デフォルト引数
-const defaultStackProps: cdk.StackProps & DefaultStackPropsInterface = {
-  zoneName: zoneName,
-  env: {
-    account: requireEnv("CDK_DEFAULT_ACCOUNT"),
-    region: requireEnv("CDK_DEFAULT_REGION"),
+    account: requireEnv("AWS_DEFAULT_ACCOUNT"),
+    region: "us-east-1",
   },
-};
-
-// 基盤インフラストラクチャスタックのデプロイ
-const baseStack = new BaseInfrastructureStack(app, `${stackPrefix}-BaseInfraStack`, {
-  ...defaultStackProps,
+  zoneName: zoneName,
   domainName: domainName,
 });
 
-// ウェブサイトスタックのデプロイ
-const websiteStack = new WebsiteStack(app, `${stackPrefix}-WebsiteStack`, {
-  ...defaultStackProps,
+// ストレージスタックのデプロイ
+const storageStack = new StorageStack(app, `${stackPrefix}-StorageStack`, {
+  env: {
+    account: requireEnv("AWS_DEFAULT_ACCOUNT"),
+    region: requireEnv("AWS_DEFAULT_REGION"),
+  },
   domainName: domainName,
-  certificate: baseStack.certificate,
 });
 
-// DNSスタックのデプロイ
-const dnsStack = new DnsStack(app, `${stackPrefix}-DnsStack`, {
-  ...defaultStackProps,
-  distribution: websiteStack.distribution,
+// CDNスタックのデプロイ
+const cdnStack = new CdnStack(app, `${stackPrefix}-CdnStack`, {
+  env: {
+    account: requireEnv("AWS_DEFAULT_ACCOUNT"),
+    region: requireEnv("AWS_DEFAULT_REGION"),
+  },
+  domainName: domainName,
+  zoneName: zoneName,
   recordName: recordName,
+
+  certificate: domainStack.certificate,
+  bucket: storageStack.bucket,
+
+  // クロスリージョンの参照を有効にする
+  crossRegionReferences: true,
 });
 
-// スタック間の依存関係を明示的に設定
-websiteStack.addDependency(baseStack);
-dnsStack.addDependency(websiteStack);
+// 依存関係を明示的に指定
+cdnStack.addDependency(domainStack);
+cdnStack.addDependency(storageStack);
