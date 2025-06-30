@@ -19,10 +19,10 @@ jobs:
         (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
         (github.event_name == 'issues' && contains(github.event.issue.body, '@claude'))
       ) && (
-        github.event.sender.login == secrets.AUTHORIZED_USERNAME ||
-        github.event.comment.user.login == secrets.AUTHORIZED_USERNAME ||
-        github.event.review.user.login == secrets.AUTHORIZED_USERNAME ||
-        github.event.issue.user.login == secrets.AUTHORIZED_USERNAME
+        github.event.sender.login == 'Nave-wata' ||
+        github.event.comment.user.login == 'Nave-wata' ||
+        github.event.review.user.login == 'Nave-wata' ||
+        github.event.issue.user.login == 'Nave-wata'
       )
     runs-on: ubuntu-latest
     permissions:
