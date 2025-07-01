@@ -1,309 +1,402 @@
-# WebTools プロジェクトガイドライン
+# WebTools Development Guidelines
 
-このガイドラインは、WebTools プロジェクトの概要と開発ガイドラインを提供します。詳細な情報は `/web/docs` ディレクトリの各ドキュメントを参照してください。
+This document provides essential coding guidelines and operational workflows for the WebTools project development using Claude 4 Sonnet (Junie).
 
-## プロジェクト概要
+## Team Roles and Communication
 
-WebTools は、様々なウェブツールを提供するRustベースのウェブアプリケーションです。Dioxusフレームワークを使用し、Tailwind CSSでスタイリングされています。
+### Role Definitions
+- **User**: Creates ideas, makes decisions, performs final confirmations. Does not edit code or provide technical advice. Responsible for task requests and operation verification.
+- **Junie (Claude 4 Sonnet)**: Executor and code creator. Generally produces good code but may use outdated or deprecated approaches. Follows instructions faithfully but has weak decision-making capabilities, which may lead to inconsistent results.
+- **Gemini**: Advisor with excellent web search capabilities. Provides advice based on the latest data and information.
 
-## プロジェクト構造
+### Communication Languages
+- **Junie ↔ Gemini**: Use English for maximum efficiency and clarity
+- **Junie ↔ User**: Use Japanese for user comprehension
 
-```
-/web
-├── src/                  # ソースコードディレクトリ
-│   ├── components/       # 再利用可能なUIコンポーネント
-│   ├── constants/        # 定数定義
-│   ├── libs/             # ユーティリティライブラリ
-│   ├── routes/           # ルーティング定義とページコンポーネント
-│   ├── components.rs     # コンポーネントのエクスポート
-│   ├── constants.rs      # 定数のエクスポート
-│   ├── libs.rs           # ライブラリのエクスポート
-│   ├── main.rs           # アプリケーションのエントリーポイント
-│   └── routes.rs         # ルーティング設定
-├── assets/               # 静的アセット（画像、フォントなど）
-├── resources/            # リソースファイル
-└── docs/                 # ドキュメント
+### Gemini Integration
+When you need consultation, advice, or verification of current best practices, use Gemini:
+
+```bash
+gemini -s --yolo -p "Your prompt in English"
 ```
 
-詳細な構造については `/web/docs/project_structure.md` を参照してください。
+**When to consult Gemini:**
+- Verifying latest best practices for Rust/Dioxus
+- Checking for deprecated methods or libraries
+- Getting advice on architectural decisions
+- Researching current security practices
+- Validating implementation approaches
 
-## コーディング規約
+## Project Overview
 
-### 一般原則
+WebTools is a Rust-based web application providing various web tools, built with:
+- **Framework**: Dioxus
+- **Styling**: Tailwind CSS
+- **Infrastructure**: AWS CDK (TypeScript)
 
-1. **明確さを優先**: 短いコードよりも読みやすいコードを優先します
-2. **コメント**: 複雑なロジックには適切なコメントを付けます
-3. **単一責任**: 各関数・コンポーネントは単一の責任を持つようにします
-4. **DRY (Don't Repeat Yourself)**: コードの重複を避けます
+## Essential Coding Practices
 
-### Rust コーディング規約
+### Core Principles
+1. **Clarity over brevity**: Prioritize readable code over short code
+2. **Single responsibility**: Each function/component should have one clear purpose
+3. **Consistent formatting**: Always use `cargo fmt` before committing
+4. **Error handling**: Handle all potential errors explicitly
+5. **Documentation**: Add comments for complex logic
 
-- `cargo fmt` を使用して一貫したフォーマットを維持します
-- 命名規則:
-  - **型名** (構造体、列挙型、トレイト): パスカルケース (`SimpleCalculator`)
-  - **変数と関数**: スネークケース (`calculate_result`)
-  - **定数**: 大文字のスネークケース (`MAX_LENGTH`)
+### Modern Development Practices
 
-### Dioxus コンポーネント規約
+#### Dependency Management
+- **Regular updates**: Check for dependency updates weekly using `cargo outdated`
+- **Update commands**: 
+  ```bash
+  # Update Rust dependencies
+  docker compose exec web cargo update
 
-コンポーネントは以下の構造に従います:
+  # Update NPM dependencies (if applicable)
+  docker compose exec tailwind npm update
+  ```
+- **Security audits**: Run security audits on all dependencies
+  ```bash
+  # Audit Rust dependencies
+  docker compose exec web cargo audit
 
+  # Audit NPM dependencies (if applicable)
+  docker compose exec tailwind npm audit
+  ```
+- **Minimal dependencies**: Only add dependencies that provide significant value
+- **Version pinning**: Use specific versions in production deployments
+
+#### Testing Strategy
+- **Unit tests**: Test individual functions and components
+- **Integration tests**: Test component interactions
+- **End-to-end testing**: Consider adding E2E tests for critical user flows
+- **Test coverage**: Aim for meaningful test coverage, not just high percentages
+
+#### Feature Development
+- **Feature flags**: Use feature flags for gradual rollouts of new functionality
+- **Branch strategy**: Use feature branches for development, main branch for stable code
+- **Code reviews**: All code changes should be reviewed before merging
+- **Documentation**: Update documentation alongside code changes
+
+### Rust Conventions
+```rust
+// Naming conventions
+struct UserData {}           // PascalCase for types
+fn calculate_result() {}     // snake_case for functions/variables
+const MAX_ITEMS: usize = 10; // SCREAMING_SNAKE_CASE for constants
+```
+
+### Dioxus Component Structure
 ```rust
 pub(crate) fn ComponentName(cx: Scope) -> Element {
-    // 状態の初期化
+    // 1. State initialization
     let state = use_state(cx, || initial_value);
 
-    // イベントハンドラ
-    let handle_event = move |_| {
-        // イベント処理
+    // 2. Event handlers
+    let handle_click = move |_| {
+        // Event logic here
     };
 
-    // UI レンダリング
+    // 3. UI rendering
     cx.render(rsx! {
         div {
-            class: "style-classes",
-            // コンポーネントの内容
+            class: "tailwind-classes",
+            // Component content
         }
     })
 }
 ```
 
-詳細なコーディング規約については `/web/docs/coding_guidelines.md` を参照してください。
+## Development Workflow
 
-## 新機能の追加方法
+### Before Starting Development
+1. **Understand the task**: Read requirements carefully
+2. **Consult Gemini if needed**: For latest best practices or unclear requirements
+3. **Plan the implementation**: Break down into small, manageable steps
+4. **Check dependencies**: Verify all dependencies are up-to-date and secure
 
-新しいツールを追加するには、以下の手順に従います:
+### Code Development Process
+**MANDATORY: Always create a feature branch before making any changes. Never commit directly to the main branch.**
 
-1. ルートファイルの作成（ツールの実装）
-2. ルーティング設定の追加
-3. カードコンポーネントの作成
-4. トップページへのカード追加
-5. アイコンとOGP画像の追加
-6. 必要に応じたグリッドの追加
-7. 使い方コンポーネントの追加
+1. **Create feature branch**: `git checkout -b feature/[descriptive-name]` (REQUIRED before any code changes)
+2. **Write code**: Follow the established patterns and conventions
+3. **Format code**: `docker compose exec web cargo fmt`
+4. **Check with linter**: `docker compose exec web cargo clippy` (fix ALL warnings)
+5. **Run tests**: `docker compose exec web cargo test`
+6. **Build verification**: `docker compose exec web ./bundle.sh`
+7. **Security scan**: Check for vulnerabilities in dependencies
+8. **Git operations**: After all checks pass successfully, commit and push changes
+9. **Mandatory Gemini review**: Request review from Gemini after completing any output or changes
 
-すべてのツールには使い方説明を追加する必要があります。`Usage` コンポーネントを使用して、一貫したスタイルと構造で使い方を表示してください。
+### Git Workflow with GitHub CLI
+After ensuring all builds and tests pass successfully, Junie must perform the following git operations.
 
-詳細な手順については `/web/docs/adding_new_routes.md` を参照してください。
-
-## ビルドとテスト
-
-### 開発環境
-
+#### Branch Management
 ```bash
-# 開発サーバーの起動
-docker compose up -d
+# Create a new feature branch, including the issue number if applicable
+git checkout -b feature/issue-123-[feature-name]
 
-# 開発サーバーを再起動する場合
-docker compose exec web dx serve --features development --addr 0.0.0.0 --platform web
+# Switch between branches
+git checkout [branch-name]
+
+# Check current branch and status
+git status
 ```
 
-### コードフォーマットとリンター
-
+#### Syncing with Remote
+Before pushing, always sync your feature branch with the latest changes from the `main` branch to avoid conflicts.
 ```bash
-# Rustのコードフォーマット
-docker compose exec web cargo fmt
+# Fetch the latest changes from the remote
+git fetch origin
 
-# リンターの実行
-docker compose exec web cargo clippy
+# Rebase your branch on top of the latest main branch
+git rebase origin/main
+
+# If conflicts occur, DO NOT proceed. Report the conflict to the user immediately.
+# On user approval, you may attempt to resolve conflicts. If not, await instructions.
 ```
 
-### テスト
-
+#### Commit and Push Process
 ```bash
-# テストの実行
+# Stage all changes
+git add .
+
+# Create commit message following Japanese format: [<Type>]: <Summary>
+# The commit body should contain the details of the change.
+# Change types: chore, fix, feat, refactor, style, docs, test
+git commit -m "[feat]: 新しい計算機能を追加" -m "ユーザビリティ向上のため、ホームページに新しいツール機能として計算機能を実装しました。"
+# or
+git commit -m "[fix]: ログイン機能の認証バグを修正" -m "特定の条件下で認証エラーが発生していた問題を解決しました。"
+# or
+git commit -m "[docs]: コミットメッセージ形式を更新" -m "Conventional Commitsに準拠するため、ガイドラインのフォーマットを変更しました。"
+# or
+git commit -m "[refactor]: コンポーネント構造を整理" -m "保守性向上のため、既存のコンポーネントファイルを再構成しました。"
+# or
+git commit -m "[style]: コードフォーマットを統一" -m "cargo fmtによる自動フォーマットを適用し、コーディングスタイルを統一しました。"
+
+# Push changes to the remote repository
+git push origin feature/issue-123-[feature-name]
+```
+
+**Commit Message Format Rules:**
+- **Language**: Write in Japanese
+- **Format**: `[<Type>]: <Summary>` with details in the commit body
+- **Change Types** (choose based on the content of the change):
+  - `chore`: Tasks that don't fit other categories (adding libraries, environment setup)
+  - `fix`: Bug fixes
+  - `feat`: Adding new features or functionality
+  - `refactor`: Organizing code without changing functionality
+  - `style`: Modifying coding style without affecting functionality
+  - `docs`: Adding or updating documentation
+  - `test`: Modifying or creating test code
+
+**Commit Body Guidelines:**
+- Use the second `-m` parameter to add detailed description in the commit body
+- Describe what was changed and why
+- Avoid excessive explanations or unnecessary details
+- Focus on the logical change rather than file operations
+
+#### Pull Request Creation
+Use the GitHub CLI to create pull requests for code review.
+```bash
+# Create a pull request, referencing the issue in the body
+gh pr create --title "feat(issue-123): [Brief PR title]" --body "Resolves #123. [Detailed description of changes, testing performed, and any notes for reviewers]"
+
+# Alternative: Create a draft PR for work in progress
+gh pr create --draft --title "[WIP] feat(issue-123): [Brief PR title]" --body "Resolves #123. [Description of current progress]"
+```
+
+### Git Security Best Practices
+
+#### GitHub CLI Authentication
+- The `gh` CLI will be authenticated using a temporary token provided by the environment.
+- **DO NOT** store tokens in configuration files or commit them to the repository.
+- Report any authentication failures to the user immediately.
+
+#### Prohibited Operations
+- **NEVER** use `git push --force` or `git push --force-with-lease`. Force pushing is strictly forbidden as it can overwrite the commit history and cause irreversible data loss.
+- If a push is rejected, follow the "Syncing with Remote" workflow. Do not attempt to force the push.
+
+### Automation Integration
+Consider implementing these automation practices for improved workflow:
+
+#### Git Hooks (Recommended)
+```bash
+# Pre-commit hook example (.git/hooks/pre-commit)
+#!/bin/sh
+docker compose exec web cargo fmt --check
+docker compose exec web cargo clippy -- -D warnings
 docker compose exec web cargo test
 ```
 
-コード変更後は必ずテストを実行して、機能が正しく動作することを確認してください。また、新機能の追加や既存機能の変更を行う際には、適切なテストコードも作成してください。テストコードは対応するモジュールと同じディレクトリに配置し、機能の正常動作と異常系の処理を検証するようにしてください。
+#### CI/CD Pipeline Integration
+- Automated formatting checks
+- Clippy warnings as build failures
+- Automated testing on pull requests
+- Security vulnerability scanning
+- Automated Gemini review triggers for significant changes
 
-### 開発ワークフロー
+### Quality Assurance Rules
+- **Zero tolerance for warnings**: Fix all clippy warnings before proceeding
+- **All tests must pass**: Never ignore failing tests
+- **Format consistency**: Always run cargo fmt
+- **Build success**: Ensure clean builds without warnings
+- **Mandatory Gemini review**: Always request Gemini review after completing any output or changes
 
-コード変更後は、以下の手順に従って品質を確保してください：
+### Mandatory Gemini Review Process
+After completing any code output or changes, you MUST request a review from Gemini to leverage its excellent search capabilities for modern, up-to-date, and secure code practices.
 
-1. **コードフォーマッターの実行**:
-   ```bash
-   docker compose exec web cargo fmt
-   ```
-   - フォーマッターによって自動的に修正されるスタイルの問題があります
-   - フォーマッターが出力するすべての警告を解決してください
+**When to request Gemini review:**
+- After implementing new features or components
+- After making significant code changes
+- After updating dependencies or configurations
+- After completing any development task
 
-2. **リンターの実行**:
-   ```bash
-   docker compose exec web cargo clippy
-   ```
-   - リンターが検出した警告やエラーをすべて解決してください
-   - 警告を無視せず、コードの品質向上のためにすべての警告に対処してください
-
-3. **テストの実行**:
-   ```bash
-   docker compose exec web cargo test
-   ```
-   - すべてのテストが成功することを確認してください
-
-4. **ビルドの確認**:
-   ```bash
-   docker compose exec web ./bundle.sh
-   ```
-   - ビルドが正常に完了することを確認してください
-   - ビルド時に出力されるすべての警告を解決してください
-   - 警告を放置すると、将来的にエラーになる可能性があります
-
-これらのステップを順番に実行し、各ステップで検出された問題をすべて解決してから次のステップに進むことで、コードの品質と安定性を確保できます。
-
-### 本番ビルド
-
+**How to request review:**
 ```bash
-# 本番用にビルド
+gemini -s --yolo -p "Please review the following [code/implementation/changes] for modern best practices, security considerations, and potential improvements. Check for deprecated methods, outdated patterns, and suggest more current approaches: [describe your changes]"
+```
+
+**What to ask Gemini to review:**
+- Code modernization opportunities
+- Security best practices compliance
+- Deprecated method usage
+- Performance optimization suggestions
+- Current industry standards adherence
+- Potential vulnerabilities or issues
+
+## Adding New Features
+
+### Step-by-Step Process
+1. **Create route file**: Implement the tool functionality
+2. **Add routing configuration**: Update routing settings
+3. **Create card component**: For the homepage display
+4. **Add to homepage**: Include the new tool card
+5. **Add assets**: Icons and OGP images
+6. **Create usage component**: Always include usage instructions
+7. **Test thoroughly**: Verify all functionality works
+
+### Required Components
+- Every tool MUST have usage instructions using the `Usage` component
+- Consistent styling with Tailwind CSS
+- Proper error handling and user feedback
+
+## Development Commands
+
+### Environment Setup
+```bash
+# Start development server
+docker compose up -d
+
+# Restart development server
+docker compose exec web dx serve --features development --addr 0.0.0.0 --platform web
+```
+
+### Code Quality
+```bash
+# Format code (ALWAYS run this)
+docker compose exec web cargo fmt
+
+# Check for issues (fix ALL warnings)
+docker compose exec web cargo clippy
+
+# Run tests (ALL must pass)
+docker compose exec web cargo test
+
+# Production build
 docker compose exec web ./bundle.sh
 ```
 
-## ドキュメント
+## Security Guidelines
 
-各ツールの仕様書は `/web/docs/pages/` ディレクトリに配置されています。新しいツールを追加する場合は、対応する仕様書も作成してください。また、既存の機能を変更した場合は、関連するドキュメントも必ず更新してください。ドキュメントの更新は、コードの変更と同じプルリクエストに含めるようにし、コードとドキュメントの一貫性を維持してください。
+### Core Security Principles
+- **Least privilege**: Grant minimal necessary permissions
+- **Defense in depth**: Implement multiple layers of security
+- **Regular audits**: Conduct security reviews and dependency audits
+- **Secure by default**: Choose secure configurations as defaults
 
-## CDK (AWS Cloud Development Kit) ガイドライン
+### Rust Security Practices
+- **Input validation**: Always validate and sanitize user inputs
+- **Memory safety**: Leverage Rust's ownership system for memory safety
+- **Dependency auditing**: Use `cargo audit` to check for known vulnerabilities
+- **Secure coding**: Avoid unsafe blocks unless absolutely necessary
 
-WebTools プロジェクトでは、AWS CDKを使用してクラウドインフラストラクチャをコードとして管理しています。CDKコードは `/cdk` ディレクトリに配置され、TypeScriptで記述されています。
+### Web Security
+- **HTTPS enforcement**: Always use HTTPS in production
+- **Content Security Policy**: Implement appropriate CSP headers
+- **Input sanitization**: Sanitize all user inputs to prevent XSS
+- **Authentication**: Implement proper authentication and session management
+- **Security headers**: Implement essential security headers:
+  - `Content-Security-Policy` (CSP)
+  - `Strict-Transport-Security` (HSTS)
+  - `X-Content-Type-Options`
+  - `X-Frame-Options`
+  - `Referrer-Policy`
+  - `Permissions-Policy`
 
-### CDK プロジェクト構造
+### Docker Security
+- **Least privilege**: Run container processes as a non-root user
+- **Minimal base image**: Use a minimal, secure base image for containers
+- **Image scanning**: Regularly scan Docker images for vulnerabilities
+- **Secrets management**: Never include secrets in Docker images
 
-```
-/cdk
-├── bin/                  # CDKアプリケーションのエントリーポイント
-│   └── app.ts           # メインアプリケーション定義
-├── lib/                 # CDK構成要素の実装
-│   ├── constructs/      # 再利用可能なCDK構成要素
-│   │   ├── cdn/         # CloudFront関連の構成要素
-│   │   ├── domain/      # ドメイン・証明書関連の構成要素
-│   │   ├── shared/      # 共通の構成要素
-│   │   └── storage/     # ストレージ関連の構成要素
-│   ├── interfaces/      # TypeScript型定義
-│   └── stacks/          # CDKスタック定義
-├── test/                # テストファイル
-├── utils/               # ユーティリティ関数
-├── assets/              # デプロイ用アセット
-├── .env                 # 環境変数設定
-└── docs/                # 詳細ドキュメント
-```
+### Infrastructure Security
+- **Environment variables**: Store sensitive data in environment variables
+- **Access controls**: Implement proper IAM roles and policies
+- **Encryption**: Use encryption for data at rest and in transit
+- **Monitoring**: Implement logging and monitoring for security events
 
-### CDK アーキテクチャ原則
+## CDK Infrastructure Guidelines
 
-1. **スタック分離**: 機能ごとにスタックを分離し、依存関係を明確にします
-   - `DomainStack`: Route53ホストゾーンとSSL証明書
-   - `StorageStack`: S3バケットによる静的サイトストレージ
-   - `CdnStack`: CloudFrontディストリビューションとDNSレコード
+### Key Principles
+- **Stack separation**: Separate functionality into distinct stacks
+- **Type safety**: Use TypeScript interfaces for all configurations
+- **Environment isolation**: Use environment variables for configuration
+- **Security first**: Apply least privilege principle
 
-2. **構成要素の再利用**: 共通機能は `constructs/` ディレクトリで再利用可能な構成要素として実装します
-
-3. **型安全性**: TypeScriptの型システムを活用し、`interfaces/` ディレクトリで型定義を管理します
-
-4. **環境分離**: 環境変数を使用して設定を外部化し、環境ごとの差異を管理します
-
-### CDK コーディング規約
-
-#### 命名規則
-
-- **スタック名**: パスカルケース + "Stack" サフィックス (`DomainStack`)
-- **構成要素名**: パスカルケース + "Construct" サフィックス (`SecurityHeadersConstruct`)
-- **変数・関数**: キャメルケース (`domainName`, `requireEnv`)
-- **定数**: 大文字のスネークケース (`STACK_PREFIX`)
-
-#### ファイル構成
-
-- **スタックファイル**: `/lib/stacks/` に配置し、単一責任の原則に従います
-- **構成要素ファイル**: `/lib/constructs/` にドメインごとに分類して配置します
-- **インターフェース**: `/lib/interfaces/` に対応するドメイン名で配置します
-
-#### コメント規約
-
-```typescript
-/**
- * 構成要素やスタックの説明
- * 
- * より詳細な説明や使用方法、注意点などを記載
- * 複数行にわたる場合は適切に改行します
- */
-export class ExampleConstruct extends Construct {
-  /** プロパティの説明 */
-  public readonly exampleProperty: string;
-
-  /**
-   * コンストラクタの説明
-   * 
-   * @param scope 親構成要素
-   * @param id 構成要素ID
-   * @param props 構成要素のプロパティ
-   */
-  constructor(scope: Construct, id: string, props: ExampleProps) {
-    super(scope, id);
-    // 実装
-  }
-}
-```
-
-### 開発ワークフロー
-
-#### 環境設定
-
+### CDK Development Process
 ```bash
-# CDKディレクトリに移動
 cd cdk
-
-# 依存関係のインストール
 npm install
-
-# 環境変数の設定
-cp .env.example .env
-# .envファイルを編集して必要な値を設定
+npm run build    # Compile TypeScript
+npm test         # Run tests
+npx cdk synth    # Syntax check
+npx cdk diff     # Check differences
+npx cdk deploy --all  # Deploy
 ```
 
-#### 開発・テスト
+## Error Prevention
 
-```bash
-# TypeScriptのコンパイル
-npm run build
+### Common Mistakes to Avoid
+1. **Ignoring clippy warnings**: Always fix ALL warnings
+2. **Skipping tests**: Run tests after every change
+3. **Inconsistent formatting**: Always use cargo fmt
+4. **Deprecated dependencies**: Consult Gemini for latest versions
+5. **Poor error handling**: Handle all Result types properly
 
-# テストの実行
-npm test
+### When to Consult Gemini
+- Uncertain about current best practices
+- Need to verify if a library/method is deprecated
+- Require architectural guidance
+- Need security best practices
+- Want to confirm implementation approach
 
-# CDK構文チェック
-npx cdk synth
+## Success Criteria
 
-# 差分確認
-npx cdk diff
-```
+### Code Quality Checklist
+- [ ] Code formatted with `cargo fmt`
+- [ ] Zero clippy warnings
+- [ ] All tests passing
+- [ ] Clean build without warnings
+- [ ] Proper error handling implemented
+- [ ] Usage documentation included
+- [ ] Consistent with project patterns
+- [ ] Gemini review completed and recommendations addressed
 
-#### デプロイ
+### Communication Guidelines
+- Use English when consulting Gemini for technical advice
+- Use Japanese when communicating with the user
+- Be specific and clear in all communications
+- Document decisions and reasoning
 
-```bash
-# 全スタックのデプロイ
-npx cdk deploy --all
-
-# 特定スタックのデプロイ
-npx cdk deploy ToolsNaveWataNet-DomainStack
-```
-
-### 新機能追加ガイドライン
-
-新しいAWSリソースや機能を追加する場合は、以下の手順に従います：
-
-1. **要件定義**: 必要なAWSサービスと構成を明確にします
-2. **インターフェース定義**: `/lib/interfaces/` に型定義を作成します
-3. **構成要素実装**: `/lib/constructs/` に再利用可能な構成要素を実装します
-4. **スタック統合**: 既存スタックに統合するか、新しいスタックを作成します
-5. **テスト作成**: `/test/` ディレクトリにユニットテストを作成します
-6. **ドキュメント更新**: `/cdk/docs/` に詳細ドキュメントを作成・更新します
-
-### セキュリティ考慮事項
-
-- **最小権限の原則**: IAMロールとポリシーは必要最小限の権限のみを付与します
-- **暗号化**: データの暗号化を適切に設定します
-- **アクセス制御**: S3バケットポリシーやCloudFrontの設定で適切なアクセス制御を行います
-- **環境変数**: 機密情報は環境変数で管理し、コードに直接記述しません
-
-詳細な実装ガイドやベストプラクティスについては、`/cdk/docs/` ディレクトリの各ドキュメントを参照してください。
-
-## トラブルシューティング
-
-開発中に発生する可能性のある一般的な問題とその解決策については、`/web/docs/troubleshooting.md` を参照してください。
+Remember: The goal is to produce high-quality, maintainable code that follows current best practices. When in doubt, consult Gemini for the latest information and best practices.
