@@ -1,6 +1,7 @@
 mod calculator;
 mod converter;
 mod counter;
+mod formatter;
 mod generator;
 mod notfound;
 mod top;
@@ -13,6 +14,7 @@ use converter::number_base::NumberBaseConverter;
 use converter::url_endecode::UrlEnDecoder;
 use counter::text_length::TextLengthCounter;
 use dioxus::prelude::*;
+use formatter::json::JsonFormatter;
 use generator::password::PasswordGenerator;
 use notfound::NotFound;
 use top::TopPage;
@@ -54,6 +56,10 @@ pub(crate) enum Route {
 
     #[route("/big-numbers")]
     BigNumbersCalculator {},
+    #[end_nest]
+    #[nest("/formatter")]
+    #[route("/json")]
+    JsonFormatter {},
     #[end_nest]
     #[end_layout]
     #[layout(DefaultLayout)]
