@@ -10,9 +10,6 @@ on:
   pull_request_review:
     types: [submitted]
 
-env:
-  TRIGGER_USER: 'Nave-wata'
-
 jobs:
   claude-code-action:
     if: |
@@ -22,10 +19,10 @@ jobs:
         (github.event_name == 'pull_request_review' && contains(github.event.review.body, '@claude')) ||
         (github.event_name == 'issues' && contains(github.event.issue.body, '@claude'))
       ) && (
-        github.event.sender.login == env.TRIGGER_USER ||
-        github.event.comment.user.login == env.TRIGGER_USER ||
-        github.event.review.user.login == env.TRIGGER_USER ||
-        github.event.issue.user.login == env.TRIGGER_USER
+        github.event.sender.login == 'Nave-wata' ||
+        github.event.comment.user.login == 'Nave-wata' ||
+        github.event.review.user.login == 'Nave-wata' ||
+        github.event.issue.user.login == 'Nave-wata'
       )
     runs-on: ubuntu-latest
     permissions:
