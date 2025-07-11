@@ -1,6 +1,7 @@
 use crate::components::cards::base_endecode_converter_card::BaseEnDecodeConverterCard;
 use crate::components::cards::big_numbers_calculator_card::BigNumbersCalculatorCard;
 use crate::components::cards::byte_unit_calculator_card::ByteUnitCalculatorCard;
+use crate::components::cards::json_formatter_card::JsonFormatterCard;
 use crate::components::cards::number_base_converter_card::NumberBaseConverterCard;
 use crate::components::cards::password_generator_card::PasswordGeneratorCard;
 use crate::components::cards::simple_calculator_card::SimpleCalculatorCard;
@@ -41,9 +42,9 @@ pub(crate) fn TopPage() -> Element {
             ToolsGrid {
                 title: "コンバーター",
 
+                UrlEnDecodeConverterCard {},
                 BaseEnDecodeConverterCard {},
                 NumberBaseConverterCard {},
-                UrlEnDecodeConverterCard {},
             }
 
             ToolsGrid {
@@ -52,6 +53,12 @@ pub(crate) fn TopPage() -> Element {
                 ByteUnitCalculatorCard {},
                 SimpleCalculatorCard {},
                 BigNumbersCalculatorCard {},
+            }
+
+            ToolsGrid {
+                title: "フォーマッター",
+
+                JsonFormatterCard {},
             }
         }
     }

@@ -54,11 +54,17 @@ pub(crate) fn JsonFormatter() -> Element {
 
                 // 整形JSON
                 let formatted = if indent_type() == "tab" {
-                    serde_json::to_string_pretty(&value).unwrap_or_default()
+                    // タブインデントの場合
+                    let tabs = vec![b'\t'; 1];
+                    let formatter = serde_json::ser::PrettyFormatter::with_indent(tabs.as_slice());
+                    let mut ser = serde_json::Serializer::with_formatter(Vec::new(), formatter);
+                    value.serialize(&mut ser).unwrap();
+                    String::from_utf8(ser.into_inner()).unwrap_or_default()
                 } else {
                     // スペースインデントの場合
                     let spaces = vec![b' '; indent_size() as usize];
-                    let formatter = serde_json::ser::PrettyFormatter::with_indent(spaces.as_slice());
+                    let formatter =
+                        serde_json::ser::PrettyFormatter::with_indent(spaces.as_slice());
                     let mut ser = serde_json::Serializer::with_formatter(Vec::new(), formatter);
                     value.serialize(&mut ser).unwrap();
                     String::from_utf8(ser.into_inner()).unwrap_or_default()
@@ -135,7 +141,7 @@ pub(crate) fn JsonFormatter() -> Element {
     // インデントサイズ変更処理
     let on_indent_size_change = move |e: Event<FormData>| {
         if let Ok(size) = e.value().parse::<usize>() {
-            if size >= 1 && size <= 8 {
+            if (1..=8).contains(&size) {
                 indent_size.set(size);
                 // 設定変更時に整形し直す
                 if !input_json().is_empty() {
@@ -157,8 +163,9 @@ pub(crate) fn JsonFormatter() -> Element {
                 let clipboard = navigator.clipboard();
                 let promise = clipboard.write_text(&text);
                 match wasm_bindgen_futures::JsFuture::from(promise).await {
-                    Ok(_) => copy_success
-                        .set(format!("{}をクリップボードにコピーしました", field_name)),
+                    Ok(_) => {
+                        copy_success.set(format!("{}をクリップボードにコピーしました", field_name))
+                    }
                     Err(_) => copy_success.set("コピーに失敗しました".to_string()),
                 }
             }
