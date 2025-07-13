@@ -1,11 +1,12 @@
 use crate::components::cards::tool_card::ToolCard;
+use crate::components::images::lazy_image::LazyImage;
 use crate::routes::Route;
 use dioxus::prelude::*;
 
 /// シンプル電卓ツールカード
 pub(crate) fn SimpleCalculatorCard() -> Element {
     let icon: Element = rsx! {
-        img {
+        LazyImage {
             src: asset!("/assets/images/icons/simple_calculator.webp"),
             alt: "シンプル電卓",
             class: "justify-self-center py-3",
