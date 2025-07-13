@@ -38,6 +38,7 @@ pub(crate) struct BreadcrumbItem {
 pub(crate) fn BreadcrumbList(props: BreadcrumbListProps) -> Element {
     rsx! {
         ol {
+            "aria-label": "breadcrumb",
             itemtype: "https://schema.org/BreadcrumbList",
             itemscope: true,
             class: "flex pt-[-2rem]",
@@ -47,6 +48,7 @@ pub(crate) fn BreadcrumbList(props: BreadcrumbListProps) -> Element {
                 .enumerate()
                 .map(|(index, item)| rsx! {
                     BreadcrumbItemElement {
+                        key: "{item.name}",
                         name: item.name.clone(),
                         to: item.to.clone(),
                         position: index + 1,
@@ -54,6 +56,7 @@ pub(crate) fn BreadcrumbList(props: BreadcrumbListProps) -> Element {
 
                     if index != props.items.len() - 1 {
                         span {
+                            "aria-hidden": "true",
                             class: "relative self-center top-[1px] mx-2 text-xs",
                             ">"
                         }
