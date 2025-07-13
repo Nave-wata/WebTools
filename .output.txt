@@ -1,0 +1,350 @@
+    Checking WebTools v0.1.0 (/home/pr0gr/RustroverProjects/WebTools/web)
+warning: variables can be used directly in the `format!` string
+  --> src/components/errors/err_404.rs:19:24
+   |
+19 |     let title: &str = &format!("404 Not Found - {}", APP_TITLE);
+   |                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args
+   = note: `#[warn(clippy::uninlined_format_args)]` on by default
+help: change this to
+   |
+19 -     let title: &str = &format!("404 Not Found - {}", APP_TITLE);
+19 +     let title: &str = &format!("404 Not Found - {APP_TITLE}");
+   |
+warning: variables can be used directly in the `format!` string
+  --> src/libs/base.rs:18:21
+   |
+18 |         .map(|byte| format!("{:02x}", byte))
+   |                     ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args
+help: change this to
+   |
+18 -         .map(|byte| format!("{:02x}", byte))
+18 +         .map(|byte| format!("{byte:02x}"))
+   |
+warning: variables can be used directly in the `format!` string
+   --> src/libs/base.rs:219:28
+    |
+219 | ...   return Err(format!("Base64デコードエラー: 無効な文字 '{}'", c));
+    |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args
+help: change this to
+    |
+219 -                 return Err(format!("Base64デコードエラー: 無効な文字 '{}'", c));
+219 +                 return Err(format!("Base64デコードエラー: 無効な文字 '{c}'"));
+    |
+warning: variables can be used directly in the `format!` string
+   --> src/libs/calculator/big_numbers.rs:109:29
+    |
+109 |         let a_frac_padded = format!("{:0<20}", a_frac);
+    |                             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args
+help: change this to
+    |
+109 -         let a_frac_padded = format!("{:0<20}", a_frac);
+109 +         let a_frac_padded = format!("{a_frac:0<20}");
+    |
+warning: variables can be used directly in the `format!` string
+   --> src/libs/calculator/big_numbers.rs:110:29
+    |
+110 |         let b_frac_padded = format!("{:0<20}", b_frac);
+    |                             ^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args
+help: change this to
+    |
+110 -         let b_frac_padded = format!("{:0<20}", b_frac);
+110 +         let b_frac_padded = format!("{b_frac:0<20}");
+    |
+warning: variables can be used directly in the `format!` string
+   --> src/libs/calculator/big_numbers.rs:206:25
+    |
+206 | ...added = format!("{:0<width$}", a_frac, width = max_frac_len);
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args
+help: change this to
+    |
+206 -     let a_frac_padded = format!("{:0<width$}", a_frac, width = max_frac_len);
+206 +     let a_frac_padded = format!("{a_frac:0<max_frac_len$}");
+    |
+warning: variables can be used directly in the `format!` string
+   --> src/libs/calculator/big_numbers.rs:207:25
+    |
+207 | ...added = format!("{:0<width$}", b_frac, width = max_frac_len);
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args
+help: change this to
+    |
+207 -     let b_frac_padded = format!("{:0<width$}", b_frac, width = max_frac_len);
+207 +     let b_frac_padded = format!("{b_frac:0<max_frac_len$}");
+    |
+warning: variables can be used directly in the `format!` string
+   --> src/libs/calculator/big_numbers.rs:606:25
+    |
+606 | ...added = format!("{:0<width$}", a_frac, width = max_frac_len);
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args
+help: change this to
+    |
+606 -     let a_frac_padded = format!("{:0<width$}", a_frac, width = max_frac_len);
+606 +     let a_frac_padded = format!("{a_frac:0<max_frac_len$}");
+    |
+warning: variables can be used directly in the `format!` string
+   --> src/libs/calculator/big_numbers.rs:607:25
+    |
+607 | ...added = format!("{:0<width$}", b_frac, width = max_frac_len);
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args
+help: change this to
+    |
+607 -     let b_frac_padded = format!("{:0<width$}", b_frac, width = max_frac_len);
+607 +     let b_frac_padded = format!("{b_frac:0<max_frac_len$}");
+    |
+warning: variables can be used directly in the `format!` string
+   --> src/libs/calculator/big_numbers.rs:643:33
+    |
+643 |                 _ => return Err(format!("Unknown operator: {}", token)),
+    |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args
+help: change this to
+    |
+643 -                 _ => return Err(format!("Unknown operator: {}", token)),
+643 +                 _ => return Err(format!("Unknown operator: {token}")),
+    |
+warning: variables can be used directly in the `format!` string
+   --> src/libs/calculator/big_numbers.rs:716:29
+    |
+716 |             _ => return Err(format!("Invalid character: {}", c)),
+    |                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args
+help: change this to
+    |
+716 -             _ => return Err(format!("Invalid character: {}", c)),
+716 +             _ => return Err(format!("Invalid character: {c}")),
+    |
+warning: variables can be used directly in the `format!` string
+  --> src/libs/calculator/byte_unit.rs:25:25
+   |
+25 |         _ => return Err(format!("Unknown unit: {}", unit)),
+   |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args
+help: change this to
+   |
+25 -         _ => return Err(format!("Unknown unit: {}", unit)),
+25 +         _ => return Err(format!("Unknown unit: {unit}")),
+   |
+warning: variables can be used directly in the `format!` string
+  --> src/libs/calculator/byte_unit.rs:29:8
+   |
+29 |     Ok(format!("{:.10}", result)
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args
+help: change this to
+   |
+29 -     Ok(format!("{:.10}", result)
+29 +     Ok(format!("{result:.10}")
+   |
+warning: variables can be used directly in the `format!` string
+  --> src/libs/calculator/byte_unit.rs:57:25
+   |
+57 |         _ => return Err(format!("Unknown unit: {}", unit)),
+   |                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args
+help: change this to
+   |
+57 -         _ => return Err(format!("Unknown unit: {}", unit)),
+57 +         _ => return Err(format!("Unknown unit: {unit}")),
+   |
+warning: variables can be used directly in the `format!` string
+  --> src/libs/calculator/byte_unit.rs:61:8
+   |
+61 |     Ok(format!("{:.0}", bytes))
+   |        ^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args
+help: change this to
+   |
+61 -     Ok(format!("{:.0}", bytes))
+61 +     Ok(format!("{bytes:.0}"))
+   |
+warning: variables can be used directly in the `format!` string
+  --> src/libs/calculator/simple.rs:97:33
+   |
+97 |                 _ => return Err(format!("Unknown operator: {}", token)),
+   |                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args
+help: change this to
+   |
+97 -                 _ => return Err(format!("Unknown operator: {}", token)),
+97 +                 _ => return Err(format!("Unknown operator: {token}")),
+   |
+warning: variables can be used directly in the `format!` string
+   --> src/libs/calculator/simple.rs:156:32
+    |
+156 |                     return Err(format!("Invalid character: {}", c));
+    |                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args
+help: change this to
+    |
+156 -                     return Err(format!("Invalid character: {}", c));
+156 +                     return Err(format!("Invalid character: {c}"));
+    |
+warning: variables can be used directly in the `format!` string
+   --> src/libs/calculator/simple.rs:198:29
+    |
+198 |             _ => return Err(format!("Invalid character: {}", c)),
+    |                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args
+help: change this to
+    |
+198 -             _ => return Err(format!("Invalid character: {}", c)),
+198 +             _ => return Err(format!("Invalid character: {c}")),
+    |
+warning: variables can be used directly in the `format!` string
+   --> src/libs/calculator/simple.rs:225:17
+    |
+225 |                 format!("{:e}", value)
+    |                 ^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args
+help: change this to
+    |
+225 -                 format!("{:e}", value)
+225 +                 format!("{value:e}")
+    |
+warning: variables can be used directly in the `format!` string
+  --> src/libs/number.rs:16:20
+   |
+16 |   ...   return Err(format!(
+   |  __________________^
+17 | | ...       "進数は2から36の間である必要があります。指定された進数: {}",
+18 | | ...       base
+19 | | ...   ));
+   | |_______^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args
+warning: variables can be used directly in the `format!` string
+  --> src/libs/number.rs:60:20
+   |
+60 |   ...   return Err(format!(
+   |  __________________^
+61 | | ...       "進数は2から36の間である必要があります。指定された進数: {}",
+62 | | ...       base
+63 | | ...   ));
+   | |_______^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args
+warning: variables can be used directly in the `format!` string
+  --> src/libs/number.rs:79:32
+   |
+79 | ...   None => return Err(format!("無効な文字が含まれています: {}", c)),
+   |                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args
+help: change this to
+   |
+79 -             None => return Err(format!("無効な文字が含まれています: {}", c)),
+79 +             None => return Err(format!("無効な文字が含まれています: {c}")),
+   |
+warning: variables can be used directly in the `format!` string
+  --> src/libs/number.rs:84:24
+   |
+84 | ...   return Err(format!("文字 '{}' は{}進数では使用できません", c, base));
+   |                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args
+help: change this to
+   |
+84 -             return Err(format!("文字 '{}' は{}進数では使用できません", c, base));
+84 +             return Err(format!("文字 '{c}' は{base}進数では使用できません"));
+   |
+warning: variables can be used directly in the `format!` string
+   --> src/libs/url.rs:104:17
+    |
+104 |                 format!("{}={}", k, v)
+    |                 ^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args
+help: change this to
+    |
+104 -                 format!("{}={}", k, v)
+104 +                 format!("{k}={v}")
+    |
+warning: variables can be used directly in the `format!` string
+  --> src/routes/converter/url_endecode.rs:59:43
+   |
+59 | ...   Err(err) => error_message.set(format!("デコードエラー: {}", err)),
+   |                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args
+help: change this to
+   |
+59 -             Err(err) => error_message.set(format!("デコードエラー: {}", err,
+59 +             Err(err) => error_message.set(format!("デコードエラー: {err}")),
+   |
+warning: variables can be used directly in the `format!` string
+  --> src/routes/formatter/json.rs:76:17
+   |
+76 |                 format!("JSON構文エラー: {}", e),
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args
+help: change this to
+   |
+76 -                 format!("JSON構文エラー: {}", e),
+76 +                 format!("JSON構文エラー: {e}"),
+   |
+warning: variables can be used directly in the `format!` string
+   --> src/routes/formatter/json.rs:167:42
+    |
+167 | ...   copy_success.set(format!("{}をクリップボードにコピーしました", field_name))
+    |                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args
+help: change this to
+    |
+167 -                         copy_success.set(format!("{}をクリップボードにコピld_name))
+167 +                         copy_success.set(format!("{field_name}をクリップボしました"))
+    |
+warning: variables can be used directly in the `format!` string
+   --> src/routes/generator/password.rs:430:55
+    |
+430 | ...et(format!("パスワードの長さは {} ~ {} 以下である必要があります", min_length, max_length));
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args
+help: change this to
+    |
+430 -                                     error_message.set(format!("パスワードの} ~ {} 以下である必要があります", min_length, max_length));
+430 +                                     error_message.set(format!("パスワードのmin_length} ~ {max_length} 以下である必要があります"));
+    |
+warning: variables can be used directly in the `format!` string
+   --> src/routes/generator/password.rs:435:55
+    |
+435 | ...et(format!("生成するパスワードの数は {} ~ {} 以下である必要があります", min_qty, max_qty));
+    |       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/master/index.html#uninlined_format_args
+help: change this to
+    |
+435 -                                     error_message.set(format!("生成するパスは {} ~ {} 以下である必要があります", min_qty, max_qty));
+435 +                                     error_message.set(format!("生成するパスは {min_qty} ~ {max_qty} 以下である必要があります"));
+    |
+warning: `WebTools` (bin "WebTools") generated 29 warnings (run `cargo clippy --fix --bin "WebTools"` to apply 29 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.95s

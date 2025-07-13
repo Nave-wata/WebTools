@@ -1,12 +1,11 @@
 use crate::components::cards::tool_card::ToolCard;
-use crate::components::images::lazy_image::LazyImage;
 use crate::routes::Route;
 use dioxus::prelude::*;
 
 /// 文字数カウントツールカード
 pub(crate) fn TextLengthCounterCard() -> Element {
     let icon: Element = rsx! {
-        LazyImage {
+        img {
             src: asset!("/assets/images/icons/text_length_counter.webp"),
             alt: "文字数カウント",
             class: "justify-self-center py-3",

@@ -1,4 +1,3 @@
-use crate::components::images::lazy_image::LazyImage;
 use dioxus::prelude::*;
 
 /// アプリケーションロゴコンポーネントのプロパティ
@@ -20,12 +19,11 @@ pub(crate) struct AppLogoProps {
 /// * `props` - `AppLogoProps` アプリケーションロゴコンポーネントのプロパティ
 pub(crate) fn AppLogo(props: AppLogoProps) -> Element {
     rsx! {
-        LazyImage {
+        img {
             src: asset!("/assets/images/logos/app_logo.webp"),
             alt: "アプリケーションロゴ",
             height: props.height,
             width: props.width,
-            show_placeholder: false, // Logo should load immediately for branding
         }
     }
 }

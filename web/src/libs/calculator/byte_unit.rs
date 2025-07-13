@@ -22,11 +22,11 @@ pub fn bytes_to_unit(bytes_str: &str, unit: &str) -> Result<String, String> {
         "MB" => bytes / (1024.0 * 1024.0),
         "GB" => bytes / (1024.0 * 1024.0 * 1024.0),
         "TB" => bytes / (1024.0 * 1024.0 * 1024.0 * 1024.0),
-        _ => return Err(format!("Unknown unit: {unit}")),
+        _ => return Err(format!("Unknown unit: {}", unit)),
     };
 
     // 結果を文字列に変換
-    Ok(format!("{result:.10}")
+    Ok(format!("{:.10}", result)
         .trim_end_matches('0')
         .trim_end_matches('.')
         .to_string())
@@ -54,11 +54,11 @@ pub fn unit_to_bytes(value: &str, unit: &str) -> Result<String, String> {
         "MB" => num * 1024.0 * 1024.0,
         "GB" => num * 1024.0 * 1024.0 * 1024.0,
         "TB" => num * 1024.0 * 1024.0 * 1024.0 * 1024.0,
-        _ => return Err(format!("Unknown unit: {unit}")),
+        _ => return Err(format!("Unknown unit: {}", unit)),
     };
 
     // 結果を文字列に変換
-    Ok(format!("{bytes:.0}"))
+    Ok(format!("{:.0}", bytes))
 }
 
 #[cfg(test)]

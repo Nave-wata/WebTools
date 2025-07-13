@@ -1,12 +1,11 @@
 use crate::components::cards::tool_card::ToolCard;
-use crate::components::images::lazy_image::LazyImage;
 use crate::routes::Route;
 use dioxus::prelude::*;
 
 /// JSON フォーマッターツールカード
 pub(crate) fn JsonFormatterCard() -> Element {
     let icon: Element = rsx! {
-        LazyImage {
+        img {
             src: asset!("/assets/images/icons/json_formatter.webp"),
             alt: "JSON フォーマッター",
             class: "justify-self-center py-3",
