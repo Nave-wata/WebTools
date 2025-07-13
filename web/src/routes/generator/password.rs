@@ -432,7 +432,7 @@ pub(crate) fn PasswordGenerator() -> Element {
                                 }
 
                                 if !(min_qty..=max_qty).contains(&password_qty()) {
-                                    error_message.set(format!("生成するパスワードの数は {min_qty} ~ {max_qty} 以下である必要があります"));
+                                    error_message.set(format!("生成するパスワードの数は {min_qty}以上、{max_qty}以下である必要があります"));
                                     return;
                                 }
 
