@@ -15,7 +15,7 @@ pub fn base16_encode(input: &str) -> String {
     input
         .as_bytes()
         .iter()
-        .map(|byte| format!("{byte:02x}"))
+        .map(|byte| format!("{:02x}", byte))
         .collect()
 }
 
@@ -216,7 +216,7 @@ pub fn base64_decode(input: &str) -> Result<String, String> {
         for &c in chunk {
             let byte = c as u8;
             if lookup[byte as usize] == 255 {
-                return Err(format!("Base64デコードエラー: 無効な文字 '{c}'"));
+                return Err(format!("Base64デコードエラー: 無効な文字 '{}'", c));
             }
             buffer = (buffer << 6) | (lookup[byte as usize] as u32);
             bits += 6;

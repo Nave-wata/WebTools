@@ -56,7 +56,7 @@ pub(crate) fn UrlEnDecoder() -> Element {
         // リアルタイムでデコード
         match url_decode(&value) {
             Ok(result) => normal_text.set(result),
-            Err(err) => error_message.set(format!("デコードエラー: {err}")),
+            Err(err) => error_message.set(format!("デコードエラー: {}", err)),
         }
     };
 

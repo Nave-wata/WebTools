@@ -16,7 +16,7 @@ pub(crate) fn Err404(segments: Vec<String>) -> Element {
 
 /// 404 エラーページエレメント
 pub(crate) fn err_404_element() -> Element {
-    let title: &str = &format!("404 Not Found - {APP_TITLE}");
+    let title: &str = &format!("404 Not Found - {}", APP_TITLE);
     let description: &str = "お探しのページはすでに削除もしくは移動された可能性があります。URLにミスがないか再度ご確認ください。";
 
     rsx! {
