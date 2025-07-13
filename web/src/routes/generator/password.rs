@@ -427,12 +427,12 @@ pub(crate) fn PasswordGenerator() -> Element {
                                 error_message.set(String::new());
 
                                 if !(min_length..=max_length).contains(&password_length()) {
-                                    error_message.set(format!("パスワードの長さは {} ~ {} 以下である必要があります", min_length, max_length));
+                                    error_message.set(format!("パスワードの長さは {min_length} ~ {max_length} 以下である必要があります"));
                                     return;
                                 }
 
                                 if !(min_qty..=max_qty).contains(&password_qty()) {
-                                    error_message.set(format!("生成するパスワードの数は {} ~ {} 以下である必要があります", min_qty, max_qty));
+                                    error_message.set(format!("生成するパスワードの数は {min_qty} ~ {max_qty} 以下である必要があります"));
                                     return;
                                 }
 

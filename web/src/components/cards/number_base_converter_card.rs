@@ -1,16 +1,17 @@
 use crate::components::cards::tool_card::ToolCard;
+use crate::components::images::lazy_image::LazyImage;
 use crate::routes::Route;
 use dioxus::prelude::*;
 
 /// 進数変換ツールカード
 pub(crate) fn NumberBaseConverterCard() -> Element {
     let icon: Element = rsx! {
-        img {
+        LazyImage {
             src: asset!("/assets/images/icons/number_base_converter.webp"), // 仮のアイコン画像
             alt: "進数変換",
             class: "justify-self-center py-3",
-            height: 100,
-            width: 100,
+            height: 115,
+            width: 105,
         }
     };
 
