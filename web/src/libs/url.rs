@@ -101,7 +101,7 @@ fn decode_part(input: &str) -> Result<String, String> {
             } else if v.is_empty() {
                 k.to_string()
             } else {
-                format!("{}={}", k, v)
+                format!("{k}={v}")
             }
         })
         .collect::<String>();

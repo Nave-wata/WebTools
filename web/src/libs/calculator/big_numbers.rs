@@ -106,8 +106,8 @@ pub fn add_big_numbers(a: &str, b: &str) -> String {
     // 小数部分の処理
     let mut frac_result = String::new();
     if !a_frac.is_empty() || !b_frac.is_empty() {
-        let a_frac_padded = format!("{:0<20}", a_frac);
-        let b_frac_padded = format!("{:0<20}", b_frac);
+        let a_frac_padded = format!("{a_frac:0<20}");
+        let b_frac_padded = format!("{b_frac:0<20}");
 
         let mut frac_carry = 0;
         for i in (0..20).rev() {
@@ -203,8 +203,8 @@ pub fn subtract_big_numbers(a: &str, b: &str) -> String {
 
     // 小数部分の桁数を揃える
     let max_frac_len = a_frac.len().max(b_frac.len());
-    let a_frac_padded = format!("{:0<width$}", a_frac, width = max_frac_len);
-    let b_frac_padded = format!("{:0<width$}", b_frac, width = max_frac_len);
+    let a_frac_padded = format!("{a_frac:0<max_frac_len$}");
+    let b_frac_padded = format!("{b_frac:0<max_frac_len$}");
 
     // 整数部分と小数部分を別々に処理
     let mut int_result = String::new();
@@ -603,8 +603,8 @@ pub fn compare_big_numbers(a: &str, b: &str) -> i32 {
 
     // 小数部分を桁ごとに比較
     let max_frac_len = a_frac.len().max(b_frac.len());
-    let a_frac_padded = format!("{:0<width$}", a_frac, width = max_frac_len);
-    let b_frac_padded = format!("{:0<width$}", b_frac, width = max_frac_len);
+    let a_frac_padded = format!("{a_frac:0<max_frac_len$}");
+    let b_frac_padded = format!("{b_frac:0<max_frac_len$}");
 
     for (a_char, b_char) in a_frac_padded.chars().zip(b_frac_padded.chars()) {
         if a_char != b_char {
@@ -640,7 +640,7 @@ pub fn evaluate_postfix(tokens: Vec<String>) -> Result<String, String> {
                 "-" => subtract_big_numbers(&a, &b),
                 "*" | "×" => multiply_big_numbers(&a, &b),
                 "/" | "÷" => divide_big_numbers(&a, &b)?,
-                _ => return Err(format!("Unknown operator: {}", token)),
+                _ => return Err(format!("Unknown operator: {token}")),
             };
 
             stack.push(result);
@@ -713,7 +713,7 @@ pub fn evaluate_expression(expr: &str) -> Result<String, String> {
                 }
                 // スペースは式の開始状態に影響しない
             }
-            _ => return Err(format!("Invalid character: {}", c)),
+            _ => return Err(format!("Invalid character: {c}")),
         }
     }
 

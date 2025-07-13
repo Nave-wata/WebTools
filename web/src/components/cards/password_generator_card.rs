@@ -1,15 +1,16 @@
 use crate::components::cards::tool_card::ToolCard;
+use crate::components::images::lazy_image::LazyImage;
 use crate::routes::Route;
 use dioxus::prelude::*;
 
 /// パスワード生成ツールカード
 pub(crate) fn PasswordGeneratorCard() -> Element {
     let icon: Element = rsx! {
-        img {
+        LazyImage {
             src: asset!("/assets/images/icons/password_generator.webp"),
             alt: "パスワード生成",
             class: "justify-self-center py-3",
-            height: 60,
+            height: 75,
             width: 150,
         }
     };
