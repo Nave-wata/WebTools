@@ -1,11 +1,12 @@
 use crate::components::cards::tool_card::ToolCard;
+use crate::components::images::lazy_image::LazyImage;
 use crate::routes::Route;
 use dioxus::prelude::*;
 
 /// Base エンコード/デコードツールカード
 pub(crate) fn BaseEnDecodeConverterCard() -> Element {
     let icon: Element = rsx! {
-        img {
+        LazyImage {
             src: asset!("/assets/images/icons/base_endecode_converter.webp"),
             alt: "Base エンコード/デコード",
             class: "justify-self-center py-3",

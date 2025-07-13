@@ -1,11 +1,12 @@
 use crate::components::cards::tool_card::ToolCard;
+use crate::components::images::lazy_image::LazyImage;
 use crate::routes::Route;
 use dioxus::prelude::*;
 
 /// バイト単位変換ツールカード
 pub(crate) fn ByteUnitCalculatorCard() -> Element {
     let icon: Element = rsx! {
-        img {
+        LazyImage {
             src: asset!("/assets/images/icons/byte_unit_calculator.webp"), // アイコン画像
             alt: "バイト単位変換",
             class: "justify-self-center py-3",

@@ -14,8 +14,7 @@ pub fn decimal_to_base(decimal_str: &str, base: u32) -> Result<String, String> {
     // 進数の範囲チェック
     if !(2..=36).contains(&base) {
         return Err(format!(
-            "進数は2から36の間である必要があります。指定された進数: {}",
-            base
+            "進数は2から36の間である必要があります。指定された進数: {base}"
         ));
     }
 
@@ -58,8 +57,7 @@ pub fn base_to_decimal(value: &str, base: u32) -> Result<String, String> {
     // 進数の範囲チェック
     if !(2..=36).contains(&base) {
         return Err(format!(
-            "進数は2から36の間である必要があります。指定された進数: {}",
-            base
+            "進数は2から36の間である必要があります。指定された進数: {base}"
         ));
     }
 
@@ -76,12 +74,12 @@ pub fn base_to_decimal(value: &str, base: u32) -> Result<String, String> {
         // 文字が進数の範囲内かチェック
         let digit = match digits.chars().position(|d| d == c) {
             Some(pos) => pos as u32,
-            None => return Err(format!("無効な文字が含まれています: {}", c)),
+            None => return Err(format!("無効な文字が含まれています: {c}")),
         };
 
         // 進数の範囲外の文字がないかチェック
         if digit >= base {
-            return Err(format!("文字 '{}' は{}進数では使用できません", c, base));
+            return Err(format!("文字 '{c}' は{base}進数では使用できません"));
         }
 
         // オーバーフローチェック

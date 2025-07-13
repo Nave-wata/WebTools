@@ -94,7 +94,7 @@ pub fn evaluate_postfix(tokens: Vec<String>) -> Result<f64, String> {
                     }
                     a / b
                 }
-                _ => return Err(format!("Unknown operator: {}", token)),
+                _ => return Err(format!("Unknown operator: {token}")),
             };
 
             stack.push(result);
@@ -153,7 +153,7 @@ pub fn evaluate_expression(expr: &str) -> Result<f64, String> {
                     }
                 } else {
                     // 数字の前に'e'/'E'がある場合はエラー
-                    return Err(format!("Invalid character: {}", c));
+                    return Err(format!("Invalid character: {c}"));
                 }
             }
             '+' | '-' | '*' | '/' | '×' | '÷' | '(' | ')' => {
@@ -195,7 +195,7 @@ pub fn evaluate_expression(expr: &str) -> Result<f64, String> {
                 }
                 // スペースは式の開始状態に影響しない
             }
-            _ => return Err(format!("Invalid character: {}", c)),
+            _ => return Err(format!("Invalid character: {c}")),
         }
     }
 
@@ -222,7 +222,7 @@ pub fn calculate_expression(expr: &str) -> Result<String, String> {
             // f64の最大値は約1.7976931348623157e308、最小値は約-1.7976931348623157e308
             let formatted_result = if value.abs() > 1e16 || (value.abs() < 1e-4 && value != 0.0) {
                 // 指数表記を使用
-                format!("{:e}", value)
+                format!("{value:e}")
             } else {
                 // 通常の表記を使用
                 value.to_string()

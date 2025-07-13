@@ -1,11 +1,12 @@
 use crate::components::cards::tool_card::ToolCard;
+use crate::components::images::lazy_image::LazyImage;
 use crate::routes::Route;
 use dioxus::prelude::*;
 
 /// 大きな数値の電卓ツールカード
 pub(crate) fn BigNumbersCalculatorCard() -> Element {
     let icon: Element = rsx! {
-        img {
+        LazyImage {
             src: asset!("/assets/images/icons/big_numbers_calculator.webp"),
             alt: "大きな数値の電卓",
             class: "justify-self-center py-3",
