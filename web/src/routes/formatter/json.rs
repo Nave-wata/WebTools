@@ -73,7 +73,7 @@ pub(crate) fn JsonFormatter() -> Element {
                 (String::new(), formatted, compressed)
             }
             Err(e) => (
-                format!("JSON構文エラー: {}", e),
+                format!("JSON構文エラー: {e}"),
                 String::new(),
                 String::new(),
             ),
@@ -164,7 +164,7 @@ pub(crate) fn JsonFormatter() -> Element {
                 let promise = clipboard.write_text(&text);
                 match wasm_bindgen_futures::JsFuture::from(promise).await {
                     Ok(_) => {
-                        copy_success.set(format!("{}をクリップボードにコピーしました", field_name))
+                        copy_success.set(format!("{field_name}をクリップボードにコピーしました"))
                     }
                     Err(_) => copy_success.set("コピーに失敗しました".to_string()),
                 }
