@@ -96,7 +96,7 @@ fn BreadcrumbItemElement(props: BreadcrumbItemElementProps) -> Element {
             // Use meta tag for position, which is cleaner for non-visible data
             meta {
                 itemprop: "position",
-                content: "{props.position}"
+                content: "{props.position.to_string()}"
             }
 
             if let Some(to) = props.to {
