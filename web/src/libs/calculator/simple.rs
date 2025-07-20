@@ -210,6 +210,9 @@ pub fn evaluate_expression(expr: &str) -> Result<f64, String> {
     evaluate_postfix(postfix)
 }
 
+/// デフォルトの精度（一般的な電卓の精度）
+const DEFAULT_PRECISION: u32 = 12;
+
 /// 浮動小数点数の精度問題を修正するために結果を丸める
 fn round_to_precision(value: f64, precision: u32) -> f64 {
     let multiplier = 10_f64.powi(precision as i32);
@@ -225,8 +228,7 @@ pub fn calculate_expression(expr: &str) -> Result<String, String> {
     match evaluate_expression(expr) {
         Ok(value) => {
             // 浮動小数点数の精度問題を修正
-            // 12桁の精度で丸める（一般的な電卓の精度）
-            let rounded_value = round_to_precision(value, 12);
+            let rounded_value = round_to_precision(value, DEFAULT_PRECISION);
 
             // 大きな数値や小さな数値の場合は指数表記を使用
             // f64の最大値は約1.7976931348623157e308、最小値は約-1.7976931348623157e308
@@ -247,7 +249,12 @@ pub fn calculate_expression(expr: &str) -> Result<String, String> {
                         result = "0".to_string();
                     }
                 }
-                result
+                // -0を0に正規化
+                if result == "-0" {
+                    "0".to_string()
+                } else {
+                    result
+                }
             };
 
             Ok(formatted_result)
