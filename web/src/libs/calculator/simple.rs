@@ -210,6 +210,15 @@ pub fn evaluate_expression(expr: &str) -> Result<f64, String> {
     evaluate_postfix(postfix)
 }
 
+/// デフォルトの精度（一般的な電卓の精度）
+const DEFAULT_PRECISION: u32 = 12;
+
+/// 浮動小数点数の精度問題を修正するために結果を丸める
+fn round_to_precision(value: f64, precision: u32) -> f64 {
+    let multiplier = 10_f64.powi(precision as i32);
+    (value * multiplier).round() / multiplier
+}
+
 /// 式を計算して結果を更新
 pub fn calculate_expression(expr: &str) -> Result<String, String> {
     if expr.is_empty() {
@@ -218,14 +227,34 @@ pub fn calculate_expression(expr: &str) -> Result<String, String> {
 
     match evaluate_expression(expr) {
         Ok(value) => {
+            // 浮動小数点数の精度問題を修正
+            let rounded_value = round_to_precision(value, DEFAULT_PRECISION);
+
             // 大きな数値や小さな数値の場合は指数表記を使用
             // f64の最大値は約1.7976931348623157e308、最小値は約-1.7976931348623157e308
-            let formatted_result = if value.abs() > 1e16 || (value.abs() < 1e-4 && value != 0.0) {
+            let formatted_result = if rounded_value.abs() > 1e16
+                || (rounded_value.abs() < 1e-4 && rounded_value != 0.0)
+            {
                 // 指数表記を使用
-                format!("{value:e}")
+                format!("{rounded_value:e}")
             } else {
-                // 通常の表記を使用
-                value.to_string()
+                // 通常の表記を使用し、不要な末尾の0を削除
+                let mut result = rounded_value.to_string();
+                if result.contains('.') {
+                    result = result
+                        .trim_end_matches('0')
+                        .trim_end_matches('.')
+                        .to_string();
+                    if result.is_empty() {
+                        result = "0".to_string();
+                    }
+                }
+                // -0を0に正規化
+                if result == "-0" {
+                    "0".to_string()
+                } else {
+                    result
+                }
             };
 
             Ok(formatted_result)
@@ -510,5 +539,28 @@ mod tests {
     #[test]
     fn test_calculate_expression_division_by_zero_returns_error() {
         assert!(calculate_expression("1/0").is_err());
+    }
+
+    #[test]
+    fn test_floating_point_precision_fix() {
+        // 浮動小数点の精度問題をテスト
+        let result = calculate_expression("0.6-0.2").unwrap();
+        assert_eq!(result, "0.4");
+
+        let result = calculate_expression("0.1+0.2").unwrap();
+        assert_eq!(result, "0.3");
+
+        let result = calculate_expression("0.3-0.1").unwrap();
+        assert_eq!(result, "0.2");
+
+        let result = calculate_expression("1.1*3").unwrap();
+        assert_eq!(result, "3.3");
+    }
+
+    #[test]
+    fn test_round_to_precision() {
+        assert_eq!(round_to_precision(0.39999999999999997, 12), 0.4);
+        assert_eq!(round_to_precision(0.30000000000000004, 12), 0.3);
+        assert_eq!(round_to_precision(3.3000000000000003, 12), 3.3);
     }
 }
