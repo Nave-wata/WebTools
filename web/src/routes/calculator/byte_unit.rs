@@ -427,6 +427,10 @@ pub(crate) fn ByteUnitCalculator() -> Element {
                     to: Some(Route::TopPage {})
                 },
                 BreadcrumbItem {
+                    name: "計算機".to_string(),
+                    to: Some(Route::CalculatorPage {})
+                },
+                BreadcrumbItem {
                     name: title.to_string(),
                     to: None,
                 }

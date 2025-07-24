@@ -75,6 +75,10 @@ pub(crate) fn UrlEnDecoder() -> Element {
                     to: Some(Route::TopPage {})
                 },
                 BreadcrumbItem {
+                    name: "コンバーター".to_string(),
+                    to: Some(Route::ConverterPage {})
+                },
+                BreadcrumbItem {
                     name: title.to_string(),
                     to: None,
                 }

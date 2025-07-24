@@ -263,6 +263,10 @@ pub(crate) fn PasswordGenerator() -> Element {
                     to: Some(Route::TopPage {})
                 },
                 BreadcrumbItem {
+                    name: "ジェネレータ".to_string(),
+                    to: Some(Route::GeneratorPage {})
+                },
+                BreadcrumbItem {
                     name: title.to_string(),
                     to: None,
                 }

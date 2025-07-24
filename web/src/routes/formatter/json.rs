@@ -187,6 +187,10 @@ pub(crate) fn JsonFormatter() -> Element {
                     to: Some(Route::TopPage {})
                 },
                 BreadcrumbItem {
+                    name: "フォーマッター".to_string(),
+                    to: Some(Route::FormatterPage {})
+                },
+                BreadcrumbItem {
                     name: title.to_string(),
                     to: None,
                 }

@@ -1,3 +1,4 @@
+use crate::routes::Route;
 use dioxus::prelude::*;
 
 /// ツールグリッドコンポーネント props
@@ -6,10 +7,12 @@ use dioxus::prelude::*;
 ///
 /// * `title` - `String` ツールグリッドのタイトル
 /// * `children` - `Element` 関連する各種ツール
+/// * `category_route` - `Option<Route>` カテゴリページへのルート（オプション）
 #[derive(PartialEq, Clone, Props)]
 pub(crate) struct ToolsGridProps {
     title: String,
     children: Element,
+    category_route: Option<Route>,
 }
 
 /// ツールグリッドコンポーネント
@@ -22,6 +25,7 @@ pub(crate) struct ToolsGridProps {
 ///
 /// * `title` - `String` ツールグリッドのタイトル
 /// * `children` - `Element` 関連する各種ツール
+/// * `category_route` - `Option<Route>` カテゴリページへのルート（オプション）
 pub(crate) fn ToolsGrid(props: ToolsGridProps) -> Element {
     rsx! {
         div {
@@ -29,7 +33,17 @@ pub(crate) fn ToolsGrid(props: ToolsGridProps) -> Element {
 
             h2 {
                 class: "text-xl font-bold",
-                {props.title}
+                if let Some(route) = props.category_route {
+                    Link {
+                        to: route,
+                        class: "text-blue-600 hover:text-blue-800 hover:underline",
+                        {props.title}
+                    }
+                } else {
+                    span {
+                        {props.title}
+                    }
+                }
             }
 
             div {

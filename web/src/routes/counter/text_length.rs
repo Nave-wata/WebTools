@@ -32,6 +32,10 @@ pub(crate) fn TextLengthCounter() -> Element {
                     to: Some(Route::TopPage {})
                 },
                 BreadcrumbItem {
+                    name: "カウンター".to_string(),
+                    to: Some(Route::CounterPage {})
+                },
+                BreadcrumbItem {
                     name: title.to_string(),
                     to: None,
                 }

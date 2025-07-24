@@ -10,6 +10,7 @@ use crate::components::cards::url_endecode_converter_card::UrlEnDecodeConverterC
 use crate::components::grids::tools_grid::ToolsGrid;
 use crate::components::head::Head;
 use crate::constants::app::{APP_TITLE, APP_URL};
+use crate::routes::Route;
 use dioxus::prelude::*;
 
 /// トップページ
@@ -29,18 +30,21 @@ pub(crate) fn TopPage() -> Element {
 
             ToolsGrid {
                 title: "ジェネレータ",
+                category_route: Some(Route::GeneratorPage {}),
 
                 PasswordGeneratorCard {},
             }
 
             ToolsGrid {
                 title: "カウンター",
+                category_route: Some(Route::CounterPage {}),
 
                 TextLengthCounterCard {},
             }
 
             ToolsGrid {
                 title: "コンバーター",
+                category_route: Some(Route::ConverterPage {}),
 
                 UrlEnDecodeConverterCard {},
                 BaseEnDecodeConverterCard {},
@@ -49,6 +53,7 @@ pub(crate) fn TopPage() -> Element {
 
             ToolsGrid {
                 title: "計算機",
+                category_route: Some(Route::CalculatorPage {}),
 
                 ByteUnitCalculatorCard {},
                 SimpleCalculatorCard {},
@@ -57,6 +62,7 @@ pub(crate) fn TopPage() -> Element {
 
             ToolsGrid {
                 title: "フォーマッター",
+                category_route: Some(Route::FormatterPage {}),
 
                 JsonFormatterCard {},
             }

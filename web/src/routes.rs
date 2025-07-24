@@ -9,13 +9,18 @@ mod top;
 use calculator::big_numbers::BigNumbersCalculator;
 use calculator::byte_unit::ByteUnitCalculator;
 use calculator::simple::SimpleCalculator;
+use calculator::CalculatorPage;
 use converter::base_endecode::BaseEnDecoder;
 use converter::number_base::NumberBaseConverter;
 use converter::url_endecode::UrlEnDecoder;
+use converter::ConverterPage;
 use counter::text_length::TextLengthCounter;
+use counter::CounterPage;
 use dioxus::prelude::*;
 use formatter::json::JsonFormatter;
+use formatter::FormatterPage;
 use generator::password::PasswordGenerator;
+use generator::GeneratorPage;
 use notfound::NotFound;
 use top::TopPage;
 
@@ -30,14 +35,20 @@ pub(crate) enum Route {
     TopPage {},
 
     #[nest("/generator")]
+    #[route("/")]
+    GeneratorPage {},
     #[route("/password")]
     PasswordGenerator {},
     #[end_nest]
     #[nest("/counter")]
+    #[route("/")]
+    CounterPage {},
     #[route("/text-length")]
     TextLengthCounter {},
     #[end_nest]
     #[nest("/converter")]
+    #[route("/")]
+    ConverterPage {},
     #[route("/base-endecode")]
     BaseEnDecoder {},
 
@@ -48,6 +59,8 @@ pub(crate) enum Route {
     UrlEnDecoder {},
     #[end_nest]
     #[nest("/calculator")]
+    #[route("/")]
+    CalculatorPage {},
     #[route("/byte-unit")]
     ByteUnitCalculator {},
 
@@ -58,6 +71,8 @@ pub(crate) enum Route {
     BigNumbersCalculator {},
     #[end_nest]
     #[nest("/formatter")]
+    #[route("/")]
+    FormatterPage {},
     #[route("/json")]
     JsonFormatter {},
     #[end_nest]
