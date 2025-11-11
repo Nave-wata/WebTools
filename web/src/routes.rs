@@ -16,6 +16,7 @@ use counter::text_length::TextLengthCounter;
 use dioxus::prelude::*;
 use formatter::json::JsonFormatter;
 use generator::password::PasswordGenerator;
+use generator::uuid4::Uuid4Generator;
 use notfound::NotFound;
 use top::TopPage;
 
@@ -32,6 +33,9 @@ pub(crate) enum Route {
     #[nest("/generator")]
     #[route("/password")]
     PasswordGenerator {},
+
+    #[route("/uuid4")]
+    Uuid4Generator {},
     #[end_nest]
     #[nest("/counter")]
     #[route("/text-length")]

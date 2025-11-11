@@ -72,11 +72,7 @@ pub(crate) fn JsonFormatter() -> Element {
 
                 (String::new(), formatted, compressed)
             }
-            Err(e) => (
-                format!("JSON構文エラー: {e}"),
-                String::new(),
-                String::new(),
-            ),
+            Err(e) => (format!("JSON構文エラー: {e}"), String::new(), String::new()),
         }
     };
 

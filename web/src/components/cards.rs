@@ -8,3 +8,4 @@ pub(crate) mod simple_calculator_card;
 pub(crate) mod text_length_counter;
 mod tool_card;
 pub(crate) mod url_endecode_converter_card;
+pub(crate) mod uuid4_generator_card;
