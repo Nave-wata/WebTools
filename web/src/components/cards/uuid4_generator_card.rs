@@ -6,7 +6,7 @@ use dioxus::prelude::*;
 pub(crate) fn Uuid4GeneratorCard() -> Element {
     let icon: Element = rsx! {
         LazyImage {
-            src: "https://api.nave-wata.net/tools/generator/dummy-image",
+            src: asset!("/assets/images/icons/uuid4_generator.webp"),
             alt: "UUID Version 4 生成",
             class: "justify-self-center py-3",
             height: 60,

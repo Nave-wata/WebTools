@@ -79,7 +79,7 @@ pub(crate) fn Uuid4Generator() -> Element {
             title: title,
             description: description,
             og_url: Route::Uuid4Generator {}.to_string(),
-            og_image: "https://api.nave-wata.net/tools/generator/dummy-image",
+            og_image: asset!("/assets/images/ogp/uuid4_generator.webp"),
         }
 
         BreadcrumbList {
